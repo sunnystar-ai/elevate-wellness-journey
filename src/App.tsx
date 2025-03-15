@@ -17,6 +17,9 @@ import MyJourney from "./pages/MyJourney";
 import Community from "./pages/Community";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import Meditation from "./pages/Meditation";
+import Workouts from "./pages/Workouts";
+import Nutrition from "./pages/Nutrition";
 
 const queryClient = new QueryClient();
 
@@ -58,6 +61,21 @@ const App = () => (
             <Route path="/profile" element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            } />
+            <Route path="/meditation" element={
+              <ProtectedRoute>
+                <Meditation />
+              </ProtectedRoute>
+            } />
+            <Route path="/workouts" element={
+              <ProtectedRoute>
+                <Workouts />
+              </ProtectedRoute>
+            } />
+            <Route path="/nutrition" element={
+              <ProtectedRoute>
+                <Nutrition />
               </ProtectedRoute>
             } />
             

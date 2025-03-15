@@ -23,20 +23,26 @@ import {
   Heart as HeartIcon,
   ArrowRight as ArrowRightIcon,
   Moon as MoonIcon,
-  Award as AwardIcon
+  Award as AwardIcon,
+  Brain
 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 import FeatureCard from '@/components/ui/FeatureCard';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useAuth } from '@/contexts/AuthContext';
+import BottomNav from '@/components/my-journey/BottomNav';
+import QuickAccess from '@/components/home/QuickAccess';
+import DailyTip from '@/components/home/DailyTip';
 
 const Index = () => {
   const [loaded, setLoaded] = useState(false);
-  const [userName, setUserName] = useState('Alex');
   const [currentTime, setCurrentTime] = useState(new Date());
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const userName = user ? user.name : 'Guest';
 
   useEffect(() => {
     setLoaded(true);
@@ -81,11 +87,11 @@ const Index = () => {
   };
 
   const quickActions = [
-    { name: 'Meditation', icon: <MoonIcon className="h-6 w-6 text-white" />, to: '/meditation', color: 'from-harmony-light-lavender to-harmony-lavender' },
-    { name: 'Workout', icon: <AwardIcon className="h-6 w-6 text-white" />, to: '/workouts', color: 'from-harmony-light-blue to-harmony-blue' },
-    { name: 'Mood', icon: <HeartIcon className="h-6 w-6 text-white" />, to: '#', color: 'from-harmony-light-peach to-harmony-peach' },
-    { name: 'Water', icon: <Droplets className="h-6 w-6 text-white" />, to: '#', color: 'from-harmony-light-mint to-harmony-mint' },
-    { name: 'Journal', icon: <BookOpenIcon className="h-6 w-6 text-white" />, to: '#', color: 'from-harmony-light-lavender to-harmony-lavender' }
+    { name: 'Meditation', icon: <Brain className="h-6 w-6 text-white" />, to: '/dashboard', color: 'from-harmony-light-lavender to-harmony-lavender' },
+    { name: 'Workout', icon: <AwardIcon className="h-6 w-6 text-white" />, to: '/dashboard', color: 'from-harmony-light-blue to-harmony-blue' },
+    { name: 'Mood', icon: <HeartIcon className="h-6 w-6 text-white" />, to: '/my-journey', color: 'from-harmony-light-peach to-harmony-peach' },
+    { name: 'Water', icon: <Droplets className="h-6 w-6 text-white" />, to: '/dashboard', color: 'from-harmony-light-mint to-harmony-mint' },
+    { name: 'Journal', icon: <BookOpenIcon className="h-6 w-6 text-white" />, to: '/my-journey', color: 'from-harmony-light-lavender to-harmony-lavender' }
   ];
 
   const timelineItems = [
@@ -94,28 +100,28 @@ const Index = () => {
       time: '9:00 AM', 
       description: '10 min Mindfulness', 
       icon: <MoonIcon className="h-4 w-4 text-harmony-lavender" />,
-      to: '/meditation'
+      to: '/dashboard'
     },
     { 
       title: 'HIIT Workout', 
       time: '12:30 PM', 
       description: '20 min High Intensity', 
       icon: <AwardIcon className="h-4 w-4 text-harmony-blue" />,
-      to: '/workouts'
+      to: '/dashboard'
     },
     { 
       title: 'Lunch Reminder', 
       time: '1:00 PM', 
       description: 'Balanced meal', 
       icon: <BookOpenIcon className="h-4 w-4 text-harmony-mint" />,
-      to: '/nutrition'
+      to: '/dashboard'
     },
     { 
       title: 'Bedtime Routine', 
       time: '10:30 PM', 
       description: 'Wind down ritual', 
       icon: <MoonIcon className="h-4 w-4 text-harmony-peach" />,
-      to: '#'
+      to: '/dashboard'
     }
   ];
 
@@ -125,7 +131,7 @@ const Index = () => {
       category: "Meditation",
       duration: "15 min",
       image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      to: "/meditation",
+      to: "/dashboard",
       color: "bg-harmony-light-lavender"
     },
     {
@@ -133,7 +139,7 @@ const Index = () => {
       category: "Workout",
       duration: "10 min",
       image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      to: "/workouts",
+      to: "/dashboard",
       color: "bg-harmony-light-blue"
     },
     {
@@ -141,7 +147,7 @@ const Index = () => {
       category: "Nutrition",
       duration: "3 recipes",
       image: "https://images.unsplash.com/photo-1494859802809-d069c3b71a8a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      to: "/nutrition",
+      to: "/dashboard",
       color: "bg-harmony-light-mint"
     },
     {
@@ -149,7 +155,7 @@ const Index = () => {
       category: "Sleep",
       duration: "8 hours",
       image: "https://images.unsplash.com/photo-1517898717281-8e4385a41802?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      to: "#",
+      to: "/dashboard",
       color: "bg-harmony-light-peach"
     }
   ];
@@ -406,28 +412,7 @@ const Index = () => {
         </AnimatedSection>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border flex justify-around p-3 z-50">
-        <Link to="/" className="flex flex-col items-center justify-center text-primary">
-          <Home className="h-6 w-6" />
-          <span className="text-xs mt-1">Home</span>
-        </Link>
-        <Link to="/discover" className="flex flex-col items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
-          <Compass className="h-6 w-6" />
-          <span className="text-xs mt-1">Discover</span>
-        </Link>
-        <Link to="/my-journey" className="flex flex-col items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
-          <Map className="h-6 w-6" />
-          <span className="text-xs mt-1">My Journey</span>
-        </Link>
-        <Link to="/community" className="flex flex-col items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
-          <Users className="h-6 w-6" />
-          <span className="text-xs mt-1">Community</span>
-        </Link>
-        <Link to="/profile" className="flex flex-col items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
-          <UserCircle className="h-6 w-6" />
-          <span className="text-xs mt-1">Profile</span>
-        </Link>
-      </div>
+      <BottomNav />
     </div>
   );
 };
