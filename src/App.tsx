@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Discover from "./pages/Discover";
 import MyJourney from "./pages/MyJourney";
 import Community from "./pages/Community";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,7 +26,7 @@ const App = () => (
           <Route path="/discover" element={<Discover />} />
           <Route path="/my-journey" element={<MyJourney />} />
           <Route path="/community" element={<Community />} />
-          <Route path="/profile" element={<NotFound />} />
+          <Route path="/profile" element={<Profile />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
