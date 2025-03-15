@@ -5,7 +5,7 @@ import {
   Bell, 
   User, 
   ArrowRight, 
-  Lotus, 
+  Flower2, 
   Dumbbell, 
   Smile, 
   Droplet, 
@@ -77,13 +77,13 @@ const Index = () => {
   
   // Get a deterministic quote based on the day
   const getDailyQuote = () => {
-    const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
+    const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / 86400000);
     return quotes[dayOfYear % quotes.length];
   };
 
   // Quick action buttons
   const quickActions = [
-    { name: 'Meditation', icon: <Lotus className="h-6 w-6 text-white" />, to: '/meditation', color: 'from-harmony-light-lavender to-harmony-lavender' },
+    { name: 'Meditation', icon: <Flower2 className="h-6 w-6 text-white" />, to: '/meditation', color: 'from-harmony-light-lavender to-harmony-lavender' },
     { name: 'Workout', icon: <Dumbbell className="h-6 w-6 text-white" />, to: '/workouts', color: 'from-harmony-light-blue to-harmony-blue' },
     { name: 'Mood', icon: <Smile className="h-6 w-6 text-white" />, to: '#', color: 'from-harmony-light-peach to-harmony-peach' },
     { name: 'Water', icon: <Droplet className="h-6 w-6 text-white" />, to: '#', color: 'from-harmony-light-mint to-harmony-mint' },
@@ -96,7 +96,7 @@ const Index = () => {
       title: 'Morning Meditation', 
       time: '9:00 AM', 
       description: '10 min Mindfulness', 
-      icon: <Lotus className="h-4 w-4 text-harmony-lavender" />,
+      icon: <Flower2 className="h-4 w-4 text-harmony-lavender" />,
       to: '/meditation'
     },
     { 
