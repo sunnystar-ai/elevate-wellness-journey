@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -13,11 +12,6 @@ import {
   CalendarCheck, 
   TrendingUp, 
   BarChart3,
-  Home,
-  Compass,
-  Map,
-  Users,
-  ArrowRight,
   CheckCircle,
   Play
 } from 'lucide-react';
@@ -27,6 +21,7 @@ import AnimatedSection from '@/components/ui/AnimatedSection';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useIsMobile } from '@/hooks/use-mobile';
+import BottomNav from '@/components/my-journey/BottomNav';
 
 const Dashboard = () => {
   const [loaded, setLoaded] = useState(false);
@@ -410,37 +405,11 @@ const Dashboard = () => {
         </AnimatedSection>
       </div>
 
-      {/* Bottom Navigation Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border flex justify-around p-3 z-50">
-        <button 
-          className="flex flex-col items-center justify-center text-muted-foreground"
-          onClick={() => navigate('/')}
-        >
-          <Home className="h-6 w-6" />
-          <span className="text-xs mt-1">Home</span>
-        </button>
-        <button className="flex flex-col items-center justify-center text-muted-foreground">
-          <Compass className="h-6 w-6" />
-          <span className="text-xs mt-1">Discover</span>
-        </button>
-        <button 
-          className="flex flex-col items-center justify-center text-primary"
-          onClick={() => navigate('/dashboard')}
-        >
-          <Map className="h-6 w-6" />
-          <span className="text-xs mt-1">My Journey</span>
-        </button>
-        <button className="flex flex-col items-center justify-center text-muted-foreground">
-          <Users className="h-6 w-6" />
-          <span className="text-xs mt-1">Community</span>
-        </button>
-        <button className="flex flex-col items-center justify-center text-muted-foreground">
-          <UserCircle className="h-6 w-6" />
-          <span className="text-xs mt-1">Profile</span>
-        </button>
-      </div>
+      {/* Replace custom bottom navigation with the BottomNav component */}
+      <BottomNav />
     </div>
   );
 };
 
 export default Dashboard;
+
