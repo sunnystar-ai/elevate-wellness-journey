@@ -10,7 +10,7 @@ const RecommendationCards = () => {
       category: "Meditation",
       duration: "15 min",
       image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      youtubeUrl: "https://www.youtube.com/watch?v=O-6f5wQXSu8",
+      youtubeUrl: "https://www.youtube.com/watch?v=z6X5oEIg6Ak",
       color: "bg-harmony-light-lavender"
     },
     {
@@ -18,7 +18,7 @@ const RecommendationCards = () => {
       category: "Workout",
       duration: "10 min",
       image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      youtubeUrl: "https://www.youtube.com/watch?v=VaoV1PrYft4",
+      youtubeUrl: "https://www.youtube.com/watch?v=r7xsYgTeM2Q",
       color: "bg-harmony-light-blue"
     },
     {
@@ -26,7 +26,7 @@ const RecommendationCards = () => {
       category: "Nutrition",
       duration: "3 recipes",
       image: "https://images.unsplash.com/photo-1494859802809-d069c3b71a8a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      youtubeUrl: "https://www.youtube.com/watch?v=pOJJhxwfPPA", 
+      youtubeUrl: "https://www.youtube.com/watch?v=7xw9s4sHpnc", 
       color: "bg-harmony-light-mint"
     },
     {
@@ -34,7 +34,7 @@ const RecommendationCards = () => {
       category: "Sleep",
       duration: "8 hours",
       image: "https://images.unsplash.com/photo-1517898717281-8e4385a41802?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      youtubeUrl: "https://www.youtube.com/watch?v=txQ6t4yPIM0",
+      youtubeUrl: "https://www.youtube.com/watch?v=bP9gMpl1gyQ",
       color: "bg-harmony-light-peach"
     }
   ];
