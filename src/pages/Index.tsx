@@ -4,7 +4,7 @@ import AnimatedSection from '@/components/ui/AnimatedSection';
 import BottomNav from '@/components/my-journey/BottomNav';
 import { getGreeting, getFormattedDate, getFormattedTime, getDailyQuote } from '@/util/dateUtils';
 
-// Import refactored components
+// Import components
 import StatusBar from '@/components/home/StatusBar';
 import AppHeader from '@/components/home/AppHeader';
 import GreetingHeader from '@/components/home/GreetingHeader';
@@ -14,6 +14,7 @@ import DailyTimeline from '@/components/home/DailyTimeline';
 import RecommendationCards from '@/components/home/RecommendationCards';
 import CommunityHighlights from '@/components/home/CommunityHighlights';
 import StreakCard from '@/components/home/StreakCard';
+import DailyTip from '@/components/home/DailyTip';
 
 const Index = () => {
   const [loaded, setLoaded] = useState(false);
@@ -62,6 +63,10 @@ const Index = () => {
             <h2 className="text-lg font-medium">Coming Up Today</h2>
           </div>
           <DailyTimeline />
+        </AnimatedSection>
+
+        <AnimatedSection className="mb-10">
+          <DailyTip />
         </AnimatedSection>
 
         <AnimatedSection className="mb-10">

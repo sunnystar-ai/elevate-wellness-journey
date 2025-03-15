@@ -30,7 +30,7 @@ const DailyTip = () => {
   }, []);
   
   return (
-    <div className="glass-panel p-5 flex items-start space-x-4 animate-scale-in">
+    <div className="glass-panel p-5 rounded-lg bg-background/80 border border-border flex items-start space-x-4">
       <div className="flex-shrink-0 mt-1">
         <div className="bg-harmony-light-peach p-2 rounded-lg">
           <Lightbulb size={20} className="text-harmony-peach" />
