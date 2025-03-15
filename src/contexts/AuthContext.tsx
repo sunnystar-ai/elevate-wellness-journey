@@ -14,6 +14,8 @@ type AuthContextType = {
   signup: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
+  error: string | null;
+  clearError: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -24,6 +26,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -37,11 +40,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, []);
 
+  const clearError = () => {
+    setError(null);
+  };
+
   const login = async (email: string, password: string) => {
     setIsLoading(true);
+    setError(null);
+    
     try {
+      // For demo purposes, we're using hardcoded credentials
       // In a real app, this would call your API
-      // For demo purposes, we're just checking hardcoded values
       if (email === "demo@example.com" && password === "password") {
         const userData = { name: "Demo User", email };
         localStorage.setItem("isAuthenticated", "true");
@@ -52,14 +61,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           title: "Signed in successfully",
           description: "Welcome back to Harmony!",
         });
+        return; // Success case
       } else {
         throw new Error("Invalid email or password");
       }
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Something went wrong";
+      setError(errorMessage);
       toast({
         variant: "destructive",
         title: "Sign in failed",
-        description: error instanceof Error ? error.message : "Something went wrong",
+        description: errorMessage,
       });
       throw error; // Re-throw to handle in the component
     } finally {
@@ -69,6 +81,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const signup = async (name: string, email: string, password: string) => {
     setIsLoading(true);
+    setError(null);
+    
     try {
       // In a real app, this would call your API to create a user
       // For demo purposes, we're just setting the authenticated state
@@ -82,10 +96,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         description: "Welcome to Harmony!",
       });
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Something went wrong";
+      setError(errorMessage);
       toast({
         variant: "destructive",
         title: "Sign up failed",
-        description: error instanceof Error ? error.message : "Something went wrong",
+        description: errorMessage,
       });
       throw error;
     } finally {
@@ -105,7 +121,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, signup, logout, isLoading }}>
+    <AuthContext.Provider 
+      value={{ isAuthenticated, user, login, signup, logout, isLoading, error, clearError }}
+    >
       {children}
     </AuthContext.Provider>
   );

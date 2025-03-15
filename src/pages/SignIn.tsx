@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,8 +12,8 @@ import { useAuth } from "@/contexts/AuthContext";
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const { login, isLoading } = useAuth();
+  const [localError, setLocalError] = useState<string | null>(null);
+  const { login, isLoading, isAuthenticated, error, clearError } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
@@ -21,21 +21,44 @@ const SignIn = () => {
   // Get the return URL from location state or default to dashboard
   const from = location.state?.from?.pathname || "/dashboard";
 
+  // If already authenticated, redirect to intended destination
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(from, { replace: true });
+    }
+  }, [isAuthenticated, navigate, from]);
+
+  // Sync auth context error with local error
+  useEffect(() => {
+    if (error) {
+      setLocalError(error);
+    }
+  }, [error]);
+
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+    setLocalError(null);
+    clearError();
 
     if (!email || !password) {
-      setError("Please fill in all fields");
+      setLocalError("Please fill in all fields");
       return;
     }
 
     try {
       await login(email, password);
-      navigate(from, { replace: true });
+      // If login succeeds, useEffect will handle redirect
     } catch (error) {
-      setError(error instanceof Error ? error.message : "An unknown error occurred");
+      // Error is already handled in AuthContext and synced to localError
     }
+  };
+
+  // To display the correct information for testing
+  const demoCredentials = () => {
+    toast({
+      title: "Demo Credentials",
+      description: "Email: demo@example.com, Password: password",
+    });
   };
 
   return (
@@ -62,10 +85,10 @@ const SignIn = () => {
             </p>
           </div>
 
-          {error && (
+          {localError && (
             <Alert variant="destructive" className="animate-in fade-in-50">
               <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
+              <AlertDescription>{localError}</AlertDescription>
             </Alert>
           )}
 
@@ -129,6 +152,16 @@ const SignIn = () => {
                 </span>
               )}
             </Button>
+
+            <div className="text-center text-sm">
+              <button 
+                type="button" 
+                className="text-primary hover:underline"
+                onClick={demoCredentials}
+              >
+                Show demo credentials
+              </button>
+            </div>
           </form>
 
           <div className="relative my-6">
