@@ -10,7 +10,7 @@ const RecommendationCards = () => {
       category: "Meditation",
       duration: "15 min",
       image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      youtubeUrl: "https://www.youtube.com/watch?v=z6X5oEIg6Ak",
+      youtubeUrl: "https://www.youtube.com/watch?v=inpok4MKVLM",
       color: "bg-harmony-light-lavender"
     },
     {
@@ -18,7 +18,7 @@ const RecommendationCards = () => {
       category: "Workout",
       duration: "10 min",
       image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      youtubeUrl: "https://www.youtube.com/watch?v=r7xsYgTeM2Q",
+      youtubeUrl: "https://www.youtube.com/watch?v=UEEsdXn8oG8",
       color: "bg-harmony-light-blue"
     },
     {
@@ -26,7 +26,7 @@ const RecommendationCards = () => {
       category: "Nutrition",
       duration: "3 recipes",
       image: "https://images.unsplash.com/photo-1494859802809-d069c3b71a8a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      youtubeUrl: "https://www.youtube.com/watch?v=7xw9s4sHpnc", 
+      youtubeUrl: "https://www.youtube.com/watch?v=H4uDVMpQG0E", 
       color: "bg-harmony-light-mint"
     },
     {
@@ -34,20 +34,31 @@ const RecommendationCards = () => {
       category: "Sleep",
       duration: "8 hours",
       image: "https://images.unsplash.com/photo-1517898717281-8e4385a41802?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      youtubeUrl: "https://www.youtube.com/watch?v=bP9gMpl1gyQ",
+      youtubeUrl: "https://www.youtube.com/watch?v=1ZYbU82GVz4",
       color: "bg-harmony-light-peach"
     }
   ];
 
   const handleCardClick = (url: string, title: string) => {
-    // Open YouTube video in a new tab
-    window.open(url, '_blank');
-    // Show toast notification
-    toast({
-      title: "Opening YouTube",
-      description: `Loading video: ${title}`,
-      duration: 3000,
-    });
+    try {
+      // Open YouTube video in a new tab
+      window.open(url, '_blank', 'noopener,noreferrer');
+      
+      // Show toast notification
+      toast({
+        title: "Opening YouTube",
+        description: `Loading video: ${title}`,
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error("Failed to open URL:", error);
+      toast({
+        title: "Error Opening Link",
+        description: "Could not open the video. Please try again.",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
   };
 
   return (
