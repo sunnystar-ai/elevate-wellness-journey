@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 interface AnimatedSectionProps {
   children: React.ReactNode;
   className?: string;
-  animation?: 'fade-in' | 'slide-in' | 'scale-in' | 'blur-in';
+  animation?: 'fade-in' | 'slide-in' | 'scale-in' | 'blur-in' | 'slide-in-right';
   delay?: number;
   threshold?: number;
 }

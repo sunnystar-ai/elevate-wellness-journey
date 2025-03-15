@@ -1,209 +1,448 @@
 
 import { useState, useEffect } from 'react';
-import { ArrowRight, Heart, Clock, Calendar, Award, BookOpen } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import DailyTip from '@/components/home/DailyTip';
-import QuickAccess from '@/components/home/QuickAccess';
+import { useNavigate } from 'react-router-dom';
+import { 
+  Bell, 
+  User, 
+  ArrowRight, 
+  Lotus, 
+  Dumbbell, 
+  Smile, 
+  Droplet, 
+  BookOpen,
+  Clock, 
+  Utensils, 
+  Moon, 
+  Users, 
+  Flame,
+  Home,
+  Compass,
+  Map,
+  UserCircle
+} from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 import FeatureCard from '@/components/ui/FeatureCard';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Index = () => {
   const [loaded, setLoaded] = useState(false);
+  const [userName, setUserName] = useState('Alex');
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const isMobile = useIsMobile();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoaded(true);
+    
+    // Update current time every minute
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000);
+
+    return () => clearInterval(timer);
   }, []);
 
-  const featuredContent = [
+  // Date formatting
+  const today = new Date();
+  const formattedDate = today.toLocaleDateString('en-US', { 
+    weekday: 'long', 
+    month: 'long', 
+    day: 'numeric' 
+  });
+  
+  // Time formatting for status bar
+  const formattedTime = currentTime.toLocaleTimeString('en-US', { 
+    hour: 'numeric', 
+    minute: '2-digit',
+    hour12: true 
+  });
+
+  // Determine greeting based on time of day
+  const getGreeting = () => {
+    const hours = today.getHours();
+    if (hours < 12) return 'Good morning';
+    if (hours < 18) return 'Good afternoon';
+    return 'Good evening';
+  };
+
+  // Inspirational quotes
+  const quotes = [
+    "Wellness is the complete integration of body, mind, and spirit.",
+    "The part can never be well unless the whole is well.",
+    "Take care of your body. It's the only place you have to live.",
+    "Health is a state of complete harmony of the body, mind, and spirit."
+  ];
+  
+  // Get a deterministic quote based on the day
+  const getDailyQuote = () => {
+    const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
+    return quotes[dayOfYear % quotes.length];
+  };
+
+  // Quick action buttons
+  const quickActions = [
+    { name: 'Meditation', icon: <Lotus className="h-6 w-6 text-white" />, to: '/meditation', color: 'from-harmony-light-lavender to-harmony-lavender' },
+    { name: 'Workout', icon: <Dumbbell className="h-6 w-6 text-white" />, to: '/workouts', color: 'from-harmony-light-blue to-harmony-blue' },
+    { name: 'Mood', icon: <Smile className="h-6 w-6 text-white" />, to: '#', color: 'from-harmony-light-peach to-harmony-peach' },
+    { name: 'Water', icon: <Droplet className="h-6 w-6 text-white" />, to: '#', color: 'from-harmony-light-mint to-harmony-mint' },
+    { name: 'Journal', icon: <BookOpen className="h-6 w-6 text-white" />, to: '#', color: 'from-harmony-light-lavender to-harmony-lavender' }
+  ];
+
+  // Timeline items for "Coming Up Today"
+  const timelineItems = [
+    { 
+      title: 'Morning Meditation', 
+      time: '9:00 AM', 
+      description: '10 min Mindfulness', 
+      icon: <Lotus className="h-4 w-4 text-harmony-lavender" />,
+      to: '/meditation'
+    },
+    { 
+      title: 'HIIT Workout', 
+      time: '12:30 PM', 
+      description: '20 min High Intensity', 
+      icon: <Dumbbell className="h-4 w-4 text-harmony-blue" />,
+      to: '/workouts'
+    },
+    { 
+      title: 'Lunch Reminder', 
+      time: '1:00 PM', 
+      description: 'Balanced meal', 
+      icon: <Utensils className="h-4 w-4 text-harmony-mint" />,
+      to: '/nutrition'
+    },
+    { 
+      title: 'Bedtime Routine', 
+      time: '10:30 PM', 
+      description: 'Wind down ritual', 
+      icon: <Moon className="h-4 w-4 text-harmony-peach" />,
+      to: '#'
+    }
+  ];
+
+  // Recommended content
+  const recommendations = [
     {
-      title: "Morning Mindfulness",
+      title: "Stress Relief Meditation",
       category: "Meditation",
-      duration: "10 min",
+      duration: "15 min",
       image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
       to: "/meditation",
       color: "bg-harmony-light-lavender"
     },
     {
-      title: "Full Body HIIT",
+      title: "Quick Morning Yoga",
       category: "Workout",
-      duration: "25 min",
+      duration: "10 min",
       image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
       to: "/workouts",
       color: "bg-harmony-light-blue"
     },
     {
-      title: "Balanced Breakfast Ideas",
+      title: "Healthy Smoothie Recipes",
       category: "Nutrition",
-      duration: "5 recipes",
+      duration: "3 recipes",
       image: "https://images.unsplash.com/photo-1494859802809-d069c3b71a8a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
       to: "/nutrition",
       color: "bg-harmony-light-mint"
+    },
+    {
+      title: "Sleep Sounds Collection",
+      category: "Sleep",
+      duration: "8 hours",
+      image: "https://images.unsplash.com/photo-1517898717281-8e4385a41802?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+      to: "#",
+      color: "bg-harmony-light-peach"
     }
   ];
 
   return (
-    <div className={`page-transition ${loaded ? 'opacity-100' : 'opacity-0'}`}>
-      {/* Hero section */}
-      <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-1/4 w-80 h-80 bg-harmony-light-blue rounded-full mix-blend-multiply blur-3xl opacity-40 animate-float"></div>
-          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-harmony-light-mint rounded-full mix-blend-multiply blur-3xl opacity-40 animate-float" style={{ animationDelay: '1s' }}></div>
-          <div className="absolute top-1/4 right-1/4 w-60 h-60 bg-harmony-light-lavender rounded-full mix-blend-multiply blur-3xl opacity-30 animate-float" style={{ animationDelay: '2s' }}></div>
+    <div className={`page-transition ${loaded ? 'opacity-100' : 'opacity-0'} pb-20`}>
+      {/* Status Bar */}
+      <div className="fixed top-0 left-0 right-0 z-50 p-2 bg-background/80 backdrop-blur-sm border-b border-border flex justify-between items-center text-xs">
+        <span>{formattedTime}</span>
+        <div className="flex items-center gap-2">
+          <span>100%</span>
         </div>
+      </div>
 
-        <div className="container px-4 mx-auto relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
-            <AnimatedSection animation="fade-in">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-medium tracking-tight mb-6">
-                Your journey to holistic wellness starts here
-              </h1>
-            </AnimatedSection>
-            
-            <AnimatedSection animation="fade-in" delay={200}>
-              <p className="text-muted-foreground text-lg md:text-xl mb-8 max-w-2xl mx-auto">
-                Balance your mind, body, and spirit with guided practices, expert insights, and a supportive community.
-              </p>
-            </AnimatedSection>
-            
-            <AnimatedSection animation="fade-in" delay={400}>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="bg-primary hover:bg-primary/90">
-                  Start Your Journey
-                </Button>
-                <Button size="lg" variant="outline">
-                  Learn More
-                </Button>
-              </div>
-            </AnimatedSection>
-          </div>
+      {/* App Header Bar */}
+      <div className="sticky top-6 z-40 p-4 flex justify-between items-center bg-background">
+        <div className="text-lg font-semibold">Daily Wellness</div>
+        <div className="flex items-center gap-3">
+          <Bell className="h-5 w-5 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" />
+          <Avatar className="h-8 w-8 cursor-pointer">
+            <AvatarImage src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" />
+            <AvatarFallback>{userName[0]}</AvatarFallback>
+          </Avatar>
         </div>
-      </section>
+      </div>
 
-      {/* Daily tip and quick access */}
-      <section className="container mx-auto px-4 mb-16">
-        <div className="grid md:grid-cols-3 gap-6 items-center">
-          <div className="md:col-span-1">
-            <DailyTip />
-          </div>
-          <div className="md:col-span-2">
-            <QuickAccess />
-          </div>
-        </div>
-      </section>
-
-      {/* Featured content */}
-      <section className="container mx-auto px-4 mb-16">
-        <AnimatedSection>
-          <div className="flex justify-between items-baseline mb-8">
-            <h2 className="section-heading">Featured Content</h2>
-            <Link to="#" className="text-primary hover:underline flex items-center">
-              View all <ArrowRight className="ml-1 h-4 w-4" />
-            </Link>
+      <div className="container px-4 mx-auto relative pt-4">
+        {/* Greeting Card */}
+        <AnimatedSection animation="fade-in" className="mb-6">
+          <div className="harmony-card p-5">
+            <h1 className="text-2xl font-medium font-display mb-1">
+              {getGreeting()}, {userName}
+            </h1>
+            <p className="text-muted-foreground">{formattedDate}</p>
           </div>
         </AnimatedSection>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {featuredContent.map((item, index) => (
-            <AnimatedSection 
-              key={item.title} 
-              animation="scale-in" 
-              delay={index * 100}
-              className="group"
-            >
-              <Link to={item.to} className="block h-full">
-                <div className="harmony-card h-full overflow-hidden group-hover:shadow-lg transition-all duration-300">
-                  <div className="relative h-48 overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent z-10"></div>
-                    <img 
-                      src={item.image} 
-                      alt={item.title} 
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className={`absolute top-4 left-4 ${item.color} text-foreground px-3 py-1 rounded-full text-xs font-medium z-20`}>
-                      {item.category}
-                    </div>
-                    <div className="absolute bottom-4 left-4 flex items-center text-white space-x-3 z-20">
-                      <div className="flex items-center text-sm">
-                        <Clock className="h-3 w-3 mr-1" /> 
-                        <span>{item.duration}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-5">
-                    <h3 className="font-medium text-lg mb-2 group-hover:text-primary transition-colors duration-300">
-                      {item.title}
-                    </h3>
-                    <p className="text-muted-foreground line-clamp-2">
-                      Discover essential practices to enhance your wellbeing and create lasting healthy habits.
-                    </p>
-                  </div>
+        {/* Daily Quote */}
+        <AnimatedSection animation="fade-in" delay={100} className="mb-8">
+          <div className="glass-panel p-4">
+            <p className="text-sm italic">"{getDailyQuote()}"</p>
+          </div>
+        </AnimatedSection>
+
+        {/* Quick Actions Row */}
+        <AnimatedSection className="mb-10">
+          <div className="flex overflow-x-auto pb-2 gap-4 scrollbar-hide">
+            {quickActions.map((action, index) => (
+              <div 
+                key={action.name}
+                className="flex flex-col items-center flex-shrink-0"
+                style={{ 
+                  animationDelay: `${index * 100}ms`, 
+                  animation: 'scale-in 0.5s ease-out backwards' 
+                }}
+              >
+                <div 
+                  onClick={() => navigate(action.to)}
+                  className={`w-16 h-16 rounded-full flex items-center justify-center mb-2 bg-gradient-to-br ${action.color} cursor-pointer hover:shadow-md transition-all duration-300`}
+                >
+                  {action.icon}
                 </div>
-              </Link>
-            </AnimatedSection>
-          ))}
-        </div>
-      </section>
-
-      {/* Benefits section */}
-      <section className="container mx-auto px-4 mb-16">
-        <AnimatedSection>
-          <h2 className="section-heading text-center mb-12">Why Choose Harmony</h2>
+                <span className="text-xs font-medium">{action.name}</span>
+              </div>
+            ))}
+          </div>
         </AnimatedSection>
 
-        <div className="grid md:grid-cols-4 gap-6">
-          <FeatureCard
-            title="Holistic Approach"
-            description="Harmony addresses mental, emotional, and physical wellness for complete balance."
-            icon={<Heart className="h-5 w-5 text-white" />}
-            to="#"
-            color="from-harmony-light-peach to-harmony-peach"
-            delay={100}
-          />
-          <FeatureCard
-            title="Expert Guidance"
-            description="Access world-class wellness experts and their proven techniques."
-            icon={<Award className="h-5 w-5 text-white" />}
-            to="#"
-            color="from-harmony-light-mint to-harmony-mint"
-            delay={200}
-          />
-          <FeatureCard
-            title="Personalized Journey"
-            description="Tailored recommendations based on your unique wellness goals."
-            icon={<BookOpen className="h-5 w-5 text-white" />}
-            to="#"
-            color="from-harmony-light-lavender to-harmony-lavender"
-            delay={300}
-          />
-          <FeatureCard
-            title="Consistent Progress"
-            description="Track your wellness habits and celebrate your achievements."
-            icon={<Calendar className="h-5 w-5 text-white" />}
-            to="#"
-            color="from-harmony-light-blue to-harmony-blue"
-            delay={400}
-          />
-        </div>
-      </section>
+        {/* Today's Progress */}
+        <AnimatedSection animation="scale-in" className="mb-10">
+          <h2 className="text-lg font-medium mb-4">Today's Progress</h2>
+          <div className="flex flex-col items-center text-center mb-6">
+            <div className="relative w-40 h-40 mb-4">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-3xl font-bold">72%</div>
+              </div>
+              <svg className="w-full h-full" viewBox="0 0 100 100">
+                <circle 
+                  cx="50" cy="50" r="40" 
+                  fill="none" 
+                  stroke="hsl(var(--muted))" 
+                  strokeWidth="8"
+                />
+                <circle 
+                  cx="50" cy="50" r="40" 
+                  fill="none" 
+                  stroke="hsl(var(--primary))" 
+                  strokeWidth="8"
+                  strokeDasharray="251.2"
+                  strokeDashoffset="70.336" 
+                  transform="rotate(-90 50 50)"
+                />
+              </svg>
+            </div>
 
-      {/* CTA section */}
-      <section className="container mx-auto px-4 mb-16">
-        <AnimatedSection>
-          <div className="rounded-2xl overflow-hidden relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-harmony-blue to-harmony-lavender opacity-90"></div>
-            <div className="relative z-10 py-16 px-6 md:px-12 text-white text-center">
-              <h2 className="text-3xl md:text-4xl font-medium mb-4 font-display text-white">Ready to transform your wellness journey?</h2>
-              <p className="text-white/80 max-w-2xl mx-auto mb-8 text-lg">
-                Join thousands of people who have discovered a better way to take care of their mind, body, and spirit.
-              </p>
-              <Button size="lg" className="bg-white text-primary hover:bg-white/90">
-                Get Started Today
-              </Button>
+            <div className="grid grid-cols-2 gap-3 w-full">
+              <div className="p-3 rounded-lg bg-white shadow-sm">
+                <div className="text-sm font-medium mb-1 flex justify-between">
+                  <span>Mental</span>
+                  <span>2/3</span>
+                </div>
+                <Progress value={66} className="h-2" />
+              </div>
+              
+              <div className="p-3 rounded-lg bg-white shadow-sm">
+                <div className="text-sm font-medium mb-1 flex justify-between">
+                  <span>Physical</span>
+                  <span>1/2</span>
+                </div>
+                <Progress value={50} className="h-2" />
+              </div>
+              
+              <div className="p-3 rounded-lg bg-white shadow-sm">
+                <div className="text-sm font-medium mb-1 flex justify-between">
+                  <span>Nutrition</span>
+                  <span>2/3</span>
+                </div>
+                <Progress value={66} className="h-2" />
+              </div>
+              
+              <div className="p-3 rounded-lg bg-white shadow-sm">
+                <div className="text-sm font-medium mb-1 flex justify-between">
+                  <span>Sleep</span>
+                  <span>1/1</span>
+                </div>
+                <Progress value={100} className="h-2" />
+              </div>
             </div>
           </div>
         </AnimatedSection>
-      </section>
+
+        {/* Coming Up Today */}
+        <AnimatedSection className="mb-10">
+          <div className="flex justify-between items-baseline mb-4">
+            <h2 className="text-lg font-medium">Coming Up Today</h2>
+          </div>
+          
+          <div className="space-y-3">
+            {timelineItems.map((item, index) => (
+              <div 
+                key={item.title}
+                className="flex items-center p-3 rounded-lg bg-white shadow-sm cursor-pointer hover:shadow-md transition-all duration-300"
+                onClick={() => navigate(item.to)}
+                style={{ 
+                  animationDelay: `${index * 100}ms`, 
+                  animation: 'fade-in 0.5s ease-out backwards' 
+                }}
+              >
+                <div className="mr-3 p-2 rounded-full bg-white shadow-sm">
+                  {item.icon}
+                </div>
+                <div className="flex-grow mr-2">
+                  <div className="flex justify-between">
+                    <h3 className="font-medium">{item.title}</h3>
+                    <span className="text-sm text-muted-foreground">{item.time}</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                </div>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              </div>
+            ))}
+          </div>
+        </AnimatedSection>
+
+        {/* For You / Recommended Content */}
+        <AnimatedSection className="mb-10">
+          <div className="flex justify-between items-baseline mb-4">
+            <h2 className="text-lg font-medium">Recommended For You</h2>
+            <button className="text-primary hover:underline text-sm font-medium">
+              View all
+            </button>
+          </div>
+          
+          <div className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide">
+            {recommendations.map((item, index) => (
+              <div 
+                key={item.title}
+                className="flex-shrink-0 w-60 overflow-hidden rounded-lg bg-white shadow-sm cursor-pointer hover:shadow-md transition-all duration-300"
+                style={{ 
+                  animationDelay: `${index * 100}ms`, 
+                  animation: 'scale-in 0.5s ease-out backwards' 
+                }}
+                onClick={() => navigate(item.to)}
+              >
+                <div className="relative h-32 overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent z-10"></div>
+                  <img 
+                    src={item.image} 
+                    alt={item.title} 
+                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                  />
+                  <div className={`absolute top-2 left-2 ${item.color} text-foreground px-2 py-1 rounded-full text-xs font-medium z-20`}>
+                    {item.category}
+                  </div>
+                  <div className="absolute bottom-2 left-2 flex items-center text-white text-xs space-x-2 z-20">
+                    <div className="flex items-center">
+                      <Clock className="h-3 w-3 mr-1" /> 
+                      <span>{item.duration}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-3">
+                  <h3 className="font-medium line-clamp-1">{item.title}</h3>
+                </div>
+              </div>
+            ))}
+          </div>
+        </AnimatedSection>
+
+        {/* Community Glimpse */}
+        <AnimatedSection className="mb-10">
+          <h2 className="text-lg font-medium mb-4">Community</h2>
+          
+          <div className="harmony-card p-4 mb-4">
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="font-medium">30-Day Meditation Challenge</h3>
+              <div className="flex items-center text-sm">
+                <Users className="h-4 w-4 mr-1" />
+                <span>245 participants</span>
+              </div>
+            </div>
+            <div className="mb-2">
+              <Progress value={40} className="h-2" />
+            </div>
+            <p className="text-sm text-muted-foreground">12 days remaining</p>
+          </div>
+          
+          <div className="flex items-center">
+            <div className="flex -space-x-3 mr-4">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Avatar key={i} className="h-8 w-8 border-2 border-background">
+                  <AvatarImage src={`https://randomuser.me/api/portraits/men/${i + 10}.jpg`} />
+                  <AvatarFallback>U{i}</AvatarFallback>
+                </Avatar>
+              ))}
+            </div>
+            <span className="text-sm text-muted-foreground">
+              Recently active in your network
+            </span>
+          </div>
+        </AnimatedSection>
+
+        {/* Wellness Streak */}
+        <AnimatedSection className="mb-10">
+          <div className="harmony-card p-4 flex items-center">
+            <div className="mr-4 p-3 rounded-full bg-harmony-light-peach">
+              <Flame className="h-6 w-6 text-harmony-peach" />
+            </div>
+            <div className="flex-grow">
+              <h3 className="font-medium mb-1">7-Day Streak!</h3>
+              <p className="text-sm text-muted-foreground">Keep going, you're building great habits!</p>
+            </div>
+            
+            <div className="w-20 h-12 flex items-end justify-between">
+              {[30, 45, 60, 70, 50, 80, 65].map((height, i) => (
+                <div 
+                  key={i} 
+                  className="w-1.5 bg-primary rounded-full"
+                  style={{ height: `${height}%` }}
+                ></div>
+              ))}
+            </div>
+          </div>
+        </AnimatedSection>
+      </div>
+
+      {/* Bottom Navigation Bar */}
+      <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border flex justify-around p-3 z-50">
+        <button className="flex flex-col items-center justify-center text-primary">
+          <Home className="h-6 w-6" />
+          <span className="text-xs mt-1">Home</span>
+        </button>
+        <button className="flex flex-col items-center justify-center text-muted-foreground">
+          <Compass className="h-6 w-6" />
+          <span className="text-xs mt-1">Discover</span>
+        </button>
+        <button className="flex flex-col items-center justify-center text-muted-foreground">
+          <Map className="h-6 w-6" />
+          <span className="text-xs mt-1">Journey</span>
+        </button>
+        <button className="flex flex-col items-center justify-center text-muted-foreground">
+          <Users className="h-6 w-6" />
+          <span className="text-xs mt-1">Community</span>
+        </button>
+        <button className="flex flex-col items-center justify-center text-muted-foreground">
+          <UserCircle className="h-6 w-6" />
+          <span className="text-xs mt-1">Profile</span>
+        </button>
+      </div>
     </div>
   );
 };
