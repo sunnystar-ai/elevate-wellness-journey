@@ -12,10 +12,10 @@ const Navbar = () => {
 
   const navigation = [
     { name: 'Home', href: '/' },
-    { name: 'Meditation', href: '/meditation' },
-    { name: 'Workouts', href: '/workouts' },
-    { name: 'Nutrition', href: '/nutrition' },
+    { name: 'Dashboard', href: '/dashboard' },
+    { name: 'Discover', href: '/discover' },
     { name: 'Community', href: '/community' },
+    { name: 'Profile', href: '/profile' },
   ];
 
   useEffect(() => {

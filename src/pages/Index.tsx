@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   Bell, 
   User, 
@@ -422,26 +422,26 @@ const Index = () => {
 
       {/* Bottom Navigation Bar */}
       <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border flex justify-around p-3 z-50">
-        <button className="flex flex-col items-center justify-center text-primary">
+        <Link to="/" className="flex flex-col items-center justify-center text-primary">
           <Home className="h-6 w-6" />
           <span className="text-xs mt-1">Home</span>
-        </button>
-        <button className="flex flex-col items-center justify-center text-muted-foreground">
+        </Link>
+        <Link to="/discover" className="flex flex-col items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
           <Compass className="h-6 w-6" />
           <span className="text-xs mt-1">Discover</span>
-        </button>
-        <button className="flex flex-col items-center justify-center text-muted-foreground">
+        </Link>
+        <Link to="/dashboard" className="flex flex-col items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
           <Map className="h-6 w-6" />
-          <span className="text-xs mt-1">Journey</span>
-        </button>
-        <button className="flex flex-col items-center justify-center text-muted-foreground">
+          <span className="text-xs mt-1">Dashboard</span>
+        </Link>
+        <Link to="/community" className="flex flex-col items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
           <Users className="h-6 w-6" />
           <span className="text-xs mt-1">Community</span>
-        </button>
-        <button className="flex flex-col items-center justify-center text-muted-foreground">
+        </Link>
+        <Link to="/profile" className="flex flex-col items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
           <UserCircle className="h-6 w-6" />
           <span className="text-xs mt-1">Profile</span>
-        </button>
+        </Link>
       </div>
     </div>
   );
