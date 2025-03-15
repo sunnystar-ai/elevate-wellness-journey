@@ -1,4 +1,3 @@
-
 import { ExternalLink } from 'lucide-react';
 import { Clock } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
@@ -26,7 +25,7 @@ const RecommendationCards = () => {
       category: "Nutrition",
       duration: "3 recipes",
       image: "https://images.unsplash.com/photo-1494859802809-d069c3b71a8a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      youtubeUrl: "https://www.youtube.com/watch?v=Ys86ZgjQQYg",
+      youtubeUrl: "https://www.youtube.com/watch?v=7eUNOdDUDd4",
       color: "bg-harmony-light-mint"
     },
     {
