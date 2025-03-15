@@ -5,9 +5,10 @@ import { useAuth } from "@/contexts/AuthContext";
 
 type ProtectedRouteProps = {
   children: ReactNode;
+  requireAuth?: boolean; // Make authentication optional
 };
 
-const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+const ProtectedRoute = ({ children, requireAuth = true }: ProtectedRouteProps) => {
   const { isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
 
@@ -21,7 +22,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     );
   }
 
-  if (!isAuthenticated) {
+  if (requireAuth && !isAuthenticated) {
     // Redirect to the login page with the return URL
     return <Navigate to="/sign-in" state={{ from: location }} replace />;
   }

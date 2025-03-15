@@ -37,44 +37,46 @@ const App = () => (
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             
-            {/* Protected routes */}
+            {/* Main navigation routes - accessible without authentication */}
+            <Route path="/discover" element={
+              <ProtectedRoute requireAuth={false}>
+                <Discover />
+              </ProtectedRoute>
+            } />
+            <Route path="/my-journey" element={
+              <ProtectedRoute requireAuth={false}>
+                <MyJourney />
+              </ProtectedRoute>
+            } />
+            <Route path="/community" element={
+              <ProtectedRoute requireAuth={false}>
+                <Community />
+              </ProtectedRoute>
+            } />
+            <Route path="/profile" element={
+              <ProtectedRoute requireAuth={false}>
+                <Profile />
+              </ProtectedRoute>
+            } />
+            
+            {/* Protected feature routes */}
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Dashboard />
               </ProtectedRoute>
             } />
-            <Route path="/discover" element={
-              <ProtectedRoute>
-                <Discover />
-              </ProtectedRoute>
-            } />
-            <Route path="/my-journey" element={
-              <ProtectedRoute>
-                <MyJourney />
-              </ProtectedRoute>
-            } />
-            <Route path="/community" element={
-              <ProtectedRoute>
-                <Community />
-              </ProtectedRoute>
-            } />
-            <Route path="/profile" element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            } />
             <Route path="/meditation" element={
-              <ProtectedRoute>
+              <ProtectedRoute requireAuth={false}>
                 <Meditation />
               </ProtectedRoute>
             } />
             <Route path="/workouts" element={
-              <ProtectedRoute>
+              <ProtectedRoute requireAuth={false}>
                 <Workouts />
               </ProtectedRoute>
             } />
             <Route path="/nutrition" element={
-              <ProtectedRoute>
+              <ProtectedRoute requireAuth={false}>
                 <Nutrition />
               </ProtectedRoute>
             } />
