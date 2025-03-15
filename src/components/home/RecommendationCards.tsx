@@ -34,7 +34,7 @@ const RecommendationCards = () => {
       category: "Sleep",
       duration: "8 hours",
       image: "https://images.unsplash.com/photo-1517898717281-8e4385a41802?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      youtubeUrl: "https://www.youtube.com/watch?v=bP9gMpl1gyQ",
+      youtubeUrl: "https://www.youtube.com/watch?v=txQ6t4yPIM0",
       color: "bg-harmony-light-peach"
     }
   ];
