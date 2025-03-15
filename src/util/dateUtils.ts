@@ -24,9 +24,9 @@ export const getFormattedTime = (date: Date) => {
 };
 
 const quotes = [
+  "Take care of your body. It's the only place you have to live.",
   "Wellness is the complete integration of body, mind, and spirit.",
   "The part can never be well unless the whole is well.",
-  "Take care of your body. It's the only place you have to live.",
   "Health is a state of complete harmony of the body, mind, and spirit."
 ];
 

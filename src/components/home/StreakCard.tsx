@@ -3,7 +3,7 @@ import { Flame } from 'lucide-react';
 
 const StreakCard = () => {
   return (
-    <div className="harmony-card p-4 flex items-center">
+    <div className="rounded-lg bg-white p-4 flex items-center shadow-sm">
       <div className="mr-4 p-3 rounded-full bg-harmony-light-peach">
         <Flame className="h-6 w-6 text-harmony-peach" />
       </div>
