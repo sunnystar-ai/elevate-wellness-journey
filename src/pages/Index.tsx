@@ -17,7 +17,13 @@ import {
   ArrowRight,
   Clock,
   BookOpen,
-  Flame
+  Flame,
+  Utensils,
+  BookOpen as BookOpenIcon,
+  Heart as HeartIcon,
+  ArrowRight as ArrowRightIcon,
+  Moon as MoonIcon,
+  Award as AwardIcon
 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -75,11 +81,11 @@ const Index = () => {
   };
 
   const quickActions = [
-    { name: 'Meditation', icon: <Moon className="h-6 w-6 text-white" />, to: '/meditation', color: 'from-harmony-light-lavender to-harmony-lavender' },
-    { name: 'Workout', icon: <Award className="h-6 w-6 text-white" />, to: '/workouts', color: 'from-harmony-light-blue to-harmony-blue' },
-    { name: 'Mood', icon: <Heart className="h-6 w-6 text-white" />, to: '#', color: 'from-harmony-light-peach to-harmony-peach' },
+    { name: 'Meditation', icon: <MoonIcon className="h-6 w-6 text-white" />, to: '/meditation', color: 'from-harmony-light-lavender to-harmony-lavender' },
+    { name: 'Workout', icon: <AwardIcon className="h-6 w-6 text-white" />, to: '/workouts', color: 'from-harmony-light-blue to-harmony-blue' },
+    { name: 'Mood', icon: <HeartIcon className="h-6 w-6 text-white" />, to: '#', color: 'from-harmony-light-peach to-harmony-peach' },
     { name: 'Water', icon: <Droplets className="h-6 w-6 text-white" />, to: '#', color: 'from-harmony-light-mint to-harmony-mint' },
-    { name: 'Journal', icon: <BookOpen className="h-6 w-6 text-white" />, to: '#', color: 'from-harmony-light-lavender to-harmony-lavender' }
+    { name: 'Journal', icon: <BookOpenIcon className="h-6 w-6 text-white" />, to: '#', color: 'from-harmony-light-lavender to-harmony-lavender' }
   ];
 
   const timelineItems = [
@@ -87,28 +93,28 @@ const Index = () => {
       title: 'Morning Meditation', 
       time: '9:00 AM', 
       description: '10 min Mindfulness', 
-      icon: <Moon className="h-4 w-4 text-harmony-lavender" />,
+      icon: <MoonIcon className="h-4 w-4 text-harmony-lavender" />,
       to: '/meditation'
     },
     { 
       title: 'HIIT Workout', 
       time: '12:30 PM', 
       description: '20 min High Intensity', 
-      icon: <Award className="h-4 w-4 text-harmony-blue" />,
+      icon: <AwardIcon className="h-4 w-4 text-harmony-blue" />,
       to: '/workouts'
     },
     { 
       title: 'Lunch Reminder', 
       time: '1:00 PM', 
       description: 'Balanced meal', 
-      icon: <BookOpen className="h-4 w-4 text-harmony-mint" />,
+      icon: <BookOpenIcon className="h-4 w-4 text-harmony-mint" />,
       to: '/nutrition'
     },
     { 
       title: 'Bedtime Routine', 
       time: '10:30 PM', 
       description: 'Wind down ritual', 
-      icon: <Moon className="h-4 w-4 text-harmony-peach" />,
+      icon: <MoonIcon className="h-4 w-4 text-harmony-peach" />,
       to: '#'
     }
   ];
@@ -295,7 +301,7 @@ const Index = () => {
                   </div>
                   <p className="text-sm text-muted-foreground">{item.description}</p>
                 </div>
-                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                <ArrowRightIcon className="h-4 w-4 text-muted-foreground" />
               </div>
             ))}
           </div>
