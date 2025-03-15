@@ -1,23 +1,18 @@
-
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   Bell, 
   User, 
-  ArrowRight, 
-  Flower2, 
-  Dumbbell, 
-  Smile, 
-  Droplet, 
-  BookOpen,
-  Clock, 
-  Utensils, 
-  Moon, 
-  Users, 
-  Flame,
+  Search, 
+  Award,
+  Droplets,
+  Heart,
+  Moon,
+  Sun,
   Home,
   Compass,
   Map,
+  Users,
   UserCircle
 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
@@ -36,7 +31,6 @@ const Index = () => {
   useEffect(() => {
     setLoaded(true);
     
-    // Update current time every minute
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 60000);
@@ -44,7 +38,6 @@ const Index = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Date formatting
   const today = new Date();
   const formattedDate = today.toLocaleDateString('en-US', { 
     weekday: 'long', 
@@ -52,14 +45,12 @@ const Index = () => {
     day: 'numeric' 
   });
   
-  // Time formatting for status bar
   const formattedTime = currentTime.toLocaleTimeString('en-US', { 
     hour: 'numeric', 
     minute: '2-digit',
     hour12: true 
   });
 
-  // Determine greeting based on time of day
   const getGreeting = () => {
     const hours = today.getHours();
     if (hours < 12) return 'Good morning';
@@ -67,7 +58,6 @@ const Index = () => {
     return 'Good evening';
   };
 
-  // Inspirational quotes
   const quotes = [
     "Wellness is the complete integration of body, mind, and spirit.",
     "The part can never be well unless the whole is well.",
@@ -75,13 +65,11 @@ const Index = () => {
     "Health is a state of complete harmony of the body, mind, and spirit."
   ];
   
-  // Get a deterministic quote based on the day
   const getDailyQuote = () => {
     const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / 86400000);
     return quotes[dayOfYear % quotes.length];
   };
 
-  // Quick action buttons
   const quickActions = [
     { name: 'Meditation', icon: <Flower2 className="h-6 w-6 text-white" />, to: '/meditation', color: 'from-harmony-light-lavender to-harmony-lavender' },
     { name: 'Workout', icon: <Dumbbell className="h-6 w-6 text-white" />, to: '/workouts', color: 'from-harmony-light-blue to-harmony-blue' },
@@ -90,7 +78,6 @@ const Index = () => {
     { name: 'Journal', icon: <BookOpen className="h-6 w-6 text-white" />, to: '#', color: 'from-harmony-light-lavender to-harmony-lavender' }
   ];
 
-  // Timeline items for "Coming Up Today"
   const timelineItems = [
     { 
       title: 'Morning Meditation', 
@@ -122,7 +109,6 @@ const Index = () => {
     }
   ];
 
-  // Recommended content
   const recommendations = [
     {
       title: "Stress Relief Meditation",
@@ -159,8 +145,7 @@ const Index = () => {
   ];
 
   return (
-    <div className={`page-transition ${loaded ? 'opacity-100' : 'opacity-0'} pb-20`}>
-      {/* Status Bar */}
+    <div className="relative pb-24 bg-background">
       <div className="fixed top-0 left-0 right-0 z-50 p-2 bg-background/80 backdrop-blur-sm border-b border-border flex justify-between items-center text-xs">
         <span>{formattedTime}</span>
         <div className="flex items-center gap-2">
@@ -168,7 +153,6 @@ const Index = () => {
         </div>
       </div>
 
-      {/* App Header Bar */}
       <div className="sticky top-6 z-40 p-4 flex justify-between items-center bg-background">
         <div className="text-lg font-semibold">Daily Wellness</div>
         <div className="flex items-center gap-3">
@@ -181,7 +165,6 @@ const Index = () => {
       </div>
 
       <div className="container px-4 mx-auto relative pt-4">
-        {/* Greeting Card */}
         <AnimatedSection animation="fade-in" className="mb-6">
           <div className="harmony-card p-5">
             <h1 className="text-2xl font-medium font-display mb-1">
@@ -191,14 +174,12 @@ const Index = () => {
           </div>
         </AnimatedSection>
 
-        {/* Daily Quote */}
         <AnimatedSection animation="fade-in" delay={100} className="mb-8">
           <div className="glass-panel p-4">
             <p className="text-sm italic">"{getDailyQuote()}"</p>
           </div>
         </AnimatedSection>
 
-        {/* Quick Actions Row */}
         <AnimatedSection className="mb-10">
           <div className="flex overflow-x-auto pb-2 gap-4 scrollbar-hide">
             {quickActions.map((action, index) => (
@@ -222,7 +203,6 @@ const Index = () => {
           </div>
         </AnimatedSection>
 
-        {/* Today's Progress */}
         <AnimatedSection animation="scale-in" className="mb-10">
           <h2 className="text-lg font-medium mb-4">Today's Progress</h2>
           <div className="flex flex-col items-center text-center mb-6">
@@ -285,7 +265,6 @@ const Index = () => {
           </div>
         </AnimatedSection>
 
-        {/* Coming Up Today */}
         <AnimatedSection className="mb-10">
           <div className="flex justify-between items-baseline mb-4">
             <h2 className="text-lg font-medium">Coming Up Today</h2>
@@ -318,7 +297,6 @@ const Index = () => {
           </div>
         </AnimatedSection>
 
-        {/* For You / Recommended Content */}
         <AnimatedSection className="mb-10">
           <div className="flex justify-between items-baseline mb-4">
             <h2 className="text-lg font-medium">Recommended For You</h2>
@@ -363,7 +341,6 @@ const Index = () => {
           </div>
         </AnimatedSection>
 
-        {/* Community Glimpse */}
         <AnimatedSection className="mb-10">
           <h2 className="text-lg font-medium mb-4">Community</h2>
           
@@ -396,7 +373,6 @@ const Index = () => {
           </div>
         </AnimatedSection>
 
-        {/* Wellness Streak */}
         <AnimatedSection className="mb-10">
           <div className="harmony-card p-4 flex items-center">
             <div className="mr-4 p-3 rounded-full bg-harmony-light-peach">
@@ -420,7 +396,6 @@ const Index = () => {
         </AnimatedSection>
       </div>
 
-      {/* Bottom Navigation Bar */}
       <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border flex justify-around p-3 z-50">
         <Link to="/" className="flex flex-col items-center justify-center text-primary">
           <Home className="h-6 w-6" />
@@ -430,9 +405,9 @@ const Index = () => {
           <Compass className="h-6 w-6" />
           <span className="text-xs mt-1">Discover</span>
         </Link>
-        <Link to="/dashboard" className="flex flex-col items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
+        <Link to="/my-journey" className="flex flex-col items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
           <Map className="h-6 w-6" />
-          <span className="text-xs mt-1">Dashboard</span>
+          <span className="text-xs mt-1">My Journey</span>
         </Link>
         <Link to="/community" className="flex flex-col items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
           <Users className="h-6 w-6" />

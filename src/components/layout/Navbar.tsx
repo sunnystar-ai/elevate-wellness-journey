@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, User, Moon, Sun } from 'lucide-react';
@@ -14,6 +13,7 @@ const Navbar = () => {
     { name: 'Home', href: '/' },
     { name: 'Dashboard', href: '/dashboard' },
     { name: 'Discover', href: '/discover' },
+    { name: 'My Journey', href: '/my-journey' },
     { name: 'Community', href: '/community' },
     { name: 'Profile', href: '/profile' },
   ];
@@ -44,7 +44,6 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex justify-between items-center h-16 md:h-20">
-          {/* Logo */}
           <Link 
             to="/" 
             className="flex items-center space-x-2 text-foreground"
@@ -53,7 +52,6 @@ const Navbar = () => {
             <span className="text-xl font-display font-medium tracking-tight">Harmony</span>
           </Link>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex md:items-center md:space-x-6">
             {navigation.map((item) => (
               <Link
@@ -73,7 +71,6 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Right side buttons */}
           <div className="flex items-center space-x-3">
             <button 
               onClick={toggleDarkMode}
@@ -94,7 +91,6 @@ const Navbar = () => {
               </Button>
             </Link>
 
-            {/* Mobile menu button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden p-2 rounded-md text-foreground/70 hover:text-foreground hover:bg-muted transition-colors"
@@ -107,7 +103,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
       <div
         className={`md:hidden transition-all duration-300 ease-in-out transform ${
           isOpen 
