@@ -13,7 +13,11 @@ import {
   Compass,
   Map,
   Users,
-  UserCircle
+  UserCircle,
+  ArrowRight,
+  Clock,
+  BookOpen,
+  Flame
 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -71,10 +75,10 @@ const Index = () => {
   };
 
   const quickActions = [
-    { name: 'Meditation', icon: <Flower2 className="h-6 w-6 text-white" />, to: '/meditation', color: 'from-harmony-light-lavender to-harmony-lavender' },
-    { name: 'Workout', icon: <Dumbbell className="h-6 w-6 text-white" />, to: '/workouts', color: 'from-harmony-light-blue to-harmony-blue' },
-    { name: 'Mood', icon: <Smile className="h-6 w-6 text-white" />, to: '#', color: 'from-harmony-light-peach to-harmony-peach' },
-    { name: 'Water', icon: <Droplet className="h-6 w-6 text-white" />, to: '#', color: 'from-harmony-light-mint to-harmony-mint' },
+    { name: 'Meditation', icon: <Moon className="h-6 w-6 text-white" />, to: '/meditation', color: 'from-harmony-light-lavender to-harmony-lavender' },
+    { name: 'Workout', icon: <Award className="h-6 w-6 text-white" />, to: '/workouts', color: 'from-harmony-light-blue to-harmony-blue' },
+    { name: 'Mood', icon: <Heart className="h-6 w-6 text-white" />, to: '#', color: 'from-harmony-light-peach to-harmony-peach' },
+    { name: 'Water', icon: <Droplets className="h-6 w-6 text-white" />, to: '#', color: 'from-harmony-light-mint to-harmony-mint' },
     { name: 'Journal', icon: <BookOpen className="h-6 w-6 text-white" />, to: '#', color: 'from-harmony-light-lavender to-harmony-lavender' }
   ];
 
@@ -83,21 +87,21 @@ const Index = () => {
       title: 'Morning Meditation', 
       time: '9:00 AM', 
       description: '10 min Mindfulness', 
-      icon: <Flower2 className="h-4 w-4 text-harmony-lavender" />,
+      icon: <Moon className="h-4 w-4 text-harmony-lavender" />,
       to: '/meditation'
     },
     { 
       title: 'HIIT Workout', 
       time: '12:30 PM', 
       description: '20 min High Intensity', 
-      icon: <Dumbbell className="h-4 w-4 text-harmony-blue" />,
+      icon: <Award className="h-4 w-4 text-harmony-blue" />,
       to: '/workouts'
     },
     { 
       title: 'Lunch Reminder', 
       time: '1:00 PM', 
       description: 'Balanced meal', 
-      icon: <Utensils className="h-4 w-4 text-harmony-mint" />,
+      icon: <BookOpen className="h-4 w-4 text-harmony-mint" />,
       to: '/nutrition'
     },
     { 

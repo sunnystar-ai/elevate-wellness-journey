@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -32,26 +31,20 @@ const MyJourney = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('weekly');
   const [currentDate, setCurrentDate] = useState(new Date());
 
-  // Helper function to format date range
   const getDateRangeText = () => {
     if (viewMode === 'weekly') {
-      // Get start of week (Sunday)
       const startDate = new Date(currentDate);
       startDate.setDate(currentDate.getDate() - currentDate.getDay());
       
-      // Get end of week (Saturday)
       const endDate = new Date(startDate);
       endDate.setDate(startDate.getDate() + 6);
       
-      // Format as "March 9-15, 2025"
       return `${startDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}-${endDate.getDate()}, ${endDate.getFullYear()}`;
     } else {
-      // For monthly view, just show month and year
       return currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     }
   };
 
-  // Navigate to previous/next period
   const navigatePeriod = (direction: 'prev' | 'next') => {
     const newDate = new Date(currentDate);
     if (viewMode === 'weekly') {
@@ -64,7 +57,6 @@ const MyJourney = () => {
     setCurrentDate(newDate);
   };
 
-  // Generate days for weekly view
   const generateWeekDays = () => {
     const days = [];
     const startDate = new Date(currentDate);
@@ -74,13 +66,10 @@ const MyJourney = () => {
       const day = new Date(startDate);
       day.setDate(startDate.getDate() + i);
       
-      // Determine if this is today
       const isToday = day.toDateString() === new Date().toDateString();
       
-      // Random completion percentage for demo
       const completionPercentage = Math.floor(Math.random() * 101);
       
-      // Determine color based on completion
       let fillColor = 'bg-gray-200';
       if (completionPercentage > 80) fillColor = 'bg-green-500';
       else if (completionPercentage > 50) fillColor = 'bg-green-300';
@@ -99,7 +88,6 @@ const MyJourney = () => {
     return days;
   };
 
-  // Dummy data for habits
   const habits = [
     { name: 'Meditation', completionDays: [true, true, false, true, true, false, true], rate: 72 },
     { name: 'Exercise', completionDays: [true, false, true, true, false, true, true], rate: 68 },
@@ -108,14 +96,12 @@ const MyJourney = () => {
     { name: 'Healthy Meals', completionDays: [true, true, false, true, true, true, true], rate: 92 }
   ];
 
-  // Dummy journal entries
   const journalEntries = [
     { date: 'March 15, 2025', mood: 'Happy', preview: 'Today was incredibly productive. I managed to...', hasAttachments: true },
     { date: 'March 14, 2025', mood: 'Calm', preview: 'Morning meditation really helped center me today...', hasAttachments: false },
     { date: 'March 11, 2025', mood: 'Energetic', preview: 'After trying that new workout routine, I feel...', hasAttachments: true }
   ];
 
-  // Dummy activities
   const activities = [
     { icon: 'meditation', name: 'Morning Meditation', dateTime: 'Today, 7:30 AM', duration: '15 minutes', category: 'Mental' },
     { icon: 'run', name: 'Outdoor Run', dateTime: 'Today, 6:15 PM', duration: '3.2 miles', category: 'Cardio' },
@@ -123,7 +109,6 @@ const MyJourney = () => {
     { icon: 'weights', name: 'Strength Training', dateTime: 'March 13, 10:00 AM', duration: '45 minutes', category: 'Strength' }
   ];
 
-  // Dummy goals
   const goals = [
     { name: 'Meditate 10 minutes daily', startDate: 'Feb 28', targetDate: 'Apr 28', progress: 65, status: 'on track' },
     { name: 'Run 20 miles per week', startDate: 'Mar 1', targetDate: 'May 30', progress: 45, status: 'behind' },
@@ -134,7 +119,6 @@ const MyJourney = () => {
 
   return (
     <div className="pb-24 bg-background min-h-screen">
-      {/* Top Section */}
       <div className="sticky top-0 z-10 bg-background pt-4 pb-2 px-4 border-b">
         <div className="flex justify-between items-center mb-3">
           <h1 className="text-xl font-bold">My Journey</h1>
@@ -172,7 +156,6 @@ const MyJourney = () => {
       </div>
 
       <div className="p-4 space-y-6">
-        {/* Overview Stats Card */}
         <Card>
           <CardContent className="p-4">
             <div className="grid grid-cols-4 gap-3">
@@ -211,7 +194,6 @@ const MyJourney = () => {
           </CardContent>
         </Card>
 
-        {/* Progress Visualization */}
         <div>
           <div className="flex justify-center space-x-2 mb-1">
             {weekDays.map((day, index) => (
@@ -232,12 +214,11 @@ const MyJourney = () => {
           <p className="text-xs text-center text-muted-foreground mt-1">Tap a day for details</p>
         </div>
 
-        {/* Achievement Showcase */}
         <div>
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-md font-semibold">Recent Achievements</h2>
           </div>
-          <ScrollArea className="w-full whitespace-nowrap pb-4" orientation="horizontal">
+          <ScrollArea className="w-full whitespace-nowrap pb-4">
             <div className="flex space-x-3 p-1">
               <div className="flex flex-col items-center">
                 <div className="w-14 h-14 rounded-full bg-gradient-to-r from-green-400 to-blue-500 flex items-center justify-center">
@@ -282,7 +263,6 @@ const MyJourney = () => {
           </ScrollArea>
         </div>
 
-        {/* Habit Tracker */}
         <div>
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-md font-semibold">Your Habits</h2>
@@ -321,7 +301,6 @@ const MyJourney = () => {
           </Card>
         </div>
 
-        {/* Wellness Journal */}
         <div>
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-md font-semibold">Journal Entries</h2>
@@ -354,7 +333,6 @@ const MyJourney = () => {
           </div>
         </div>
 
-        {/* Photo Timeline */}
         <div>
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-md font-semibold">Your Wellness Journey</h2>
@@ -362,7 +340,7 @@ const MyJourney = () => {
               <Camera className="h-4 w-4" />
             </Button>
           </div>
-          <ScrollArea className="w-full whitespace-nowrap pb-4" orientation="horizontal">
+          <ScrollArea className="w-full whitespace-nowrap pb-4">
             <div className="flex space-x-3 p-1">
               {[1, 2, 3, 4, 5].map((item) => (
                 <div key={item} className="relative">
@@ -374,7 +352,6 @@ const MyJourney = () => {
           </ScrollArea>
         </div>
 
-        {/* Activity History */}
         <div>
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-md font-semibold">Recent Activities</h2>
@@ -405,7 +382,6 @@ const MyJourney = () => {
           </div>
         </div>
 
-        {/* Insights Panel */}
         <div>
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-md font-semibold">Your Insights</h2>
@@ -431,7 +407,6 @@ const MyJourney = () => {
           </Card>
         </div>
 
-        {/* Goals Review */}
         <div>
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-md font-semibold">Goals Progress</h2>
@@ -465,7 +440,6 @@ const MyJourney = () => {
         </div>
       </div>
 
-      {/* Bottom Navigation Bar */}
       <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border flex justify-around p-3 z-50">
         <Link to="/" className="flex flex-col items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
           <Home className="h-6 w-6" />
