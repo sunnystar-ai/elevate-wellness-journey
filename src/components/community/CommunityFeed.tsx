@@ -16,7 +16,7 @@ const posts = [
     },
     time: '35 minutes ago',
     visibility: 'Public',
-    content: 'Just completed my first 10-day meditation challenge! It was surprisingly difficult to sit still for 20 minutes, but I'm already feeling more centered and focused.',
+    content: 'Just completed my first 10-day meditation challenge! It was surprisingly difficult to sit still for 20 minutes, but I\'m already feeling more centered and focused.',
     image: '/placeholder.svg',
     likes: 24,
     comments: 8,
