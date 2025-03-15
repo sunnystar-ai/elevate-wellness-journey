@@ -14,37 +14,33 @@ import CommunityLeaderboard from '@/components/community/CommunityLeaderboard';
 import SuccessStories from '@/components/community/SuccessStories';
 import CommunityGuidelines from '@/components/community/CommunityGuidelines';
 import BottomNav from '@/components/my-journey/BottomNav';
+import Navbar from '@/components/layout/Navbar';
 
 const Community = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   return (
     <div className="pb-24 bg-background min-h-screen">
-      <StatusBar />
-      <CommunityHeader />
-      <div className="px-4 pt-2 pb-4 flex items-center justify-between">
-        <ProfileSnapshot />
-        <CommunitySearch value={searchQuery} onChange={setSearchQuery} />
-      </div>
-      
-      <div className="space-y-6">
-        <StoriesBar />
+      <Navbar />
+      <div className="pt-16 md:pt-20"> {/* Add padding for the fixed navbar */}
+        <StatusBar />
+        <CommunityHeader />
+        <div className="px-4 pt-2 pb-4 flex items-center justify-between">
+          <ProfileSnapshot />
+          <CommunitySearch value={searchQuery} onChange={setSearchQuery} />
+        </div>
         
-        <ActiveChallenges />
-        
-        <ForumsSection />
-        
-        <InterestGroups />
-        
-        <CommunityFeed />
-        
-        <EventsCalendar />
-        
-        <CommunityLeaderboard />
-        
-        <SuccessStories />
-        
-        <CommunityGuidelines />
+        <div className="space-y-6">
+          <StoriesBar />
+          <ActiveChallenges />
+          <ForumsSection />
+          <InterestGroups />
+          <CommunityFeed />
+          <EventsCalendar />
+          <CommunityLeaderboard />
+          <SuccessStories />
+          <CommunityGuidelines />
+        </div>
       </div>
 
       <BottomNav />
