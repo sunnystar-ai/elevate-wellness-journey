@@ -1,55 +1,40 @@
 
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Mail, Key, LogIn } from "lucide-react";
+import { ArrowLeft, Mail, Key, LogIn, AlertCircle } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { login, isLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Get the return URL from location state or default to dashboard
+  const from = location.state?.from?.pathname || "/dashboard";
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setError(null);
 
-    // Simulate authentication - replace with real auth logic when connected to backend
+    if (!email || !password) {
+      setError("Please fill in all fields");
+      return;
+    }
+
     try {
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Mock validation
-      if (!email || !password) {
-        throw new Error("Please fill in all fields");
-      }
-      
-      // This would be replaced with actual authentication logic
-      if (email === "demo@example.com" && password === "password") {
-        // Success
-        toast({
-          title: "Signed in successfully",
-          description: "Welcome back to Harmony!",
-        });
-        // Store mock auth state
-        localStorage.setItem("isAuthenticated", "true");
-        // Redirect to dashboard
-        navigate("/dashboard");
-      } else {
-        throw new Error("Invalid email or password");
-      }
+      await login(email, password);
+      navigate(from, { replace: true });
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Sign in failed",
-        description: error instanceof Error ? error.message : "Something went wrong",
-      });
-    } finally {
-      setIsLoading(false);
+      setError(error instanceof Error ? error.message : "An unknown error occurred");
     }
   };
 
@@ -77,6 +62,13 @@ const SignIn = () => {
             </p>
           </div>
 
+          {error && (
+            <Alert variant="destructive" className="animate-in fade-in-50">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
           <form onSubmit={handleSignIn} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -90,6 +82,7 @@ const SignIn = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   className="pl-10"
                   required
+                  aria-describedby="email-error"
                 />
               </div>
             </div>
@@ -114,6 +107,7 @@ const SignIn = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   className="pl-10"
                   required
+                  aria-describedby="password-error"
                 />
               </div>
             </div>
