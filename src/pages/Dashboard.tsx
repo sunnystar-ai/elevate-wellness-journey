@@ -85,10 +85,8 @@ const Dashboard = () => {
     }));
   };
 
-  // Recommended next steps
+  // Recommended next steps - modified to keep only the journal prompt
   const recommendations = [
-    { title: "Try This Stress-Relief Meditation", action: "Start", icon: <Flame className="h-4 w-4" />, to: "/meditation" },
-    { title: "Add a Glass of Water", action: "Add", icon: <Droplet className="h-4 w-4" />, to: "#" },
     { title: "Complete Today's Journal Prompt", action: "Open", icon: <CheckCircle2 className="h-4 w-4" />, to: "#" }
   ];
 
