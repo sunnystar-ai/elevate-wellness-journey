@@ -37,20 +37,28 @@ const DailyTimeline = () => {
     }
   ];
 
-  // Filter out "Lunchtime walk" - since it's not in the list, we'll keep the full list
-
   const handleItemClick = (item: typeof timelineItems[0], event: React.MouseEvent) => {
-    if (event.target instanceof HTMLButtonElement) {
-      // If the button was clicked, toggle completion
+    const button = (event.target as HTMLElement).closest('button');
+    if (button) {
       event.stopPropagation();
+      console.log(`Marking ${item.title} as ${completedActivities[item.title] ? 'incomplete' : 'complete'}`);
       setCompletedActivities(prev => ({
         ...prev,
         [item.title]: !prev[item.title]
       }));
     } else {
-      // Otherwise navigate to the page
+      console.log(`Navigating to ${item.to}`);
       navigate(item.to);
     }
+  };
+
+  const handleButtonClick = (item: typeof timelineItems[0], event: React.MouseEvent) => {
+    event.stopPropagation();
+    console.log(`Button clicked: ${item.title}`);
+    setCompletedActivities(prev => ({
+      ...prev,
+      [item.title]: !prev[item.title]
+    }));
   };
 
   return (
@@ -78,7 +86,7 @@ const DailyTimeline = () => {
           {completedActivities[item.title] ? (
             <button 
               className="flex items-center justify-center px-3 py-1 text-sm font-medium text-white bg-harmony-mint rounded-md"
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => handleButtonClick(item, e)}
             >
               <CheckIcon className="h-4 w-4 mr-1" />
               Done
@@ -86,7 +94,7 @@ const DailyTimeline = () => {
           ) : (
             <button 
               className="flex items-center justify-center px-3 py-1 text-sm font-medium text-primary bg-primary/10 rounded-md"
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => handleButtonClick(item, e)}
             >
               Mark Done
             </button>
