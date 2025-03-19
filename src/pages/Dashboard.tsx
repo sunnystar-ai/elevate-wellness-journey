@@ -87,7 +87,7 @@ const Dashboard = () => {
 
   // Recommended next steps - modified to keep only the journal prompt
   const recommendations = [
-    { title: "Complete Today's Journal Prompt", action: "Open", icon: <CheckCircle2 className="h-4 w-4" />, to: "#" }
+    { title: "Complete Today's Journal Prompt", action: "Open", icon: <CheckCircle2 className="h-4 w-4" />, to: "/journal-prompt" }
   ];
 
   return (
