@@ -9,10 +9,10 @@ type TrendsSectionProps = {
 };
 
 const TrendsSection = ({ journalEntries = [] }: TrendsSectionProps) => {
-  const [timeFrame, setTimeFrame] = useState<'day' | 'month' | 'year'>('day');
+  const [timeFrame, setTimeFrame] = useState<'day' | 'week' | 'month'>('day');
   const [showReport, setShowReport] = useState(false);
 
-  const handleTimeFrameChange = (frame: 'day' | 'month' | 'year') => {
+  const handleTimeFrameChange = (frame: 'day' | 'week' | 'month') => {
     setTimeFrame(frame);
   };
 
@@ -28,16 +28,16 @@ const TrendsSection = ({ journalEntries = [] }: TrendsSectionProps) => {
             Day
           </button>
           <button 
+            className={`px-3 py-1 ${timeFrame === 'week' ? 'bg-primary text-white' : ''}`}
+            onClick={() => handleTimeFrameChange('week')}
+          >
+            Week
+          </button>
+          <button 
             className={`px-3 py-1 ${timeFrame === 'month' ? 'bg-primary text-white' : ''}`}
             onClick={() => handleTimeFrameChange('month')}
           >
             Month
-          </button>
-          <button 
-            className={`px-3 py-1 ${timeFrame === 'year' ? 'bg-primary text-white' : ''}`}
-            onClick={() => handleTimeFrameChange('year')}
-          >
-            Year
           </button>
         </div>
       </div>

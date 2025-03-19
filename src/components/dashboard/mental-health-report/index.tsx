@@ -50,7 +50,7 @@ export type Recommendation = {
 };
 
 type MentalHealthReportProps = {
-  timeFrame: 'day' | 'month' | 'year';
+  timeFrame: 'day' | 'week' | 'month';
   journalEntries?: JournalEntry[];
 };
 
@@ -63,17 +63,20 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
     day: [
       { date: 'Today', sentimentScore: 0.75, gratitudeRatio: 0.6, consistencyScore: 1.0, overallScore: 0.78 },
     ],
-    month: [
-      { date: 'Week 1', sentimentScore: 0.68, gratitudeRatio: 0.5, consistencyScore: 0.7, overallScore: 0.63 },
-      { date: 'Week 2', sentimentScore: 0.72, gratitudeRatio: 0.5, consistencyScore: 0.8, overallScore: 0.67 },
-      { date: 'Week 3', sentimentScore: 0.75, gratitudeRatio: 0.6, consistencyScore: 0.8, overallScore: 0.72 },
-      { date: 'Week 4', sentimentScore: 0.79, gratitudeRatio: 0.6, consistencyScore: 0.9, overallScore: 0.76 },
+    week: [
+      { date: 'Monday', sentimentScore: 0.68, gratitudeRatio: 0.5, consistencyScore: 0.7, overallScore: 0.63 },
+      { date: 'Tuesday', sentimentScore: 0.72, gratitudeRatio: 0.5, consistencyScore: 0.8, overallScore: 0.67 },
+      { date: 'Wednesday', sentimentScore: 0.75, gratitudeRatio: 0.6, consistencyScore: 0.8, overallScore: 0.72 },
+      { date: 'Thursday', sentimentScore: 0.79, gratitudeRatio: 0.6, consistencyScore: 0.9, overallScore: 0.76 },
+      { date: 'Friday', sentimentScore: 0.81, gratitudeRatio: 0.7, consistencyScore: 0.9, overallScore: 0.80 },
+      { date: 'Saturday', sentimentScore: 0.83, gratitudeRatio: 0.7, consistencyScore: 0.9, overallScore: 0.81 },
+      { date: 'Sunday', sentimentScore: 0.80, gratitudeRatio: 0.6, consistencyScore: 0.8, overallScore: 0.73 },
     ],
-    year: [
-      { date: 'Jan', sentimentScore: 0.60, gratitudeRatio: 0.3, consistencyScore: 0.6, overallScore: 0.50 },
-      { date: 'Feb', sentimentScore: 0.65, gratitudeRatio: 0.4, consistencyScore: 0.7, overallScore: 0.58 },
-      { date: 'Mar', sentimentScore: 0.70, gratitudeRatio: 0.5, consistencyScore: 0.8, overallScore: 0.67 },
-      { date: 'Apr', sentimentScore: 0.75, gratitudeRatio: 0.6, consistencyScore: 0.8, overallScore: 0.72 },
+    month: [
+      { date: 'Week 1', sentimentScore: 0.60, gratitudeRatio: 0.3, consistencyScore: 0.6, overallScore: 0.50 },
+      { date: 'Week 2', sentimentScore: 0.65, gratitudeRatio: 0.4, consistencyScore: 0.7, overallScore: 0.58 },
+      { date: 'Week 3', sentimentScore: 0.70, gratitudeRatio: 0.5, consistencyScore: 0.8, overallScore: 0.67 },
+      { date: 'Week 4', sentimentScore: 0.75, gratitudeRatio: 0.6, consistencyScore: 0.8, overallScore: 0.72 },
     ],
   };
 
@@ -166,11 +169,11 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
     if (timeFrame === 'day') {
       return journalEntries.length > 0;
     }
-    if (timeFrame === 'month') {
-      return journalEntries.length >= 7; // Assuming we need at least a week of data for monthly view
+    if (timeFrame === 'week') {
+      return journalEntries.length >= 7; // Assuming we need at least a week of data for weekly view
     }
-    if (timeFrame === 'year') {
-      return journalEntries.length >= 30; // Assuming we need at least a month of data for yearly view
+    if (timeFrame === 'month') {
+      return journalEntries.length >= 30; // Assuming we need at least a month of data for monthly view
     }
     return false;
   };
@@ -206,9 +209,9 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
               <AlertCircle className="h-12 w-12 text-muted-foreground mb-4" />
               <h3 className="text-lg font-medium mb-2">Insufficient Data</h3>
               <p className="text-muted-foreground max-w-md">
-                {timeFrame === 'month' 
-                  ? "We need at least 7 days of journal entries to generate a monthly report." 
-                  : "We need at least 30 days of journal entries to generate a yearly report."}
+                {timeFrame === 'week' 
+                  ? "We need at least 7 days of journal entries to generate a weekly report." 
+                  : "We need at least 30 days of journal entries to generate a monthly report."}
               </p>
               <p className="text-muted-foreground mt-4">
                 Continue your journaling practice to unlock more insights over time!
