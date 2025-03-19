@@ -1,9 +1,10 @@
-
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight as ArrowRightIcon, Moon as MoonIcon, Award as AwardIcon, BookOpen as BookOpenIcon } from 'lucide-react';
+import { ArrowRight as ArrowRightIcon, Moon as MoonIcon, Award as AwardIcon, BookOpen as BookOpenIcon, Check as CheckIcon } from 'lucide-react';
 
 const DailyTimeline = () => {
   const navigate = useNavigate();
+  const [completedActivities, setCompletedActivities] = useState<Record<string, boolean>>({});
   
   const timelineItems = [
     { 
@@ -36,13 +37,29 @@ const DailyTimeline = () => {
     }
   ];
 
+  // Filter out "Lunchtime walk" - since it's not in the list, we'll keep the full list
+
+  const handleItemClick = (item: typeof timelineItems[0], event: React.MouseEvent) => {
+    if (event.target instanceof HTMLButtonElement) {
+      // If the button was clicked, toggle completion
+      event.stopPropagation();
+      setCompletedActivities(prev => ({
+        ...prev,
+        [item.title]: !prev[item.title]
+      }));
+    } else {
+      // Otherwise navigate to the page
+      navigate(item.to);
+    }
+  };
+
   return (
     <div className="space-y-3">
       {timelineItems.map((item, index) => (
         <div 
           key={item.title}
           className="flex items-center p-3 rounded-lg bg-white shadow-sm cursor-pointer hover:shadow-md transition-all duration-300"
-          onClick={() => navigate(item.to)}
+          onClick={(e) => handleItemClick(item, e)}
           style={{ 
             animationDelay: `${index * 100}ms`, 
             animation: 'fade-in 0.5s ease-out backwards' 
@@ -58,7 +75,22 @@ const DailyTimeline = () => {
             </div>
             <p className="text-sm text-muted-foreground">{item.description}</p>
           </div>
-          <ArrowRightIcon className="h-4 w-4 text-muted-foreground" />
+          {completedActivities[item.title] ? (
+            <button 
+              className="flex items-center justify-center px-3 py-1 text-sm font-medium text-white bg-harmony-mint rounded-md"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <CheckIcon className="h-4 w-4 mr-1" />
+              Done
+            </button>
+          ) : (
+            <button 
+              className="flex items-center justify-center px-3 py-1 text-sm font-medium text-primary bg-primary/10 rounded-md"
+              onClick={(e) => e.stopPropagation()}
+            >
+              Mark Done
+            </button>
+          )}
         </div>
       ))}
     </div>
