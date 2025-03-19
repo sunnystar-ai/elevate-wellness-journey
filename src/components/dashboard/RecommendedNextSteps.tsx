@@ -81,7 +81,7 @@ const RecommendedNextSteps = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-medium mb-4">Recommended Next Steps</h2>
+        <h2 className="text-lg font-medium mb-4">Mental Well-being</h2>
         
         <div className="space-y-3">
           <div 
