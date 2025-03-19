@@ -64,7 +64,7 @@ const Dashboard = () => {
 
   // Daily plan data - keep track of completed activities
   const [completedActivities, setCompletedActivities] = useState<Record<string, boolean>>({
-    "Morning meditation": true,
+    "Morning meditation": false,
     "Lunchtime walk": false,
     "Evening workout": false,
     "Sleep preparation": false
