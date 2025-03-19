@@ -1,15 +1,13 @@
 
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { CheckCircle2, Heart, Brain, Star, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { JournalEntry } from './MentalHealthReport';
+import { JournalEntry } from './mental-health-report';
 import TrendsSection from './TrendsSection';
 
 const RecommendedNextSteps = () => {
-  const navigate = useNavigate();
   const { toast } = useToast();
   const [journalEntry, setJournalEntry] = useState<JournalEntry>({
     feelings: '',

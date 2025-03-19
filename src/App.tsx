@@ -20,6 +20,7 @@ import NotFound from "./pages/NotFound";
 import Meditation from "./pages/Meditation";
 import Workouts from "./pages/Workouts";
 import Nutrition from "./pages/Nutrition";
+import JournalPrompt from "./pages/JournalPrompt";
 
 const queryClient = new QueryClient();
 
@@ -63,6 +64,11 @@ const App = () => (
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/journal-prompt" element={
+              <ProtectedRoute requireAuth={false}>
+                <JournalPrompt />
               </ProtectedRoute>
             } />
             <Route path="/meditation" element={

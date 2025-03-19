@@ -3,11 +3,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
-import { Heart, Brain, Star, CheckCircle, Send } from 'lucide-react';
+import { Heart, Brain, Star, Send } from 'lucide-react';
 import BottomNav from '@/components/my-journey/BottomNav';
 import { useToast } from '@/hooks/use-toast';
-import { JournalEntry } from '@/components/dashboard/MentalHealthReport';
+import { JournalEntry } from '@/components/dashboard/mental-health-report';
 
 const JournalPrompt = () => {
   const navigate = useNavigate();
