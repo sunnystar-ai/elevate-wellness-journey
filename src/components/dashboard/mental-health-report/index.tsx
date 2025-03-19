@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AlertCircle } from 'lucide-react';
 import OverviewTab from './OverviewTab';
 import SentimentTab from './SentimentTab';
 import BeliefsTab from './BeliefsTab';
@@ -49,7 +50,7 @@ export type Recommendation = {
 };
 
 type MentalHealthReportProps = {
-  timeFrame: 'week' | 'month' | 'year';
+  timeFrame: 'day' | 'month' | 'year';
   journalEntries?: JournalEntry[];
 };
 
@@ -59,14 +60,8 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
   
   // Mock sentiment data for different timeframes
   const sentimentData: Record<string, SentimentData[]> = {
-    week: [
-      { date: 'Mon', sentimentScore: 0.65, gratitudeRatio: 0.4, consistencyScore: 0.8, overallScore: 0.62 },
-      { date: 'Tue', sentimentScore: 0.72, gratitudeRatio: 0.5, consistencyScore: 0.8, overallScore: 0.67 },
-      { date: 'Wed', sentimentScore: 0.58, gratitudeRatio: 0.3, consistencyScore: 0.8, overallScore: 0.56 },
-      { date: 'Thu', sentimentScore: 0.63, gratitudeRatio: 0.4, consistencyScore: 0.8, overallScore: 0.61 },
-      { date: 'Fri', sentimentScore: 0.75, gratitudeRatio: 0.6, consistencyScore: 0.8, overallScore: 0.72 },
-      { date: 'Sat', sentimentScore: 0.82, gratitudeRatio: 0.7, consistencyScore: 0.8, overallScore: 0.77 },
-      { date: 'Sun', sentimentScore: 0.78, gratitudeRatio: 0.6, consistencyScore: 0.8, overallScore: 0.73 },
+    day: [
+      { date: 'Today', sentimentScore: 0.75, gratitudeRatio: 0.6, consistencyScore: 1.0, overallScore: 0.78 },
     ],
     month: [
       { date: 'Week 1', sentimentScore: 0.68, gratitudeRatio: 0.5, consistencyScore: 0.7, overallScore: 0.63 },
@@ -166,7 +161,23 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
     );
   }
 
-  const currentData = sentimentData[timeFrame];
+  // Check if we have enough data for the selected time frame
+  const hasEnoughData = () => {
+    if (timeFrame === 'day') {
+      return journalEntries.length > 0;
+    }
+    if (timeFrame === 'month') {
+      return journalEntries.length >= 7; // Assuming we need at least a week of data for monthly view
+    }
+    if (timeFrame === 'year') {
+      return journalEntries.length >= 30; // Assuming we need at least a month of data for yearly view
+    }
+    return false;
+  };
+
+  // Only show data for the day view when there's only one journal entry
+  const currentData = hasEnoughData() ? sentimentData[timeFrame] : [];
+  const showInsufficientDataMessage = !hasEnoughData() && timeFrame !== 'day';
 
   return (
     <div className="space-y-6">
@@ -188,30 +199,49 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
         </Card>
       )}
       
-      <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="mb-4">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="sentiment">Sentiment Analysis</TabsTrigger>
-          <TabsTrigger value="beliefs">Belief System</TabsTrigger>
-          <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="overview">
-          <OverviewTab currentData={currentData} themeData={themeData} cognitiveDistortions={cognitiveDistortions} />
-        </TabsContent>
-        
-        <TabsContent value="sentiment">
-          <SentimentTab currentData={currentData} themeData={themeData} />
-        </TabsContent>
-        
-        <TabsContent value="beliefs">
-          <BeliefsTab beliefData={beliefData} />
-        </TabsContent>
-        
-        <TabsContent value="recommendations">
-          <RecommendationsTab recommendations={recommendations} currentData={currentData} />
-        </TabsContent>
-      </Tabs>
+      {showInsufficientDataMessage ? (
+        <Card>
+          <CardContent className="py-8">
+            <div className="flex flex-col items-center justify-center text-center">
+              <AlertCircle className="h-12 w-12 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-medium mb-2">Insufficient Data</h3>
+              <p className="text-muted-foreground max-w-md">
+                {timeFrame === 'month' 
+                  ? "We need at least 7 days of journal entries to generate a monthly report." 
+                  : "We need at least 30 days of journal entries to generate a yearly report."}
+              </p>
+              <p className="text-muted-foreground mt-4">
+                Continue your journaling practice to unlock more insights over time!
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <Tabs defaultValue="overview" className="w-full">
+          <TabsList className="mb-4">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="sentiment">Sentiment Analysis</TabsTrigger>
+            <TabsTrigger value="beliefs">Belief System</TabsTrigger>
+            <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="overview">
+            <OverviewTab currentData={currentData} themeData={themeData} cognitiveDistortions={cognitiveDistortions} />
+          </TabsContent>
+          
+          <TabsContent value="sentiment">
+            <SentimentTab currentData={currentData} themeData={themeData} />
+          </TabsContent>
+          
+          <TabsContent value="beliefs">
+            <BeliefsTab beliefData={beliefData} />
+          </TabsContent>
+          
+          <TabsContent value="recommendations">
+            <RecommendationsTab recommendations={recommendations} currentData={currentData} />
+          </TabsContent>
+        </Tabs>
+      )}
     </div>
   );
 };
