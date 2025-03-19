@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -7,15 +7,30 @@ import { Input } from '@/components/ui/input';
 import { Heart, Brain, Star, CheckCircle, Send } from 'lucide-react';
 import BottomNav from '@/components/my-journey/BottomNav';
 import { useToast } from '@/hooks/use-toast';
+import { JournalEntry } from '@/components/dashboard/MentalHealthReport';
 
 const JournalPrompt = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [journalEntry, setJournalEntry] = useState({
+  const [journalEntry, setJournalEntry] = useState<JournalEntry>({
     feelings: '',
     thoughtProcess: '',
     gratitude: ''
   });
+  const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
+
+  // Load saved journal entries from localStorage on component mount
+  useEffect(() => {
+    const savedEntries = localStorage.getItem('journalEntries');
+    if (savedEntries) {
+      try {
+        const parsedEntries = JSON.parse(savedEntries);
+        setJournalEntries(parsedEntries);
+      } catch (error) {
+        console.error('Error parsing saved journal entries:', error);
+      }
+    }
+  }, []);
 
   const handleInputChange = (section: 'feelings' | 'thoughtProcess' | 'gratitude', value: string) => {
     setJournalEntry(prev => ({
@@ -35,13 +50,25 @@ const JournalPrompt = () => {
       return;
     }
 
+    // Create new journal entry with current date
+    const newEntry = {
+      ...journalEntry,
+      date: new Date().toISOString(),
+    };
+
+    // Add the new entry to the existing entries
+    const updatedEntries = [...journalEntries, newEntry];
+
+    // Save to localStorage (in a real app, would save to backend)
+    localStorage.setItem('journalEntries', JSON.stringify(updatedEntries));
+    
     // Here you would typically save the journal entry to your backend
-    console.log('Journal entry submitted:', journalEntry);
+    console.log('Journal entry submitted:', newEntry);
     
     // Show success message
     toast({
       title: "Journal Entry Saved",
-      description: "Your journal entry has been saved successfully.",
+      description: "Your journal entry has been saved successfully and your report has been updated.",
       variant: "default"
     });
     

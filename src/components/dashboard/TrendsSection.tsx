@@ -1,11 +1,15 @@
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import MentalHealthReport from './MentalHealthReport';
+import MentalHealthReport, { JournalEntry } from './MentalHealthReport';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
-const TrendsSection = () => {
+type TrendsSectionProps = {
+  journalEntries?: JournalEntry[];
+};
+
+const TrendsSection = ({ journalEntries = [] }: TrendsSectionProps) => {
   const [timeFrame, setTimeFrame] = useState<'week' | 'month' | 'year'>('week');
   const [showReport, setShowReport] = useState(false);
 
@@ -80,7 +84,7 @@ const TrendsSection = () => {
           <DialogHeader>
             <DialogTitle>Mental Health Analysis Report</DialogTitle>
           </DialogHeader>
-          <MentalHealthReport timeFrame={timeFrame} />
+          <MentalHealthReport timeFrame={timeFrame} journalEntries={journalEntries} />
         </DialogContent>
       </Dialog>
     </div>

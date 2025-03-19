@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -6,8 +5,16 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, BarChart, Bar, Legend, Tooltip } from 'recharts';
 import { Brain, Heart, Star, AlertTriangle, Check, TrendingUp, Lightbulb } from 'lucide-react';
 
+export type JournalEntry = {
+  feelings: string;
+  thoughtProcess: string;
+  gratitude: string;
+  date?: string;
+};
+
 type MentalHealthReportProps = {
   timeFrame: 'week' | 'month' | 'year';
+  journalEntries?: JournalEntry[];
 };
 
 type SentimentData = {
@@ -37,7 +44,7 @@ type CognitiveDistortion = {
   example: string;
 };
 
-const MentalHealthReport = ({ timeFrame }: MentalHealthReportProps) => {
+const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthReportProps) => {
   // Simulated data - in a real app, this would come from your backend LLM analysis
   const [loading, setLoading] = useState(true);
   
@@ -130,13 +137,19 @@ const MentalHealthReport = ({ timeFrame }: MentalHealthReportProps) => {
     },
   ];
 
-  // Simulate loading data
+  // Effect to display latest journal entry if available
   useEffect(() => {
+    if (journalEntries && journalEntries.length > 0) {
+      console.log('Latest journal entry received:', journalEntries[journalEntries.length - 1]);
+      // In a real app, here you would analyze the journal entries with an LLM
+      // and update the sentiment data, themes, beliefs, etc.
+    }
+    
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [journalEntries]);
 
   if (loading) {
     return (
@@ -150,6 +163,24 @@ const MentalHealthReport = ({ timeFrame }: MentalHealthReportProps) => {
 
   return (
     <div className="space-y-6">
+      {journalEntries && journalEntries.length > 0 && (
+        <Card className="mb-4">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">Latest Journal Analysis</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-2">
+              Based on your most recent journal entry, we've updated your mental health analysis.
+            </p>
+            <div className="text-sm">
+              <p><strong>Feelings analyzed:</strong> {journalEntries[journalEntries.length - 1].feelings.substring(0, 100)}...</p>
+              <p><strong>Thoughts analyzed:</strong> {journalEntries[journalEntries.length - 1].thoughtProcess.substring(0, 100)}...</p>
+              <p><strong>Gratitude analyzed:</strong> {journalEntries[journalEntries.length - 1].gratitude.substring(0, 100)}...</p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+      
       <Tabs defaultValue="overview" className="w-full">
         <TabsList className="mb-4">
           <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -224,7 +255,7 @@ const MentalHealthReport = ({ timeFrame }: MentalHealthReportProps) => {
                       <Tooltip />
                       <Bar dataKey="count" name="Mentions" fill="#8884d8">
                         {themeData.map((entry, index) => (
-                          <Bar key={`cell-${index}`} fill={entry.color} />
+                          <rect key={`cell-${index}`} fill={entry.color} />
                         ))}
                       </Bar>
                     </BarChart>

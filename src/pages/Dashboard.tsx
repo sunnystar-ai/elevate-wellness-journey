@@ -13,7 +13,6 @@ import QuickStats from '@/components/dashboard/QuickStats';
 import GoalsTracker from '@/components/dashboard/GoalsTracker';
 import DailyPlan from '@/components/dashboard/DailyPlan';
 import WellnessInsights from '@/components/dashboard/WellnessInsights';
-import TrendsSection from '@/components/dashboard/TrendsSection';
 import RecommendedNextSteps from '@/components/dashboard/RecommendedNextSteps';
 
 const Dashboard = () => {
@@ -87,12 +86,7 @@ const Dashboard = () => {
           <WellnessInsights />
         </AnimatedSection>
 
-        {/* Trends Section */}
-        <AnimatedSection className="mb-8">
-          <TrendsSection />
-        </AnimatedSection>
-
-        {/* Recommended Next Steps */}
+        {/* Recommended Next Steps and Trends (now combined) */}
         <AnimatedSection className="mb-8">
           <RecommendedNextSteps />
         </AnimatedSection>
