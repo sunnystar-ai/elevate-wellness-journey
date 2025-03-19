@@ -62,13 +62,28 @@ const Dashboard = () => {
     { title: "Sleep 7+ hours", completed: true, streak: 3, progress: 100 }
   ];
 
-  // Daily plan data
+  // Daily plan data - keep track of completed activities
+  const [completedActivities, setCompletedActivities] = useState<Record<string, boolean>>({
+    "Morning meditation": true,
+    "Lunchtime walk": false,
+    "Evening workout": false,
+    "Sleep preparation": false
+  });
+
   const dailyPlan = [
-    { time: "7:00 AM", activity: "Morning meditation", completed: true, icon: <Flame className="h-4 w-4 text-harmony-lavender" /> },
-    { time: "12:30 PM", activity: "Lunchtime walk", completed: false, icon: <Footprints className="h-4 w-4 text-harmony-blue" /> },
-    { time: "6:00 PM", activity: "Evening workout", completed: false, icon: <Award className="h-4 w-4 text-harmony-mint" /> },
-    { time: "10:00 PM", activity: "Sleep preparation", completed: false, icon: <Clock className="h-4 w-4 text-harmony-peach" /> }
+    { time: "7:00 AM", activity: "Morning meditation", completed: completedActivities["Morning meditation"], icon: <Flame className="h-4 w-4 text-harmony-lavender" /> },
+    { time: "12:30 PM", activity: "Lunchtime walk", completed: completedActivities["Lunchtime walk"], icon: <Footprints className="h-4 w-4 text-harmony-blue" /> },
+    { time: "6:00 PM", activity: "Evening workout", completed: completedActivities["Evening workout"], icon: <Award className="h-4 w-4 text-harmony-mint" /> },
+    { time: "10:00 PM", activity: "Sleep preparation", completed: completedActivities["Sleep preparation"], icon: <Clock className="h-4 w-4 text-harmony-peach" /> }
   ];
+
+  // Function to handle marking activities as done
+  const handleMarkDone = (activity: string) => {
+    setCompletedActivities(prev => ({
+      ...prev,
+      [activity]: !prev[activity]
+    }));
+  };
 
   // Recommended next steps
   const recommendations = [
@@ -259,7 +274,7 @@ const Dashboard = () => {
           </div>
         </AnimatedSection>
 
-        {/* Today's Plan */}
+        {/* Today's Plan - UPDATED HERE */}
         <AnimatedSection className="mb-8">
           <div className="flex justify-between items-baseline mb-4">
             <div className="flex items-center">
@@ -289,8 +304,9 @@ const Dashboard = () => {
                   size="sm" 
                   variant={item.completed ? "outline" : "default"}
                   className={item.completed ? "border-harmony-mint text-harmony-mint" : ""}
+                  onClick={() => handleMarkDone(item.activity)}
                 >
-                  {item.completed ? "Done" : "Start"}
+                  {item.completed ? "Done" : "Mark Done"}
                 </Button>
               </div>
             ))}
@@ -412,4 +428,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
