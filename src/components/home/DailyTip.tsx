@@ -1,22 +1,33 @@
 
-import { Lightbulb } from 'lucide-react';
+import { CalendarCheck, TrendingUp, Brain } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
-const tips = [
-  "Take a moment to breathe deeply and center yourself when feeling overwhelmed.",
-  "Stay hydrated! Aim for at least 8 glasses of water daily.",
-  "Practice gratitude by noting three things you're thankful for each morning.",
-  "Incorporate a 10-minute stretching routine into your morning to energize your body.",
-  "Schedule short breaks during work to rest your eyes and mind.",
-  "Try the 4-7-8 breathing technique to reduce stress: inhale for 4, hold for 7, exhale for 8.",
-  "Add colorful vegetables to each meal for a boost of nutrients.",
-  "Prioritize 7-9 hours of quality sleep for optimal mental and physical function.",
-  "Take a short walk after meals to aid digestion and clear your mind.",
-  "Set boundaries with technology by designating screen-free zones or times."
+type WellnessInsight = {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+};
+
+const wellnessInsights: WellnessInsight[] = [
+  {
+    title: "Weekly Progress",
+    description: "You've completed 4 of 7 daily goals this week. Keep going!",
+    icon: <TrendingUp size={20} className="text-harmony-peach" />
+  },
+  {
+    title: "Mindfulness Reminder",
+    description: "Take 5 minutes today to practice deep breathing exercises.",
+    icon: <Brain size={20} className="text-harmony-peach" />
+  },
+  {
+    title: "Upcoming Session",
+    description: "Guided meditation session scheduled for tomorrow at 8 AM.",
+    icon: <CalendarCheck size={20} className="text-harmony-peach" />
+  }
 ];
 
 const DailyTip = () => {
-  const [tip, setTip] = useState("");
+  const [insight, setInsight] = useState<WellnessInsight | null>(null);
   
   useEffect(() => {
     // Create a date string in YYYY-MM-DD format to ensure it changes daily
@@ -32,21 +43,23 @@ const DailyTip = () => {
     
     // Ensure positive index
     hash = Math.abs(hash);
-    const index = hash % tips.length;
+    const index = hash % wellnessInsights.length;
     
-    setTip(tips[index]);
+    setInsight(wellnessInsights[index]);
   }, []);
+  
+  if (!insight) return null;
   
   return (
     <div className="glass-panel p-5 rounded-lg bg-background/80 border border-border flex items-start space-x-4">
       <div className="flex-shrink-0 mt-1">
         <div className="bg-harmony-light-peach p-2 rounded-lg">
-          <Lightbulb size={20} className="text-harmony-peach" />
+          {insight.icon}
         </div>
       </div>
       <div>
-        <h3 className="font-medium text-lg mb-1">Daily Wellness Tip</h3>
-        <p className="text-muted-foreground">{tip}</p>
+        <h3 className="font-medium text-lg mb-1">{insight.title}</h3>
+        <p className="text-muted-foreground">{insight.description}</p>
       </div>
     </div>
   );
