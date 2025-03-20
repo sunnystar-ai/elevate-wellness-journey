@@ -22,7 +22,7 @@ const ChatInput = ({ onSendMessage, isLoading }: ChatInputProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-3 border-t border-gray-100 flex gap-2 bg-white sticky bottom-0">
+    <form onSubmit={handleSubmit} className="p-3 border-t border-gray-100 flex gap-2 bg-white sticky bottom-0 z-10">
       <Input
         value={input}
         onChange={(e) => setInput(e.target.value)}

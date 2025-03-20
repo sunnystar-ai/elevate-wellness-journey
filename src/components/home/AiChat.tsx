@@ -26,8 +26,16 @@ const AiChat = () => {
 
   // Only scroll to bottom when new messages are added or when loading state changes
   useEffect(() => {
-    if (messages.length > 0 || isLoading === false) {
+    // Only auto-scroll if user hasn't manually scrolled up
+    const shouldScroll = !scrollAreaRef.current?.dataset.userScrolled || 
+                       scrollAreaRef.current?.dataset.userScrolled === 'false';
+                       
+    if ((messages.length > 0 || isLoading === false) && shouldScroll) {
       scrollToBottom();
+      // Reset the user scrolled flag after we've scrolled
+      if (scrollAreaRef.current) {
+        scrollAreaRef.current.dataset.userScrolled = 'false';
+      }
     }
   }, [messages.length, isLoading]);
 
@@ -92,7 +100,7 @@ const AiChat = () => {
   return (
     <div className="rounded-lg bg-white shadow-md h-[400px] flex flex-col overflow-hidden">
       <ChatHeader />
-      <div className="flex-1 overflow-hidden relative flex flex-col">
+      <div className="flex-1 overflow-hidden relative">
         <MessageList 
           messages={messages}
           isLoading={isLoading}

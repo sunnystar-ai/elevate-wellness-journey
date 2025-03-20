@@ -1,5 +1,4 @@
-
-import { RefObject } from 'react';
+import { RefObject, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Message } from './types';
@@ -13,9 +12,24 @@ interface MessageListProps {
 }
 
 const MessageList = ({ messages, isLoading, messagesEndRef, scrollAreaRef }: MessageListProps) => {
+  useEffect(() => {
+    const handleScroll = () => {
+      if (scrollAreaRef.current) {
+        scrollAreaRef.current.dataset.userScrolled = 'true';
+      }
+    };
+
+    const scrollElement = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
+    scrollElement?.addEventListener('scroll', handleScroll);
+    
+    return () => {
+      scrollElement?.removeEventListener('scroll', handleScroll);
+    };
+  }, [scrollAreaRef]);
+
   return (
-    <ScrollArea className="h-full p-3 flex-1" ref={scrollAreaRef}>
-      <div className="space-y-3">
+    <ScrollArea className="h-full p-3 flex-1 relative" ref={scrollAreaRef}>
+      <div className="space-y-3 pb-2">
         {messages.map(message => (
           <ChatMessage key={message.id} message={message} />
         ))}
