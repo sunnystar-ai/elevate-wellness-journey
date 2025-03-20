@@ -122,7 +122,7 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
               </AlertDescription>
             </Alert>
             
-            <Alert variant="warning" className="bg-amber-50 border-amber-200">
+            <Alert variant="default" className="bg-amber-50 border-amber-200">
               <AlertCircle className="h-4 w-4 text-amber-500" />
               <AlertTitle className="text-amber-700">Alternative: Temporary browser storage</AlertTitle>
               <AlertDescription className="text-amber-600">
@@ -158,7 +158,7 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
           </div>
         ) : (
           <div className="space-y-2">
-            <Alert variant={import.meta.env.VITE_OPENAI_API_KEY ? "success" : "info"} className={`${import.meta.env.VITE_OPENAI_API_KEY ? "bg-green-50 border-green-200" : "bg-blue-50 border-blue-200"}`}>
+            <Alert variant={import.meta.env.VITE_OPENAI_API_KEY ? "default" : "default"} className={`${import.meta.env.VITE_OPENAI_API_KEY ? "bg-green-50 border-green-200" : "bg-blue-50 border-blue-200"}`}>
               <CheckCircle2 className={`h-4 w-4 ${import.meta.env.VITE_OPENAI_API_KEY ? "text-green-500" : "text-blue-500"}`} />
               <AlertTitle className={`${import.meta.env.VITE_OPENAI_API_KEY ? "text-green-700" : "text-blue-700"}`}>
                 {import.meta.env.VITE_OPENAI_API_KEY 
