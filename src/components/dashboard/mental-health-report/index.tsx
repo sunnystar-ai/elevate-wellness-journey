@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import OverviewTab from './OverviewTab';
@@ -55,10 +54,15 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
     setApiKey(key);
     setLoading(true);
     // Re-analyze with the new API key
-    analyzeJournalEntries();
+    analyzeJournalEntries(key);
   };
 
-  const analyzeJournalEntries = async () => {
+  const analyzeJournalEntries = async (currentApiKey = apiKey) => {
+    if (!currentApiKey) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setAnalysisError(null);
     
@@ -72,7 +76,7 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
           keyThemes, 
           extractedBeliefs, 
           extractedDistortions 
-        } = await analyzeJournalEntry(latestEntry, apiKey);
+        } = await analyzeJournalEntry(latestEntry, currentApiKey);
         
         // Generate sentiment data based on the entry and all journal entries
         const newSentimentData = generateTimeFrameData(latestEntry, journalEntries);
@@ -85,7 +89,7 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
         setCognitiveDistortions(extractedDistortions);
       } catch (error) {
         console.error('Error analyzing journal entries:', error);
-        setAnalysisError('An error occurred during journal analysis. Please try again or check your API key.');
+        setAnalysisError('An error occurred during journal analysis. Please check your OpenAI API key or try again later.');
       }
     }
     
@@ -98,13 +102,29 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
 
   // Analyze journal entries and generate insights when entries or API key changes
   useEffect(() => {
-    const envApiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    if (envApiKey && !apiKey) {
-      setApiKey(envApiKey);
+    // If we already have an API key, use it immediately
+    if (apiKey) {
+      analyzeJournalEntries();
+      return;
     }
     
-    analyzeJournalEntries();
-  }, [journalEntries, apiKey]);
+    // Otherwise check for environment variables first
+    const envApiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    if (envApiKey && envApiKey.trim() !== '') {
+      setApiKey(envApiKey);
+      analyzeJournalEntries(envApiKey);
+      return;
+    }
+    
+    // Finally check localStorage
+    const savedKey = localStorage.getItem('openai_api_key');
+    if (savedKey) {
+      setApiKey(savedKey);
+      analyzeJournalEntries(savedKey);
+    } else {
+      setLoading(false);
+    }
+  }, [journalEntries]);
 
   // Check if we have enough data for the selected time frame
   const hasEnoughData = () => {
@@ -132,6 +152,7 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
   // Only show data for the day view when there's only one journal entry
   const currentData = hasEnoughData() ? sentimentData[timeFrame] : [];
   const showInsufficientDataMessage = !hasEnoughData() && timeFrame !== 'day';
+  const noApiKey = !apiKey;
 
   return (
     <div className="space-y-6">
@@ -144,7 +165,13 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
         </div>
       )}
       
-      {journalEntries && journalEntries.length > 0 && (
+      {noApiKey && (
+        <div className="bg-amber-50 border border-amber-200 text-amber-700 px-4 py-3 rounded-lg mb-4">
+          Please add an OpenAI API key above to enable journal analysis.
+        </div>
+      )}
+      
+      {!noApiKey && journalEntries && journalEntries.length > 0 && (
         <LatestJournalAnalysis latestEntry={journalEntries[journalEntries.length - 1]} />
       )}
       
