@@ -4,7 +4,7 @@ import { getColorForEmotion } from './colorUtils';
 import { extractSentiment } from './analysisUtils/sentimentExtractor';
 import { extractThemes } from './analysisUtils/themeExtractor';
 import { generateBeliefs } from './analysisUtils/beliefGenerator';
-import { generateDistortions } from './analysisUtils/distortionGenerator';
+import { extractDistortions } from './analysisUtils/distortionGenerator';
 import { generateRecommendations } from './analysisUtils/recommendationGenerator';
 
 // Simplified analysis for when API is not available
@@ -62,14 +62,11 @@ export function useSimplifiedAnalysis(entry: JournalEntry) {
     gratitudeSentiment
   );
   
-  // Generate cognitive distortions
-  const extractedDistortions = generateDistortions(
-    feelingsSentiment,
-    overallPositivity
-  );
+  // Generate cognitive distortions - fix the function call by passing both parameters
+  const extractedDistortions = extractDistortions(entry, feelingsSentiment);
   
-  // Generate recommendations
-  const recommendations = generateRecommendations(overallPositivity);
+  // Generate recommendations - passing both parameters
+  const recommendations = generateRecommendations(entry, feelingsSentiment);
   
   return {
     recommendations,
