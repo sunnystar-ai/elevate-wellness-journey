@@ -70,9 +70,6 @@ const Index = () => {
         <AnimatedSection className="mb-10">
           <div className="flex justify-between items-baseline mb-4">
             <h2 className="text-lg font-medium">Recommended For You</h2>
-            <button className="text-primary hover:underline text-sm font-medium">
-              View all
-            </button>
           </div>
           <RecommendationCards />
         </AnimatedSection>
