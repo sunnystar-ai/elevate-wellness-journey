@@ -19,7 +19,7 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
 
   // Check for environment variables or fallback to localStorage
   useEffect(() => {
-    // First check for environment variable (Vite exposes env vars with VITE_ prefix)
+    // First check for environment variable
     const envApiKey = import.meta.env.VITE_OPENAI_API_KEY;
     
     if (envApiKey && envApiKey.trim() !== '') {
@@ -111,15 +111,22 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
           <div className="space-y-3">
             <Alert variant="default" className="bg-blue-50 border-blue-200">
               <Info className="h-5 w-5 text-blue-500" />
-              <AlertTitle className="text-blue-700">How to get your OpenAI API key:</AlertTitle>
+              <AlertTitle className="text-blue-700">Recommended: Add your API key to .env file</AlertTitle>
               <AlertDescription className="text-blue-600">
                 <ol className="list-decimal pl-5 space-y-1 mt-1">
-                  <li>Go to <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" className="underline font-medium">platform.openai.com/api-keys</a></li>
-                  <li>Sign in or create an account</li>
-                  <li>Create a new secret key</li>
-                  <li>Copy and paste it below</li>
+                  <li>Create or open the <code className="bg-blue-100 px-1 rounded">.env</code> file in the project root</li>
+                  <li>Add your OpenAI API key: <code className="bg-blue-100 px-1 rounded">VITE_OPENAI_API_KEY=sk-your-api-key-here</code></li>
+                  <li>Save the file and restart the application</li>
                 </ol>
-                <p className="mt-2">Your key will be stored securely in your browser's local storage only.</p>
+                <p className="mt-2 text-sm">Need an API key? Get one at <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" className="underline font-medium">platform.openai.com/api-keys</a></p>
+              </AlertDescription>
+            </Alert>
+            
+            <Alert variant="warning" className="bg-amber-50 border-amber-200">
+              <AlertCircle className="h-4 w-4 text-amber-500" />
+              <AlertTitle className="text-amber-700">Alternative: Temporary browser storage</AlertTitle>
+              <AlertDescription className="text-amber-600">
+                If you can't modify the .env file, you can temporarily store your API key in browser storage:
               </AlertDescription>
             </Alert>
             
@@ -135,7 +142,7 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
             </div>
             
             <div className="text-xs text-muted-foreground mt-2">
-              <p className="mb-1">If you prefer using a .env file (but it seems you can't modify it right now):</p>
+              <p className="mb-1">Copy this line to your .env file:</p>
               <div className="flex items-center space-x-2 bg-gray-100 p-2 rounded text-xs font-mono relative">
                 <code>VITE_OPENAI_API_KEY=sk-your-api-key-here</code>
                 <Button 
@@ -151,13 +158,21 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
           </div>
         ) : (
           <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">
-              {(import.meta.env.VITE_OPENAI_API_KEY && import.meta.env.VITE_OPENAI_API_KEY.trim() !== '')
-                ? "Using OpenAI API key from environment variables" 
-                : localStorage.getItem('openai_api_key')
-                  ? "Using saved OpenAI API key from browser storage"
-                  : "Use OpenAI's advanced AI to analyze your journal entries for deeper insights."}
-            </p>
+            <Alert variant={import.meta.env.VITE_OPENAI_API_KEY ? "success" : "info"} className={`${import.meta.env.VITE_OPENAI_API_KEY ? "bg-green-50 border-green-200" : "bg-blue-50 border-blue-200"}`}>
+              <CheckCircle2 className={`h-4 w-4 ${import.meta.env.VITE_OPENAI_API_KEY ? "text-green-500" : "text-blue-500"}`} />
+              <AlertTitle className={`${import.meta.env.VITE_OPENAI_API_KEY ? "text-green-700" : "text-blue-700"}`}>
+                {import.meta.env.VITE_OPENAI_API_KEY 
+                  ? "Using API key from .env file" 
+                  : "API Key Status"}
+              </AlertTitle>
+              <AlertDescription className={`${import.meta.env.VITE_OPENAI_API_KEY ? "text-green-600" : "text-blue-600"}`}>
+                {import.meta.env.VITE_OPENAI_API_KEY
+                  ? "Your OpenAI API key has been loaded from environment variables"
+                  : localStorage.getItem('openai_api_key')
+                    ? "Using saved OpenAI API key from browser storage (recommend using .env instead)"
+                    : "No API key found. Please add one to your .env file or use browser storage."}
+              </AlertDescription>
+            </Alert>
             
             <div className="flex flex-col md:flex-row gap-2">
               <Button 
@@ -165,7 +180,7 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
                 onClick={() => setIsInputVisible(true)}
                 className="w-full md:w-auto"
               >
-                {localStorage.getItem('openai_api_key') ? 'Update OpenAI API Key' : 'Enter OpenAI API Key'}
+                {localStorage.getItem('openai_api_key') ? 'Update API Key' : 'Add API Key Temporarily'}
               </Button>
               
               {localStorage.getItem('openai_api_key') && (
@@ -174,7 +189,7 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
                   onClick={resetApiKey}
                   className="w-full md:w-auto"
                 >
-                  Remove API Key
+                  Remove Browser API Key
                 </Button>
               )}
             </div>
