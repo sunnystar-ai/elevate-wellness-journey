@@ -16,30 +16,28 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
   const [apiKeyType, setApiKeyType] = useState<'env' | 'localStorage' | 'none'>('none');
   const { toast } = useToast();
 
-  // Check for environment variables or fallback to localStorage
+  // Check for API keys in order of priority
   useEffect(() => {
-    // First check for environment variable
-    const envApiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    
-    if (envApiKey && envApiKey.trim() !== '') {
-      console.log('Using API key from environment variables');
-      setApiKeyType('env');
-      onApiKeySubmit(envApiKey);
+    // First check for localStorage (user-provided takes precedence)
+    const savedKey = localStorage.getItem('openai_api_key');
+    if (savedKey && savedKey.trim() !== '') {
+      console.log('Using API key from localStorage');
+      setApiKeyType('localStorage');
       return;
     }
     
-    // Fallback to localStorage if no env variable
-    const savedKey = localStorage.getItem('openai_api_key');
-    if (savedKey) {
-      console.log('Using API key from localStorage');
-      setApiKeyType('localStorage');
-      onApiKeySubmit(savedKey);
-    } else {
-      // Show input if no key is found
-      setApiKeyType('none');
-      setIsInputVisible(true);
+    // Then check for environment variable
+    const envApiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    if (envApiKey && envApiKey.trim() !== '') {
+      console.log('Using API key from environment variables');
+      setApiKeyType('env');
+      return;
     }
-  }, [onApiKeySubmit]);
+    
+    // Show input if no key is found
+    setApiKeyType('none');
+    setIsInputVisible(true);
+  }, []);
 
   const handleSubmit = (submittedApiKey: string) => {
     if (!submittedApiKey.trim()) {

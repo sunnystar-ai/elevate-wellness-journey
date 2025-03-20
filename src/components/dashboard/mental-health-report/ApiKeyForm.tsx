@@ -17,6 +17,7 @@ const ApiKeyForm = ({ apiKey, setApiKey, onSubmit }: ApiKeyFormProps) => {
       <Tabs defaultValue="browser">
         <TabsList className="w-full mb-2">
           <TabsTrigger value="browser" className="flex-1">Browser Storage</TabsTrigger>
+          <TabsTrigger value="env" className="flex-1">Environment Variables</TabsTrigger>
         </TabsList>
         
         <TabsContent value="browser" className="space-y-3">
@@ -39,6 +40,18 @@ const ApiKeyForm = ({ apiKey, setApiKey, onSubmit }: ApiKeyFormProps) => {
             />
             <Button onClick={onSubmit}>Save Key</Button>
           </div>
+        </TabsContent>
+        
+        <TabsContent value="env" className="space-y-3">
+          <Alert className="bg-green-50 border-green-200">
+            <Info className="h-4 w-4 text-green-500" />
+            <AlertTitle className="text-green-700">Use Environment Variables (Recommended)</AlertTitle>
+            <AlertDescription className="text-green-600">
+              <p>For better security, add your API key to the <code>.env</code> file:</p>
+              <pre className="mt-2 p-2 bg-green-100 rounded text-xs">VITE_OPENAI_API_KEY=sk-your-api-key-here</pre>
+              <p className="mt-2 text-sm">This method requires restarting the application after changing the .env file.</p>
+            </AlertDescription>
+          </Alert>
         </TabsContent>
       </Tabs>
     </div>

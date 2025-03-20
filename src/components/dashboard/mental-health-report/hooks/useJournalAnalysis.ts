@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { 
   analyzeJournalEntry, 
@@ -48,6 +49,7 @@ export const useJournalAnalysis = (journalEntries: JournalEntry[] = []) => {
       return;
     }
     
+    // Save the API key to state and localStorage
     setApiKey(key);
     localStorage.setItem('openai_api_key', key);
     setLoading(true);
@@ -58,7 +60,7 @@ export const useJournalAnalysis = (journalEntries: JournalEntry[] = []) => {
     
     toast({
       title: "API Key Updated",
-      description: "Your OpenAI API key has been updated and will be used for journal analysis.",
+      description: "Your OpenAI API key has been saved and will be used for journal analysis.",
     });
   };
 
@@ -75,8 +77,7 @@ export const useJournalAnalysis = (journalEntries: JournalEntry[] = []) => {
       const latestEntry = journalEntries[journalEntries.length - 1];
       console.log('Analyzing latest journal entry:', latestEntry);
       
-      // Analyze the journal entry to extract insights - this will never throw
-      // since analyzeJournalEntry handles errors internally and falls back to simplified analysis
+      // Analyze the journal entry to extract insights
       const { 
         recommendations: newRecommendations, 
         keyThemes, 
@@ -97,13 +98,11 @@ export const useJournalAnalysis = (journalEntries: JournalEntry[] = []) => {
       // Clear any previous errors
       setAnalysisError(null);
       
-      // Show success toast only if we're using the API key (not simplified analysis)
-      if (currentApiKey && currentApiKey.trim() !== '') {
-        toast({
-          title: "Analysis Complete",
-          description: "Your journal entry has been analyzed successfully.",
-        });
-      }
+      // Show success toast
+      toast({
+        title: "Analysis Complete",
+        description: "Your journal entry has been analyzed successfully.",
+      });
     } catch (error) {
       console.error('Error analyzing journal entries:', error);
       let errorMessage = 'An error occurred during journal analysis.';
@@ -128,26 +127,6 @@ export const useJournalAnalysis = (journalEntries: JournalEntry[] = []) => {
         description: "There was a problem with the AI analysis. Using simplified analysis instead.",
         variant: "destructive"
       });
-      
-      // We've already tried the simplified analysis in analyzeJournalEntry,
-      // but if we somehow got here, try again directly
-      try {
-        const latestEntry = journalEntries[journalEntries.length - 1];
-        const { useSimplifiedAnalysis } = await import('../utils/simplifiedAnalysis');
-        const simplifiedResults = useSimplifiedAnalysis(latestEntry);
-        
-        // Update state with simplified analysis
-        setRecommendations(simplifiedResults.recommendations);
-        setThemeData(simplifiedResults.keyThemes.slice(0, 5));
-        setBeliefData(simplifiedResults.extractedBeliefs);
-        setCognitiveDistortions(simplifiedResults.extractedDistortions);
-        
-        // Generate sentiment data based on the entry and all journal entries
-        const newSentimentData = generateTimeFrameData(latestEntry, journalEntries);
-        setSentimentData(newSentimentData);
-      } catch (fallbackError) {
-        console.error('Even simplified analysis failed:', fallbackError);
-      }
     } finally {
       // Ensure loading state is updated regardless of success/failure
       const timer = setTimeout(() => {
@@ -158,30 +137,33 @@ export const useJournalAnalysis = (journalEntries: JournalEntry[] = []) => {
     }
   };
 
-  // Initialize with API key from env or localStorage
+  // Initialize with API key from localStorage or env
   useEffect(() => {
-    // If we already have an API key, use it immediately
-    if (apiKey) {
-      analyzeJournalEntries();
+    // Determine the initial API key in order of priority
+    // 1. localStorage (user-provided)
+    // 2. environment variable
+    
+    const savedKey = localStorage.getItem('openai_api_key');
+    const envApiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    
+    // First check localStorage since user-provided keys take precedence
+    if (savedKey && savedKey.trim() !== '') {
+      console.log('Initializing with API key from localStorage');
+      setApiKey(savedKey);
+      analyzeJournalEntries(savedKey);
       return;
     }
     
-    // Otherwise check for environment variables first
-    const envApiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    // Then check environment variables
     if (envApiKey && envApiKey.trim() !== '') {
+      console.log('Initializing with API key from environment variables');
       setApiKey(envApiKey);
       analyzeJournalEntries(envApiKey);
       return;
     }
     
-    // Finally check localStorage
-    const savedKey = localStorage.getItem('openai_api_key');
-    if (savedKey) {
-      setApiKey(savedKey);
-      analyzeJournalEntries(savedKey);
-    } else {
-      setLoading(false);
-    }
+    // If no API key is found, just set loading to false
+    setLoading(false);
   }, [journalEntries]);
 
   return {

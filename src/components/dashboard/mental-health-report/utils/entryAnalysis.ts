@@ -8,21 +8,41 @@ import { useToast } from '@/hooks/use-toast';
 export async function analyzeJournalEntry(entry: JournalEntry, apiKey?: string) {
   console.log('Analyzing journal entry:', entry);
   
-  // Try to get API key from environment if not provided
-  if (!apiKey) {
-    apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+  // Check for valid API key in the following order:
+  // 1. Explicitly provided API key (from the function parameter)
+  // 2. localStorage API key
+  // 3. Environment variable API key
+  
+  let effectiveApiKey = apiKey;
+  
+  // If no explicit API key is provided, check localStorage
+  if (!effectiveApiKey || effectiveApiKey.trim() === '') {
+    const localStorageKey = localStorage.getItem('openai_api_key');
+    if (localStorageKey && localStorageKey.trim() !== '') {
+      console.log('Using API key from localStorage');
+      effectiveApiKey = localStorageKey;
+    }
   }
   
-  // If no API key is provided, use the simplified analysis right away
-  if (!apiKey || apiKey.trim() === '') {
-    console.log('No API key provided, using simplified analysis');
+  // If still no API key, check environment variables
+  if (!effectiveApiKey || effectiveApiKey.trim() === '') {
+    const envApiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    if (envApiKey && envApiKey.trim() !== '') {
+      console.log('Using API key from environment variables');
+      effectiveApiKey = envApiKey;
+    }
+  }
+  
+  // If no API key is found anywhere, use the simplified analysis
+  if (!effectiveApiKey || effectiveApiKey.trim() === '') {
+    console.log('No API key found anywhere, using simplified analysis');
     return useSimplifiedAnalysis(entry);
   }
   
   try {
-    // Attempt to analyze with AI
-    console.log('Attempting OpenAI analysis with API key', apiKey.substring(0, 3) + '...');
-    const aiResults = await analyzeEntryWithAI(entry, apiKey);
+    // Attempt to analyze with AI using the effective API key
+    console.log('Attempting OpenAI analysis with API key', effectiveApiKey.substring(0, 3) + '...');
+    const aiResults = await analyzeEntryWithAI(entry, effectiveApiKey);
     
     // Validate the results structure to ensure it has all required properties
     if (!aiResults.recommendations || !aiResults.keyThemes || 
