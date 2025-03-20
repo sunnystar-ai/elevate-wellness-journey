@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Info, Key } from 'lucide-react';
+import { Info, Key, Copy, CheckCircle2 } from 'lucide-react';
 
 interface ApiKeyInputProps {
   onApiKeySubmit: (apiKey: string) => void;
@@ -13,6 +13,7 @@ interface ApiKeyInputProps {
 const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
   const [apiKey, setApiKey] = useState('');
   const [isInputVisible, setIsInputVisible] = useState(false);
+  const [copied, setCopied] = useState(false);
   const { toast } = useToast();
 
   // Check for environment variables or fallback to localStorage
@@ -68,6 +69,19 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
     });
   };
 
+  const copyEnvExample = () => {
+    const text = 'VITE_OPENAI_API_KEY=sk-your-api-key-here';
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+    
+    toast({
+      title: "Text Copied",
+      description: "Example .env line copied to clipboard",
+      variant: "default"
+    });
+  };
+
   return (
     <Card className="mb-4">
       <CardHeader className="pb-2">
@@ -107,12 +121,19 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
               <Button onClick={handleSubmit}>Save Key</Button>
             </div>
             
-            <div className="text-xs text-muted-foreground flex flex-col gap-1 mt-2">
-              <p>Alternatively, you can set the VITE_OPENAI_API_KEY in your .env file:</p>
-              <code className="bg-gray-100 p-2 rounded text-xs font-mono">
-                # In your .env file (create in project root if not exists)<br/>
-                VITE_OPENAI_API_KEY=sk-your-api-key-here
-              </code>
+            <div className="text-xs text-muted-foreground mt-2">
+              <p className="mb-1">If you prefer using a .env file (but it seems you can't modify it right now):</p>
+              <div className="flex items-center space-x-2 bg-gray-100 p-2 rounded text-xs font-mono relative">
+                <code>VITE_OPENAI_API_KEY=sk-your-api-key-here</code>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-5 w-5 p-0 absolute right-2"
+                  onClick={copyEnvExample}
+                >
+                  {copied ? <CheckCircle2 className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
+                </Button>
+              </div>
             </div>
           </div>
         ) : (
