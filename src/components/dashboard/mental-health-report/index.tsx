@@ -116,7 +116,7 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
       if (allText.includes('stress') || allText.includes('anxious') || allText.includes('worry')) {
         newRecommendations.push({
           title: 'Practice mindfulness',
-          description: `Your entry mentions feelings of ${keyThemes.find(t => ['Stress', 'Anxious', 'Worry'].includes(t.theme))?.theme.toLowerCase() || 'stress'}. Try a 5-minute breathing exercise before work.`,
+          description: `Your latest entry mentions feelings of ${keyThemes.find(t => ['Stress', 'Anxious', 'Worry'].includes(t.theme))?.theme.toLowerCase() || 'stress'}. Try a 5-minute breathing exercise.`,
           icon: <div className="h-4 w-4 text-harmony-lavender" />,
           type: 'short-term'
         });
@@ -125,7 +125,7 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
       if (allText.includes('friend') || allText.includes('collaboration') || allText.includes('social')) {
         newRecommendations.push({
           title: 'Nurture social connections',
-          description: 'Your entry highlights the importance of relationships. Schedule time this week to connect with a friend.',
+          description: 'Your entry highlights the importance of relationships. Schedule time to connect with a friend.',
           icon: <div className="h-4 w-4 text-harmony-blue" />,
           type: 'short-term'
         });
@@ -187,23 +187,29 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
         overallScore: (sentimentScore + gratitudeRatio + 1.0) / 3
       }];
       
-      // Only use real data for the day view, mock data for others
+      // Generate week view
+      const weekSentiment: SentimentData[] = Array(7).fill(0).map((_, i) => ({
+        date: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][i],
+        sentimentScore: i === 6 ? sentimentScore : 0,
+        gratitudeRatio: i === 6 ? gratitudeRatio : 0,
+        consistencyScore: i === 6 ? 1.0 : 0,
+        overallScore: i === 6 ? (sentimentScore + gratitudeRatio + 1.0) / 3 : 0
+      }));
+      
+      // Generate month view
+      const monthSentiment: SentimentData[] = Array(4).fill(0).map((_, i) => ({
+        date: `Week ${i+1}`,
+        sentimentScore: i === 3 ? sentimentScore : 0,
+        gratitudeRatio: i === 3 ? gratitudeRatio : 0,
+        consistencyScore: i === 3 ? 0.25 : 0,
+        overallScore: i === 3 ? (sentimentScore + gratitudeRatio + 0.25) / 3 : 0
+      }));
+      
+      // Create the new sentiment data object
       const newSentimentData = {
         day: daySentiment,
-        week: Array(7).fill(0).map((_, i) => ({
-          date: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][i],
-          sentimentScore: i === 6 ? sentimentScore : 0,
-          gratitudeRatio: i === 6 ? gratitudeRatio : 0,
-          consistencyScore: i === 6 ? 1.0 : 0,
-          overallScore: i === 6 ? (sentimentScore + gratitudeRatio + 1.0) / 3 : 0
-        })),
-        month: Array(4).fill(0).map((_, i) => ({
-          date: [`Week ${i+1}`],
-          sentimentScore: i === 3 ? sentimentScore : 0,
-          gratitudeRatio: i === 3 ? gratitudeRatio : 0,
-          consistencyScore: i === 3 ? 0.25 : 0,
-          overallScore: i === 3 ? (sentimentScore + gratitudeRatio + 0.25) / 3 : 0
-        }))
+        week: weekSentiment,
+        month: monthSentiment
       };
       
       // Extract beliefs from latest entry

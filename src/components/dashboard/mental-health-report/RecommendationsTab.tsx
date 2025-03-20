@@ -91,9 +91,9 @@ const RecommendationsTab = ({ recommendations, currentData }: RecommendationsTab
             <p className="text-sm">
               Consistent journaling has shown to improve mental health scores by 15-20% over 8 weeks.
               {hasRecommendations ? (
-                <>Your current consistency rate of {consistency}% is excellent - keep it up!</>
+                <> Your current consistency rate of {consistency}% is excellent - keep it up!</>
               ) : (
-                <>Keep journaling regularly to build a habit and unlock more personalized insights.</>
+                <> Keep journaling regularly to build a habit and unlock more personalized insights.</>
               )}
             </p>
           </div>
