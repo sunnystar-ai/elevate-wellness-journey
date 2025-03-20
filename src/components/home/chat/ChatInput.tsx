@@ -22,13 +22,14 @@ const ChatInput = ({ onSendMessage, isLoading }: ChatInputProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-3 border-t border-gray-100 flex gap-2">
+    <form onSubmit={handleSubmit} className="p-3 border-t border-gray-100 flex gap-2 bg-white">
       <Input
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder="Ask about reframing your beliefs..."
         disabled={isLoading}
         className="flex-1"
+        autoComplete="off"
       />
       <Button type="submit" disabled={isLoading || !input.trim()}>
         {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}

@@ -14,9 +14,9 @@ interface MessageListProps {
 
 const MessageList = ({ messages, isLoading, messagesEndRef, scrollAreaRef }: MessageListProps) => {
   return (
-    <div className="flex-1 overflow-hidden relative">
+    <div className="flex-1 overflow-hidden">
       <ScrollArea className="h-full p-3" ref={scrollAreaRef}>
-        <div className="space-y-3 pb-2">
+        <div className="space-y-3">
           {messages.map(message => (
             <ChatMessage key={message.id} message={message} />
           ))}

@@ -90,7 +90,7 @@ const AiChat = () => {
   };
 
   return (
-    <div className="rounded-lg bg-white shadow-md h-[400px] flex flex-col">
+    <div className="rounded-lg bg-white shadow-md h-[400px] flex flex-col overflow-hidden">
       <ChatHeader />
       <MessageList 
         messages={messages}
