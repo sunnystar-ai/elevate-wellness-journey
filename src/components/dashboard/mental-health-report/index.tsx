@@ -10,7 +10,7 @@ import InsufficientDataMessage from './InsufficientDataMessage';
 import { 
   analyzeJournalEntry, 
   generateTimeFrameData 
-} from './utils/journalAnalysis';
+} from './utils';
 import {
   JournalEntry,
   SentimentData,
