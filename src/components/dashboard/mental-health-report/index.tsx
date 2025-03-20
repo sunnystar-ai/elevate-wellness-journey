@@ -7,6 +7,7 @@ import BeliefsTab from './BeliefsTab';
 import RecommendationsTab from './RecommendationsTab';
 import LatestJournalAnalysis from './LatestJournalAnalysis';
 import InsufficientDataMessage from './InsufficientDataMessage';
+import ApiKeyInput from './ApiKeyInput';
 import { 
   analyzeJournalEntry, 
   generateTimeFrameData 
@@ -38,6 +39,7 @@ type MentalHealthReportProps = {
 
 const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthReportProps) => {
   const [loading, setLoading] = useState(true);
+  const [apiKey, setApiKey] = useState<string | undefined>(undefined);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [themeData, setThemeData] = useState<ThemeData[]>([]);
   const [beliefData, setBeliefData] = useState<BeliefData[]>([]);
@@ -47,29 +49,44 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
     week: [],
     month: []
   });
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
 
-  // Analyze journal entries and generate insights
-  useEffect(() => {
+  const handleApiKeySubmit = (key: string) => {
+    setApiKey(key);
+    setLoading(true);
+    // Re-analyze with the new API key
+    analyzeJournalEntries();
+  };
+
+  const analyzeJournalEntries = async () => {
+    setLoading(true);
+    setAnalysisError(null);
+    
     if (journalEntries && journalEntries.length > 0) {
-      const latestEntry = journalEntries[journalEntries.length - 1];
-      
-      // Analyze the journal entry to extract insights
-      const { 
-        recommendations: newRecommendations, 
-        keyThemes, 
-        extractedBeliefs, 
-        extractedDistortions 
-      } = analyzeJournalEntry(latestEntry);
-      
-      // Generate sentiment data based on the entry and all journal entries
-      const newSentimentData = generateTimeFrameData(latestEntry, journalEntries);
-      
-      // Update state with the extracted insights
-      setRecommendations(newRecommendations);
-      setThemeData(keyThemes.slice(0, 5)); // Top 5 themes
-      setSentimentData(newSentimentData);
-      setBeliefData(extractedBeliefs);
-      setCognitiveDistortions(extractedDistortions);
+      try {
+        const latestEntry = journalEntries[journalEntries.length - 1];
+        
+        // Analyze the journal entry to extract insights
+        const { 
+          recommendations: newRecommendations, 
+          keyThemes, 
+          extractedBeliefs, 
+          extractedDistortions 
+        } = await analyzeJournalEntry(latestEntry, apiKey);
+        
+        // Generate sentiment data based on the entry and all journal entries
+        const newSentimentData = generateTimeFrameData(latestEntry, journalEntries);
+        
+        // Update state with the extracted insights
+        setRecommendations(newRecommendations);
+        setThemeData(keyThemes.slice(0, 5)); // Top 5 themes
+        setSentimentData(newSentimentData);
+        setBeliefData(extractedBeliefs);
+        setCognitiveDistortions(extractedDistortions);
+      } catch (error) {
+        console.error('Error analyzing journal entries:', error);
+        setAnalysisError('An error occurred during journal analysis. Please try again or check your API key.');
+      }
     }
     
     const timer = setTimeout(() => {
@@ -77,7 +94,18 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
     }, 1000);
     
     return () => clearTimeout(timer);
-  }, [journalEntries]);
+  };
+
+  // Analyze journal entries and generate insights when entries or API key changes
+  useEffect(() => {
+    // Check for saved API key on component mount
+    const savedKey = localStorage.getItem('openai_api_key');
+    if (savedKey) {
+      setApiKey(savedKey);
+    }
+    
+    analyzeJournalEntries();
+  }, [journalEntries, apiKey]);
 
   // Check if we have enough data for the selected time frame
   const hasEnoughData = () => {
@@ -108,6 +136,15 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
 
   return (
     <div className="space-y-6">
+      {/* API Key Input Component */}
+      <ApiKeyInput onApiKeySubmit={handleApiKeySubmit} />
+      
+      {analysisError && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+          {analysisError}
+        </div>
+      )}
+      
       {journalEntries && journalEntries.length > 0 && (
         <LatestJournalAnalysis latestEntry={journalEntries[journalEntries.length - 1]} />
       )}

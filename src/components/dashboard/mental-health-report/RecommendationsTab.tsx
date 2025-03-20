@@ -11,12 +11,12 @@ type RecommendationsTabProps = {
 
 const RecommendationsTab = ({ recommendations, currentData }: RecommendationsTabProps) => {
   // Filter short-term and long-term recommendations
-  const shortTermRecs = recommendations.filter(r => r.type === 'short-term');
-  const longTermRecs = recommendations.filter(r => r.type === 'long-term');
+  const shortTermRecs = recommendations?.filter(r => r.type === 'short-term') || [];
+  const longTermRecs = recommendations?.filter(r => r.type === 'long-term') || [];
   
   // If we have no recommendations, show a default message
-  const hasRecommendations = recommendations.length > 0;
-  const latestData = currentData.length > 0 ? currentData[currentData.length - 1] : null;
+  const hasRecommendations = recommendations?.length > 0;
+  const latestData = currentData?.length > 0 ? currentData[currentData.length - 1] : null;
   const consistency = latestData ? Math.round(latestData.consistencyScore * 100) : 0;
 
   return (

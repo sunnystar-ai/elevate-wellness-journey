@@ -9,18 +9,115 @@ import {
 } from '../types';
 import { getColorForEmotion } from './colorUtils';
 
-// Analyze journal entries and extract insights
-export function analyzeJournalEntry(entry: JournalEntry) {
-  console.log('Latest journal entry analyzed:', entry);
+// Function to analyze journal entries using OpenAI
+export async function analyzeJournalEntry(entry: JournalEntry, apiKey?: string) {
+  console.log('Analyzing journal entry:', entry);
   
-  // Create empty result objects
-  const recommendations: Recommendation[] = [];
-  const keyThemes: ThemeData[] = [];
-  const extractedBeliefs: BeliefData[] = [];
-  const extractedDistortions: CognitiveDistortion[] = [];
+  // Create empty result objects with default values
+  let recommendations: Recommendation[] = [];
+  let keyThemes: ThemeData[] = [];
+  let extractedBeliefs: BeliefData[] = [];
+  let extractedDistortions: CognitiveDistortion[] = [];
   
+  // If no API key is provided, use the simplified analysis
+  if (!apiKey) {
+    console.log('No API key provided, using simplified analysis');
+    return useSimplifiedAnalysis(entry);
+  }
+  
+  try {
+    // Prepare the entry content for analysis
+    const entryContent = `
+      Feelings: ${entry.feelings}
+      Thoughts: ${entry.thoughtProcess}
+      Gratitude: ${entry.gratitude}
+    `;
+    
+    // Create the API request to OpenAI
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: `You are a mental health analysis assistant. Analyze the journal entry and extract:
+            1. Key emotional themes (up to 7) with their intensity scores between 1-10
+            2. 2-3 core beliefs expressed in the entry with confidence scores (0.0-1.0) and whether they're positive
+            3. Any cognitive distortions present with frequency scores (1-5)
+            4. 3-4 tailored recommendations based on the content
+            
+            Format your response as JSON with these exact keys:
+            {
+              "themes": [{"theme": "string", "count": number, "color": "string"}],
+              "beliefs": [{"belief": "string", "confidence": number, "isPositive": boolean}],
+              "distortions": [{"type": "string", "description": "string", "frequency": number, "example": "string"}],
+              "recommendations": [{"title": "string", "description": "string", "type": "short-term" or "long-term"}]
+            }`
+          },
+          {
+            role: 'user',
+            content: entryContent
+          }
+        ]
+      })
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('OpenAI API error:', errorData);
+      throw new Error(`OpenAI API error: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    const analysisResult = JSON.parse(data.choices[0].message.content);
+    
+    // Process the themes and add colors
+    keyThemes = analysisResult.themes.map((theme: any) => ({
+      theme: theme.theme,
+      count: theme.count,
+      color: getColorForEmotion(theme.theme)
+    }));
+    
+    // Process beliefs
+    extractedBeliefs = analysisResult.beliefs;
+    
+    // Process distortions
+    extractedDistortions = analysisResult.distortions;
+    
+    // Process recommendations
+    recommendations = analysisResult.recommendations.map((rec: any) => ({
+      ...rec,
+      icon: React.createElement("div", { className: "h-4 w-4 text-harmony-lavender" })
+    }));
+    
+  } catch (error) {
+    console.error('Error analyzing journal entry with OpenAI:', error);
+    // Fallback to simplified analysis if API fails
+    return useSimplifiedAnalysis(entry);
+  }
+  
+  return {
+    recommendations,
+    keyThemes,
+    extractedBeliefs,
+    extractedDistortions
+  };
+}
+
+// Simplified analysis function for fallback
+function useSimplifiedAnalysis(entry: JournalEntry) {
   // Real analysis based on entry content
   const allText = `${entry.feelings} ${entry.thoughtProcess} ${entry.gratitude}`.toLowerCase();
+  
+  let recommendations: Recommendation[] = [];
+  let keyThemes: ThemeData[] = [];
+  let extractedBeliefs: BeliefData[] = [];
+  let extractedDistortions: CognitiveDistortion[] = [];
   
   // Extract meaningful words for theme analysis
   const wordCounts: Record<string, number> = {};
@@ -54,10 +151,12 @@ export function analyzeJournalEntry(entry: JournalEntry) {
   Object.entries(emotionMapping).forEach(([theme, relatedWords]) => {
     let count = 0;
     relatedWords.forEach(word => {
-      const regex = new RegExp(`\\b${word}\\b`, 'gi');
-      const matches = allText.match(regex);
-      if (matches) {
-        count += matches.length;
+      if (allText) {
+        const regex = new RegExp(`\\b${word}\\b`, 'gi');
+        const matches = allText.match(regex);
+        if (matches) {
+          count += matches.length;
+        }
       }
     });
     
@@ -92,7 +191,7 @@ export function analyzeJournalEntry(entry: JournalEntry) {
   const limitedThemes = keyThemes.slice(0, 7); // Limit to top 7 themes
   
   // Create personalized recommendations
-  if (allText.includes('stress') || allText.includes('anxious') || allText.includes('worry')) {
+  if (allText && allText.includes('stress') || (allText && allText.includes('anxious')) || (allText && allText.includes('worry'))) {
     recommendations.push({
       title: 'Practice mindfulness',
       description: `Your entry shows feelings of ${keyThemes.find(t => ['Stress', 'Anxious', 'Worry'].includes(t.theme))?.theme.toLowerCase() || 'stress'}. Try a 5-minute breathing exercise.`,
@@ -101,7 +200,7 @@ export function analyzeJournalEntry(entry: JournalEntry) {
     });
   }
   
-  if (allText.includes('work') && (allText.includes('stress') || allText.includes('overwhelm'))) {
+  if (allText && allText.includes('work') && ((allText && allText.includes('stress')) || (allText && allText.includes('overwhelm')))) {
     recommendations.push({
       title: 'Work-life balance',
       description: 'You mentioned stress about work outcomes. Try setting clear boundaries between work and personal time.',
@@ -110,7 +209,7 @@ export function analyzeJournalEntry(entry: JournalEntry) {
     });
   }
   
-  if (allText.includes('friend') || allText.includes('social') || allText.includes('connection')) {
+  if (allText && (allText.includes('friend') || allText.includes('social') || allText.includes('connection'))) {
     recommendations.push({
       title: 'Nurture social connections',
       description: 'Your entry references relationships. Schedule time to connect with a friend or family member.',
@@ -119,43 +218,26 @@ export function analyzeJournalEntry(entry: JournalEntry) {
     });
   }
   
-  if (allText.includes('grateful') || allText.includes('thankful') || allText.includes('appreciation') || allText.includes('budget')) {
+  // Add default recommendations if none created
+  if (recommendations.length === 0) {
     recommendations.push({
-      title: 'Daily gratitude practice',
-      description: 'Continue expressing gratitude in your journal. Your entry shows appreciation for your resources.',
+      title: 'Continue journaling',
+      description: 'Regular journaling helps build self-awareness around your emotional patterns.',
       icon: React.createElement("div", { className: "h-4 w-4 text-harmony-mint" }),
       type: 'short-term'
     });
   }
 
-  if (allText.includes('learn') || allText.includes('skill') || allText.includes('new')) {
-    recommendations.push({
-      title: 'Skill development',
-      description: 'Your entry mentions learning new skills. Consider setting specific learning goals for the week.',
-      icon: React.createElement("div", { className: "h-4 w-4 text-harmony-lavender" }),
-      type: 'long-term'
-    });
-  }
-
   // Add at least one long-term recommendation
-  if (allText.includes('technology') || allText.includes('computer')) {
-    recommendations.push({
-      title: 'Technology balance',
-      description: 'Work on establishing healthy boundaries with technology use.',
-      icon: React.createElement("div", { className: "h-4 w-4 text-harmony-peach" }),
-      type: 'long-term'
-    });
-  } else {
-    recommendations.push({
-      title: 'Develop self-reflection practice',
-      description: 'Continue your journaling to build self-awareness around your emotional patterns.',
-      icon: React.createElement("div", { className: "h-4 w-4 text-harmony-peach" }),
-      type: 'long-term'
-    });
-  }
+  recommendations.push({
+    title: 'Develop self-reflection practice',
+    description: 'Continue your journaling to build self-awareness around your emotional patterns.',
+    icon: React.createElement("div", { className: "h-4 w-4 text-harmony-peach" }),
+    type: 'long-term'
+  });
   
   // Extract beliefs from latest entry
-  if (allText.includes('skill') && allText.includes('learn')) {
+  if (allText && allText.includes('skill') && allText.includes('learn')) {
     extractedBeliefs.push({
       belief: 'I am capable of learning new skills',
       confidence: 0.75,
@@ -163,7 +245,7 @@ export function analyzeJournalEntry(entry: JournalEntry) {
     });
   }
   
-  if (allText.includes('work') && allText.includes('stress')) {
+  if (allText && allText.includes('work') && allText.includes('stress')) {
     extractedBeliefs.push({
       belief: 'Work outcomes should be perfect',
       confidence: 0.65,
@@ -171,16 +253,8 @@ export function analyzeJournalEntry(entry: JournalEntry) {
     });
   }
 
-  if (allText.includes('grateful') && allText.includes('budget')) {
-    extractedBeliefs.push({
-      belief: 'I have enough resources for my needs',
-      confidence: 0.82,
-      isPositive: true
-    });
-  }
-  
+  // Default beliefs if none detected
   if (extractedBeliefs.length === 0) {
-    // Default beliefs if none detected
     extractedBeliefs.push({
       belief: 'I can grow through journaling',
       confidence: 0.70,
@@ -189,21 +263,12 @@ export function analyzeJournalEntry(entry: JournalEntry) {
   }
 
   // Create cognitive distortions based on entry text
-  if (allText.includes('expect') && (allText.includes('stress') || allText.includes('worry'))) {
+  if (allText && allText.includes('expect') && ((allText && allText.includes('stress')) || (allText && allText.includes('worry')))) {
     extractedDistortions.push({
       type: 'Fortune telling',
       description: 'Predicting negative outcomes without sufficient evidence',
       frequency: 2,
       example: 'Expecting things will go poorly before they happen'
-    });
-  }
-
-  if (allText.includes('many') && allText.includes('so')) {
-    extractedDistortions.push({
-      type: 'All-or-nothing thinking',
-      description: 'Seeing things in black and white categories',
-      frequency: 2,
-      example: 'Viewing situations as either completely good or completely bad'
     });
   }
 
