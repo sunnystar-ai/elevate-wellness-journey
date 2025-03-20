@@ -1,7 +1,6 @@
 
 import { useState } from 'react';
 import { TimeFrame, JournalEntry } from './types';
-import ApiKeyInput from './ApiKeyInput';
 import ReportContent from './ReportContent';
 import { useJournalAnalysis } from './hooks/useJournalAnalysis';
 import { hasEnoughData } from './utils';
@@ -40,8 +39,7 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
 
   return (
     <div className="space-y-6">
-      {/* API Key Input Component */}
-      <ApiKeyInput onApiKeySubmit={handleApiKeySubmit} />
+      {/* API Key Input Component has been removed */}
       
       <ReportContent
         timeFrame={timeFrame}

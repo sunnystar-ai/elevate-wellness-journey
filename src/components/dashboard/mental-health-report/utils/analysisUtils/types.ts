@@ -8,6 +8,7 @@ export interface SentimentResult {
 }
 
 // Re-export types from the parent types file
+// Using 'export type' for re-exports when 'isolatedModules' is enabled
 export type { 
   JournalEntry, 
   ThemeData, 

@@ -40,8 +40,6 @@ const ReportContent = ({
     );
   }
 
-  const noApiKey = !apiKey;
-
   return (
     <div className="space-y-6">
       {analysisError && (
@@ -50,13 +48,7 @@ const ReportContent = ({
         </div>
       )}
       
-      {noApiKey && (
-        <div className="bg-amber-50 border border-amber-200 text-amber-700 px-4 py-3 rounded-lg mb-4">
-          Please add an OpenAI API key above to enable journal analysis.
-        </div>
-      )}
-      
-      {!noApiKey && journalEntries && journalEntries.length > 0 && (
+      {journalEntries && journalEntries.length > 0 && (
         <LatestJournalAnalysis latestEntry={journalEntries[journalEntries.length - 1]} />
       )}
       

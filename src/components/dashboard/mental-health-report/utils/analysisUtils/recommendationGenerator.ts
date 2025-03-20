@@ -1,37 +1,34 @@
+import { JournalEntry, Recommendation } from '../../types';
+import { SentimentResult } from './types';
 
-import { Recommendation } from '../types';
-import React from 'react';
+export function generateRecommendations(entry: JournalEntry, sentimentResult: SentimentResult): Recommendation[] {
+  const recommendations: Recommendation[] = [];
 
-/**
- * Generates recommendations based on sentiment analysis
- */
-export const generateRecommendations = (overallPositivity: number): Recommendation[] => {
-  return [
-    {
-      title: "Practice Mindfulness",
-      description: "Take 5 minutes today to breathe deeply and be present with your emotions",
-      type: "short-term" as const,
-      icon: React.createElement("div", { className: "h-4 w-4 text-harmony-lavender" })
-    },
-    {
-      title: overallPositivity > 0.6 ? "Build on Positive Emotions" : "Address Challenging Feelings",
-      description: overallPositivity > 0.6 
-        ? "Journal about what's contributing to your positive state" 
-        : "Identify one small action to improve your mood today",
-      type: "short-term" as const,
-      icon: React.createElement("div", { className: "h-4 w-4 text-harmony-lavender" })
-    },
-    {
-      title: "Gratitude Practice",
-      description: "Continue noting things you're grateful for each day to build resilience",
-      type: "long-term" as const,
-      icon: React.createElement("div", { className: "h-4 w-4 text-harmony-lavender" })
-    },
-    {
-      title: "Self-Compassion",
-      description: "Treat yourself with the same kindness you would offer to a good friend",
-      type: "long-term" as const,
-      icon: React.createElement("div", { className: "h-4 w-4 text-harmony-lavender" })
-    }
-  ];
-};
+  if (sentimentResult.sentiment === 'negative') {
+    recommendations.push({
+      text: "Consider practicing mindfulness or meditation to help manage negative feelings.",
+      type: "coping_strategy"
+    });
+  } else {
+    recommendations.push({
+      text: "Continue to focus on the positive aspects of your day to maintain a positive mood.",
+      type: "mood_maintenance"
+    });
+  }
+
+  if (entry.thoughtProcess.length > 100) {
+    recommendations.push({
+      text: "Try breaking down overwhelming thoughts into smaller, manageable steps.",
+      type: "thought_restructuring"
+    });
+  }
+
+  if (entry.gratitude.length > 50) {
+    recommendations.push({
+      text: "Keep a gratitude journal to regularly acknowledge the good things in your life.",
+      type: "gratitude_practice"
+    });
+  }
+
+  return recommendations;
+}

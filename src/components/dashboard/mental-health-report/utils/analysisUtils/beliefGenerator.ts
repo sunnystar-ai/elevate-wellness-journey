@@ -1,5 +1,5 @@
-
-import { BeliefData, SentimentResult } from '../types';
+import { JournalEntry, BeliefData } from '../../types';
+import { SentimentResult } from './types';
 
 /**
  * Generates belief data based on sentiment analysis results

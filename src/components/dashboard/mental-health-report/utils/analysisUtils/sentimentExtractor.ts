@@ -1,5 +1,5 @@
-
-import { SentimentResult } from '../types';
+import { JournalEntry } from '../../types';
+import { SentimentResult } from './types';
 
 // Lists of positive and negative words for basic sentiment analysis
 const positiveWords = [
