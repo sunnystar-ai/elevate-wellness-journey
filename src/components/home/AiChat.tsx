@@ -4,6 +4,7 @@ import { Send, Bot, User, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 type Message = {
   id: string;
@@ -24,10 +25,12 @@ const AiChat = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  // Scroll to bottom of chat whenever messages update
+  // Only scroll to bottom when new messages are added or when loading state changes
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (messages.length > 0 || isLoading === false) {
+      scrollToBottom();
+    }
+  }, [messages.length, isLoading]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -136,49 +139,51 @@ const AiChat = () => {
         </h3>
       </div>
       
-      <div className="flex-1 overflow-y-auto p-3 space-y-3">
-        {messages.map(message => (
-          <div 
-            key={message.id} 
-            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
+      <ScrollArea className="flex-1 p-3">
+        <div className="space-y-3">
+          {messages.map(message => (
             <div 
-              className={`max-w-[80%] p-3 rounded-lg ${
-                message.role === 'user' 
-                  ? 'bg-primary text-primary-foreground ml-4' 
-                  : 'bg-muted mr-4'
-              }`}
+              key={message.id} 
+              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
-              <div className="flex items-center gap-2 mb-1 text-xs opacity-70">
-                {message.role === 'user' ? (
-                  <>
-                    <span>You</span>
-                    <User className="h-3 w-3" />
-                  </>
-                ) : (
-                  <>
-                    <Bot className="h-3 w-3" />
-                    <span>Assistant</span>
-                  </>
-                )}
+              <div 
+                className={`max-w-[80%] p-3 rounded-lg ${
+                  message.role === 'user' 
+                    ? 'bg-primary text-primary-foreground ml-4' 
+                    : 'bg-muted mr-4'
+                }`}
+              >
+                <div className="flex items-center gap-2 mb-1 text-xs opacity-70">
+                  {message.role === 'user' ? (
+                    <>
+                      <span>You</span>
+                      <User className="h-3 w-3" />
+                    </>
+                  ) : (
+                    <>
+                      <Bot className="h-3 w-3" />
+                      <span>Assistant</span>
+                    </>
+                  )}
+                </div>
+                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
               </div>
-              <p className="text-sm whitespace-pre-wrap">{message.content}</p>
             </div>
-          </div>
-        ))}
-        {isLoading && (
-          <div className="flex justify-start">
-            <div className="max-w-[80%] p-3 rounded-lg bg-muted mr-4">
-              <div className="flex items-center gap-2 mb-1 text-xs opacity-70">
-                <Bot className="h-3 w-3" />
-                <span>Assistant</span>
+          ))}
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="max-w-[80%] p-3 rounded-lg bg-muted mr-4">
+                <div className="flex items-center gap-2 mb-1 text-xs opacity-70">
+                  <Bot className="h-3 w-3" />
+                  <span>Assistant</span>
+                </div>
+                <Loader2 className="h-4 w-4 animate-spin" />
               </div>
-              <Loader2 className="h-4 w-4 animate-spin" />
             </div>
-          </div>
-        )}
-        <div ref={messagesEndRef} />
-      </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+      </ScrollArea>
       
       <form onSubmit={handleSubmit} className="p-3 border-t border-gray-100 flex gap-2">
         <Input
