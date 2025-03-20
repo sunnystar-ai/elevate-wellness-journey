@@ -98,7 +98,7 @@ export const useJournalAnalysis = (journalEntries: JournalEntry[] = []) => {
         }
       ];
       
-      const defaultRecommendations = [
+      const defaultRecommendations: Recommendation[] = [
         {
           title: "Continue Journaling",
           description: "Regular journaling helps track your mental well-being over time",
