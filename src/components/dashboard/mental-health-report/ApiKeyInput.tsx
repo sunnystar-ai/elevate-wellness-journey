@@ -4,7 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Info, Key, Copy, CheckCircle2 } from 'lucide-react';
+import { Info, Key, Copy, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 interface ApiKeyInputProps {
   onApiKeySubmit: (apiKey: string) => void;
@@ -82,6 +83,18 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
     });
   };
 
+  const resetApiKey = () => {
+    localStorage.removeItem('openai_api_key');
+    setApiKey('');
+    setIsInputVisible(true);
+    
+    toast({
+      title: "API Key Removed",
+      description: "Your OpenAI API key has been removed from browser storage",
+      variant: "default"
+    });
+  };
+
   return (
     <Card className="mb-4">
       <CardHeader className="pb-2">
@@ -96,19 +109,19 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
       <CardContent>
         {isInputVisible ? (
           <div className="space-y-3">
-            <div className="p-3 bg-blue-50 rounded-md border border-blue-100 flex items-start gap-3">
-              <Info className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
-              <div className="text-sm text-blue-700">
-                <p className="font-medium mb-1">How to get your OpenAI API key:</p>
-                <ol className="list-decimal pl-5 space-y-1">
-                  <li>Go to <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" className="underline">platform.openai.com/api-keys</a></li>
+            <Alert variant="default" className="bg-blue-50 border-blue-200">
+              <Info className="h-5 w-5 text-blue-500" />
+              <AlertTitle className="text-blue-700">How to get your OpenAI API key:</AlertTitle>
+              <AlertDescription className="text-blue-600">
+                <ol className="list-decimal pl-5 space-y-1 mt-1">
+                  <li>Go to <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" className="underline font-medium">platform.openai.com/api-keys</a></li>
                   <li>Sign in or create an account</li>
                   <li>Create a new secret key</li>
                   <li>Copy and paste it below</li>
                 </ol>
                 <p className="mt-2">Your key will be stored securely in your browser's local storage only.</p>
-              </div>
-            </div>
+              </AlertDescription>
+            </Alert>
             
             <div className="flex space-x-2">
               <Input 
@@ -145,7 +158,8 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
                   ? "Using saved OpenAI API key from browser storage"
                   : "Use OpenAI's advanced AI to analyze your journal entries for deeper insights."}
             </p>
-            {(!import.meta.env.VITE_OPENAI_API_KEY || import.meta.env.VITE_OPENAI_API_KEY.trim() === '') && (
+            
+            <div className="flex flex-col md:flex-row gap-2">
               <Button 
                 variant="outline" 
                 onClick={() => setIsInputVisible(true)}
@@ -153,7 +167,17 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
               >
                 {localStorage.getItem('openai_api_key') ? 'Update OpenAI API Key' : 'Enter OpenAI API Key'}
               </Button>
-            )}
+              
+              {localStorage.getItem('openai_api_key') && (
+                <Button 
+                  variant="destructive" 
+                  onClick={resetApiKey}
+                  className="w-full md:w-auto"
+                >
+                  Remove API Key
+                </Button>
+              )}
+            </div>
           </div>
         )}
       </CardContent>
