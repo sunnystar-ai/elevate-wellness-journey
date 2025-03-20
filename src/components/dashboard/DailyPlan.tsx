@@ -1,19 +1,17 @@
 import { useState } from 'react';
-import { CalendarCheck, Flame, Brain, Footprints, Award, Clock } from 'lucide-react';
+import { CalendarCheck, Flame, Brain, Award, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const DailyPlan = () => {
   // Daily plan data - keep track of completed activities
   const [completedActivities, setCompletedActivities] = useState<Record<string, boolean>>({
     "Morning meditation": false,
-    "Lunchtime walk": false,
     "Evening workout": false,
     "Sleep preparation": false
   });
 
   const dailyPlan = [
     { time: "7:00 AM", activity: "Morning meditation", completed: completedActivities["Morning meditation"], icon: <Flame className="h-4 w-4 text-harmony-lavender" /> },
-    { time: "12:30 PM", activity: "Lunchtime walk", completed: completedActivities["Lunchtime walk"], icon: <Footprints className="h-4 w-4 text-harmony-blue" /> },
     { time: "6:00 PM", activity: "Evening workout", completed: completedActivities["Evening workout"], icon: <Award className="h-4 w-4 text-harmony-mint" /> },
     { time: "10:00 PM", activity: "Sleep preparation", completed: completedActivities["Sleep preparation"], icon: <Clock className="h-4 w-4 text-harmony-peach" /> }
   ];
