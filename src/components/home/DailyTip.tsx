@@ -19,11 +19,19 @@ const DailyTip = () => {
   const [tip, setTip] = useState("");
   
   useEffect(() => {
-    // Get today's date as string to use as seed
-    const today = new Date().toDateString();
+    // Create a date string in YYYY-MM-DD format to ensure it changes daily
+    const today = new Date();
+    const dateString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
     
     // Simple hash function to get deterministic but changing index
-    const hash = Array.from(today).reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    let hash = 0;
+    for (let i = 0; i < dateString.length; i++) {
+      hash = ((hash << 5) - hash) + dateString.charCodeAt(i);
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    
+    // Ensure positive index
+    hash = Math.abs(hash);
     const index = hash % tips.length;
     
     setTip(tips[index]);

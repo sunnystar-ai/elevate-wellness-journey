@@ -37,7 +37,18 @@ const quotes = [
 ];
 
 export const getDailyQuote = () => {
+  // Create a date string in YYYY-MM-DD format
   const today = new Date();
-  const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / 86400000);
-  return quotes[dayOfYear % quotes.length];
+  const dateString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+  
+  // Simple hash function for consistent daily selection
+  let hash = 0;
+  for (let i = 0; i < dateString.length; i++) {
+    hash = ((hash << 5) - hash) + dateString.charCodeAt(i);
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  
+  // Ensure positive index
+  hash = Math.abs(hash);
+  return quotes[hash % quotes.length];
 };
