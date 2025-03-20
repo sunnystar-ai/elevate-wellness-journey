@@ -43,31 +43,16 @@ const TrendsSection = ({ journalEntries = [] }: TrendsSectionProps) => {
         </div>
       </div>
       
-      <div className="grid grid-cols-2 gap-3 mb-2">
-        <div className="p-3 bg-white rounded-lg shadow-sm">
-          <div className="text-sm font-medium mb-2">Physical Activity</div>
-          <div className="h-20 flex items-end justify-between">
-            {[30, 45, 60, 70, 50, 80, 65].map((height, i) => (
-              <div 
-                key={i} 
-                className="w-2 bg-harmony-blue rounded-full"
-                style={{ height: `${height}%` }}
-              ></div>
-            ))}
-          </div>
-        </div>
-        
-        <div className="p-3 bg-white rounded-lg shadow-sm">
-          <div className="text-sm font-medium mb-2">Mental Wellness</div>
-          <div className="h-20 flex items-end justify-between">
-            {[50, 55, 60, 65, 70, 75, 80].map((height, i) => (
-              <div 
-                key={i} 
-                className="w-2 bg-harmony-lavender rounded-full"
-                style={{ height: `${height}%` }}
-              ></div>
-            ))}
-          </div>
+      <div className="p-3 bg-white rounded-lg shadow-sm">
+        <div className="text-sm font-medium mb-2">Mental Wellness</div>
+        <div className="h-20 flex items-end justify-between">
+          {[50, 55, 60, 65, 70, 75, 80].map((height, i) => (
+            <div 
+              key={i} 
+              className="w-2 bg-harmony-lavender rounded-full"
+              style={{ height: `${height}%` }}
+            ></div>
+          ))}
         </div>
       </div>
       
