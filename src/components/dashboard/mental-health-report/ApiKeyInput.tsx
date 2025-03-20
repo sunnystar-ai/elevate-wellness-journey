@@ -107,7 +107,7 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
               <Button 
                 variant="outline" 
                 onClick={() => setIsInputVisible(true)}
-                className="w-full"
+                className="w-full md:w-auto"
               >
                 {localStorage.getItem('openai_api_key') ? 'Update OpenAI API Key' : 'Enter OpenAI API Key'}
               </Button>
