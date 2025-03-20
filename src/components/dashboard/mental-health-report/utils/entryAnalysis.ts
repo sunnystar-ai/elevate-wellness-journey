@@ -13,6 +13,11 @@ import { getColorForEmotion } from './colorUtils';
 export async function analyzeJournalEntry(entry: JournalEntry, apiKey?: string) {
   console.log('Analyzing journal entry:', entry);
   
+  // Try to get API key from environment if not provided
+  if (!apiKey) {
+    apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+  }
+  
   // Create empty result objects with default values
   let recommendations: Recommendation[] = [];
   let keyThemes: ThemeData[] = [];

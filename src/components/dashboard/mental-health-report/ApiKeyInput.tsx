@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,13 +14,24 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
   const [isInputVisible, setIsInputVisible] = useState(false);
   const { toast } = useToast();
 
-  // Load from localStorage if available
-  useState(() => {
+  // Check for environment variables or fallback to localStorage
+  useEffect(() => {
+    // First check for environment variable (Vite exposes env vars with VITE_ prefix)
+    const envApiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    
+    if (envApiKey) {
+      console.log('Using API key from environment variables');
+      onApiKeySubmit(envApiKey);
+      return;
+    }
+    
+    // Fallback to localStorage if no env variable
     const savedKey = localStorage.getItem('openai_api_key');
     if (savedKey) {
+      console.log('Using API key from localStorage');
       onApiKeySubmit(savedKey);
     }
-  });
+  }, [onApiKeySubmit]);
 
   const handleSubmit = () => {
     if (!apiKey.trim()) {
@@ -76,19 +87,26 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
               <Button onClick={handleSubmit}>Save Key</Button>
               <Button variant="outline" onClick={() => setIsInputVisible(false)}>Cancel</Button>
             </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              Alternatively, you can set the VITE_OPENAI_API_KEY environment variable.
+            </p>
           </div>
         ) : (
           <div className="space-y-2">
             <p className="text-sm text-muted-foreground">
-              Use OpenAI's advanced AI to analyze your journal entries for deeper insights.
+              {import.meta.env.VITE_OPENAI_API_KEY 
+                ? "Using OpenAI API key from environment variables" 
+                : "Use OpenAI's advanced AI to analyze your journal entries for deeper insights."}
             </p>
-            <Button 
-              variant="outline" 
-              onClick={() => setIsInputVisible(true)}
-              className="w-full"
-            >
-              {localStorage.getItem('openai_api_key') ? 'Update OpenAI API Key' : 'Enter OpenAI API Key'}
-            </Button>
+            {!import.meta.env.VITE_OPENAI_API_KEY && (
+              <Button 
+                variant="outline" 
+                onClick={() => setIsInputVisible(true)}
+                className="w-full"
+              >
+                {localStorage.getItem('openai_api_key') ? 'Update OpenAI API Key' : 'Enter OpenAI API Key'}
+              </Button>
+            )}
           </div>
         )}
       </CardContent>

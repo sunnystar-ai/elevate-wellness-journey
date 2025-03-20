@@ -98,10 +98,9 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
 
   // Analyze journal entries and generate insights when entries or API key changes
   useEffect(() => {
-    // Check for saved API key on component mount
-    const savedKey = localStorage.getItem('openai_api_key');
-    if (savedKey) {
-      setApiKey(savedKey);
+    const envApiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    if (envApiKey && !apiKey) {
+      setApiKey(envApiKey);
     }
     
     analyzeJournalEntries();
