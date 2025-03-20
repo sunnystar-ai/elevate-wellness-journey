@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import MentalHealthReport, { JournalEntry } from './mental-health-report';
 
 type TrendsSectionProps = {
@@ -82,6 +82,9 @@ const TrendsSection = ({ journalEntries = [] }: TrendsSectionProps) => {
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Mental Health Analysis Report</DialogTitle>
+            <DialogDescription>
+              Analysis based on your journal entries
+            </DialogDescription>
           </DialogHeader>
           <MentalHealthReport timeFrame={timeFrame} journalEntries={journalEntries} />
         </DialogContent>

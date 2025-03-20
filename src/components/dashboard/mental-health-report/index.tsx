@@ -55,99 +55,196 @@ type MentalHealthReportProps = {
 };
 
 const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthReportProps) => {
-  // Mock sentiment data for different timeframes
   const [loading, setLoading] = useState(true);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [themeData, setThemeData] = useState<ThemeData[]>([]);
+  const [beliefData, setBeliefData] = useState<BeliefData[]>([]);
+  const [cognitiveDistortions, setCognitiveDistortions] = useState<CognitiveDistortion[]>([]);
   
-  // Mock sentiment data for different timeframes
-  const sentimentData: Record<string, SentimentData[]> = {
-    day: [
-      { date: 'Today', sentimentScore: 0.75, gratitudeRatio: 0.6, consistencyScore: 1.0, overallScore: 0.78 },
-    ],
-    week: [
-      { date: 'Monday', sentimentScore: 0.68, gratitudeRatio: 0.5, consistencyScore: 0.7, overallScore: 0.63 },
-      { date: 'Tuesday', sentimentScore: 0.72, gratitudeRatio: 0.5, consistencyScore: 0.8, overallScore: 0.67 },
-      { date: 'Wednesday', sentimentScore: 0.75, gratitudeRatio: 0.6, consistencyScore: 0.8, overallScore: 0.72 },
-      { date: 'Thursday', sentimentScore: 0.79, gratitudeRatio: 0.6, consistencyScore: 0.9, overallScore: 0.76 },
-      { date: 'Friday', sentimentScore: 0.81, gratitudeRatio: 0.7, consistencyScore: 0.9, overallScore: 0.80 },
-      { date: 'Saturday', sentimentScore: 0.83, gratitudeRatio: 0.7, consistencyScore: 0.9, overallScore: 0.81 },
-      { date: 'Sunday', sentimentScore: 0.80, gratitudeRatio: 0.6, consistencyScore: 0.8, overallScore: 0.73 },
-    ],
-    month: [
-      { date: 'Week 1', sentimentScore: 0.60, gratitudeRatio: 0.3, consistencyScore: 0.6, overallScore: 0.50 },
-      { date: 'Week 2', sentimentScore: 0.65, gratitudeRatio: 0.4, consistencyScore: 0.7, overallScore: 0.58 },
-      { date: 'Week 3', sentimentScore: 0.70, gratitudeRatio: 0.5, consistencyScore: 0.8, overallScore: 0.67 },
-      { date: 'Week 4', sentimentScore: 0.75, gratitudeRatio: 0.6, consistencyScore: 0.8, overallScore: 0.72 },
-    ],
-  };
+  // Generate sentiment data based on timeFrame and actual entries
+  const [sentimentData, setSentimentData] = useState<Record<string, SentimentData[]>>({
+    day: [],
+    week: [],
+    month: []
+  });
 
-  // Mock theme data
-  const themeData: ThemeData[] = [
-    { theme: 'Work stress', count: 12, color: '#FFB347' },
-    { theme: 'Family relationships', count: 8, color: '#A7C7E7' },
-    { theme: 'Personal growth', count: 15, color: '#C3E6CB' },
-    { theme: 'Health concerns', count: 6, color: '#F5C6CB' },
-    { theme: 'Financial issues', count: 9, color: '#D6C6E1' },
-  ];
-
-  // Mock belief system data
-  const beliefData: BeliefData[] = [
-    { belief: 'I need to be perfect to be accepted', confidence: 0.82, isPositive: false },
-    { belief: 'I can grow through challenges', confidence: 0.76, isPositive: true },
-    { belief: 'I don\'t deserve success', confidence: 0.68, isPositive: false },
-    { belief: 'My contributions are valuable', confidence: 0.71, isPositive: true },
-    { belief: 'I have little control over outcomes', confidence: 0.65, isPositive: false },
-  ];
-
-  // Mock cognitive distortions
-  const cognitiveDistortions: CognitiveDistortion[] = [
-    { 
-      type: 'Catastrophizing',
-      description: 'Expecting the worst possible outcome',
-      frequency: 7,
-      example: '"If I don\'t get this project perfect, my career is over."'
-    },
-    { 
-      type: 'Overgeneralization',
-      description: 'Viewing a single negative event as a never-ending pattern',
-      frequency: 5,
-      example: '"I always mess up important presentations."'
-    },
-    { 
-      type: 'All-or-nothing thinking',
-      description: 'Seeing things in black and white categories',
-      frequency: 9,
-      example: '"Either I do this perfectly or I\'m a complete failure."'
-    },
-  ];
-
-  // Mock recommendations based on analysis
-  const recommendations: Recommendation[] = [
-    {
-      title: 'Practice stress reduction',
-      description: 'You mentioned "stress" 12 times this week. Try implementing a 5-minute breathing exercise before work.',
-      icon: <div className="h-4 w-4 text-harmony-lavender" />,
-      type: 'short-term'
-    },
-    {
-      title: 'Challenge negative beliefs',
-      description: 'Work on reframing your belief that "you need to be perfect to be accepted" by listing evidence that contradicts this.',
-      icon: <div className="h-4 w-4 text-harmony-peach" />,
-      type: 'long-term'
-    },
-    {
-      title: 'Daily gratitude practice',
-      description: 'Increasing your gratitude expressions appears to improve your overall mental health score. Try adding 3 gratitude items each morning.',
-      icon: <div className="h-4 w-4 text-harmony-mint" />,
-      type: 'short-term'
-    },
-  ];
-
-  // Effect to display latest journal entry if available
+  // Analyze journal entries and generate insights
   useEffect(() => {
     if (journalEntries && journalEntries.length > 0) {
       console.log('Latest journal entry received:', journalEntries[journalEntries.length - 1]);
-      // In a real app, here you would analyze the journal entries with an LLM
-      // and update the sentiment data, themes, beliefs, etc.
+      
+      // Generate personalized recommendations based on actual journal content
+      const latestEntry = journalEntries[journalEntries.length - 1];
+      const newRecommendations: Recommendation[] = [];
+      
+      // Extract key themes from the journal entry
+      const keyThemes: ThemeData[] = [];
+      const extractedBeliefs: BeliefData[] = [];
+      const extractedDistortions: CognitiveDistortion[] = [];
+      
+      // Very simple analysis (in a real app this would use NLP/LLM)
+      // For demonstration purposes only
+      const wordsMap: Record<string, number> = {};
+      const allText = `${latestEntry.feelings} ${latestEntry.thoughtProcess} ${latestEntry.gratitude}`.toLowerCase();
+      
+      // Count word frequencies
+      const words = allText.split(/\s+/);
+      words.forEach(word => {
+        if (word.length > 3) { // Only count words with more than 3 characters
+          wordsMap[word] = (wordsMap[word] || 0) + 1;
+        }
+      });
+      
+      // Check for frequent emotion words
+      const emotionWords = ["happy", "sad", "anxious", "stress", "worry", "grateful", "thankful", "motivate", "friend", "value"];
+      
+      emotionWords.forEach(emotion => {
+        const count = (allText.match(new RegExp(`${emotion}`, 'gi')) || []).length;
+        if (count > 0) {
+          keyThemes.push({
+            theme: emotion.charAt(0).toUpperCase() + emotion.slice(1),
+            count: count,
+            color: getColorForEmotion(emotion)
+          });
+        }
+      });
+      
+      // Sort themes by count
+      keyThemes.sort((a, b) => b.count - a.count);
+      
+      // Create recommendations based on journal content
+      if (allText.includes('stress') || allText.includes('anxious') || allText.includes('worry')) {
+        newRecommendations.push({
+          title: 'Practice mindfulness',
+          description: `Your entry mentions feelings of ${keyThemes.find(t => ['Stress', 'Anxious', 'Worry'].includes(t.theme))?.theme.toLowerCase() || 'stress'}. Try a 5-minute breathing exercise before work.`,
+          icon: <div className="h-4 w-4 text-harmony-lavender" />,
+          type: 'short-term'
+        });
+      }
+      
+      if (allText.includes('friend') || allText.includes('collaboration') || allText.includes('social')) {
+        newRecommendations.push({
+          title: 'Nurture social connections',
+          description: 'Your entry highlights the importance of relationships. Schedule time this week to connect with a friend.',
+          icon: <div className="h-4 w-4 text-harmony-blue" />,
+          type: 'short-term'
+        });
+      }
+      
+      if (allText.includes('grateful') || allText.includes('thankful') || allText.includes('appreciation')) {
+        newRecommendations.push({
+          title: 'Daily gratitude practice',
+          description: 'Continue expressing gratitude in your journal. Consider noting 3 specific things each morning.',
+          icon: <div className="h-4 w-4 text-harmony-mint" />,
+          type: 'short-term'
+        });
+      }
+
+      // Add at least one long-term recommendation
+      if (allText.includes('value') || allText.includes('worth') || allText.includes('contribute')) {
+        newRecommendations.push({
+          title: 'Recognize your contributions',
+          description: 'Work on acknowledging the value you bring to your collaborations and projects.',
+          icon: <div className="h-4 w-4 text-harmony-peach" />,
+          type: 'long-term'
+        });
+      } else {
+        newRecommendations.push({
+          title: 'Develop self-reflection practice',
+          description: 'Set aside time weekly to reflect on your personal growth and learning experiences.',
+          icon: <div className="h-4 w-4 text-harmony-peach" />,
+          type: 'long-term'
+        });
+      }
+      
+      // Create simple sentiment scores based on the entry
+      const positiveWords = ['happy', 'grateful', 'thankful', 'motivated', 'value', 'growth', 'learn'];
+      const negativeWords = ['sad', 'anxious', 'stress', 'worry', 'fear', 'doubt'];
+      
+      let positiveCount = 0;
+      let negativeCount = 0;
+      
+      positiveWords.forEach(word => {
+        positiveCount += (allText.match(new RegExp(word, 'gi')) || []).length;
+      });
+      
+      negativeWords.forEach(word => {
+        negativeCount += (allText.match(new RegExp(word, 'gi')) || []).length;
+      });
+      
+      const totalEmotionWords = positiveCount + negativeCount;
+      const sentimentScore = totalEmotionWords > 0 ? 
+        (0.5 + 0.5 * (positiveCount - negativeCount) / totalEmotionWords) : 0.5;
+      
+      const gratitudeRatio = allText.includes('grateful') || allText.includes('thankful') ? 0.7 : 0.3;
+      
+      // Generate sentiment data for day view
+      const daySentiment: SentimentData[] = [{
+        date: 'Today',
+        sentimentScore: sentimentScore,
+        gratitudeRatio: gratitudeRatio,
+        consistencyScore: 1.0,
+        overallScore: (sentimentScore + gratitudeRatio + 1.0) / 3
+      }];
+      
+      // Only use real data for the day view, mock data for others
+      const newSentimentData = {
+        day: daySentiment,
+        week: Array(7).fill(0).map((_, i) => ({
+          date: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][i],
+          sentimentScore: i === 6 ? sentimentScore : 0,
+          gratitudeRatio: i === 6 ? gratitudeRatio : 0,
+          consistencyScore: i === 6 ? 1.0 : 0,
+          overallScore: i === 6 ? (sentimentScore + gratitudeRatio + 1.0) / 3 : 0
+        })),
+        month: Array(4).fill(0).map((_, i) => ({
+          date: [`Week ${i+1}`],
+          sentimentScore: i === 3 ? sentimentScore : 0,
+          gratitudeRatio: i === 3 ? gratitudeRatio : 0,
+          consistencyScore: i === 3 ? 0.25 : 0,
+          overallScore: i === 3 ? (sentimentScore + gratitudeRatio + 0.25) / 3 : 0
+        }))
+      };
+      
+      // Extract beliefs from latest entry
+      if (allText.includes('value') && allText.includes('contribute')) {
+        extractedBeliefs.push({
+          belief: 'My contributions are valuable',
+          confidence: 0.75,
+          isPositive: true
+        });
+      }
+      
+      if (allText.includes('learn') || allText.includes('growth')) {
+        extractedBeliefs.push({
+          belief: 'I can grow through challenges',
+          confidence: 0.82,
+          isPositive: true
+        });
+      }
+      
+      if (extractedBeliefs.length === 0) {
+        // Default beliefs if none detected
+        extractedBeliefs.push({
+          belief: 'I can grow through journaling',
+          confidence: 0.70,
+          isPositive: true
+        });
+      }
+      
+      // Set the extracted data
+      setRecommendations(newRecommendations);
+      setThemeData(keyThemes.slice(0, 5)); // Top 5 themes
+      setSentimentData(newSentimentData);
+      setBeliefData(extractedBeliefs);
+      setCognitiveDistortions([
+        { 
+          type: 'All-or-nothing thinking',
+          description: 'Seeing things in black and white categories',
+          frequency: 2,
+          example: '"Either I contribute perfectly or I\'m not valuable."'
+        }
+      ]);
     }
     
     const timer = setTimeout(() => {
@@ -155,6 +252,24 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
     }, 1000);
     return () => clearTimeout(timer);
   }, [journalEntries]);
+
+  // Helper function to assign colors to emotions
+  function getColorForEmotion(emotion: string): string {
+    const colorMap: Record<string, string> = {
+      happy: '#C3E6CB', // Mint green
+      sad: '#F5C6CB', // Light red
+      anxious: '#FFB347', // Orange
+      stress: '#FFB347', // Orange
+      worry: '#FFB347', // Orange
+      grateful: '#A7C7E7', // Light blue
+      thankful: '#A7C7E7', // Light blue
+      friend: '#D6C6E1', // Lavender
+      value: '#C3E6CB', // Mint green
+      motivate: '#C3E6CB' // Mint green
+    };
+    
+    return colorMap[emotion] || '#A7C7E7'; // Default to light blue
+  }
 
   if (loading) {
     return (
@@ -170,10 +285,10 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
       return journalEntries.length > 0;
     }
     if (timeFrame === 'week') {
-      return journalEntries.length >= 7; // Assuming we need at least a week of data for weekly view
+      return journalEntries.length >= 7; // Need at least a week of data for weekly view
     }
     if (timeFrame === 'month') {
-      return journalEntries.length >= 30; // Assuming we need at least a month of data for monthly view
+      return journalEntries.length >= 30; // Need at least a month of data for monthly view
     }
     return false;
   };
