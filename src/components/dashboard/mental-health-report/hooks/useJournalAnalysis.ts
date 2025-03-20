@@ -79,13 +79,31 @@ export const useJournalAnalysis = (journalEntries: JournalEntry[] = []) => {
           title: "Analysis Complete",
           description: "Your journal entry has been analyzed successfully.",
         });
+        
+        // Clear any previous errors
+        setAnalysisError(null);
       } catch (error) {
         console.error('Error analyzing journal entries:', error);
-        setAnalysisError('An error occurred during journal analysis. Please check your OpenAI API key or try again later.');
+        let errorMessage = 'An error occurred during journal analysis.';
+        
+        if (error instanceof Error) {
+          // Improved error message with more details
+          if (error.message.includes('API key')) {
+            errorMessage = 'Please check your OpenAI API key. It may be invalid or expired.';
+          } else if (error.message.includes('rate limit')) {
+            errorMessage = 'OpenAI API rate limit exceeded. Please try again later.';
+          } else if (error.message.includes('parsing')) {
+            errorMessage = 'Error processing the AI response. Using simplified analysis instead.';
+          } else {
+            errorMessage = `${errorMessage} ${error.message}`;
+          }
+        }
+        
+        setAnalysisError(errorMessage);
         
         toast({
-          title: "Analysis Failed",
-          description: "There was a problem analyzing your journal. Please check your API key.",
+          title: "Analysis Issue",
+          description: "There was a problem with the AI analysis. Using simplified analysis instead.",
           variant: "destructive"
         });
       }

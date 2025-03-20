@@ -51,14 +51,15 @@ export async function analyzeEntryWithAI(entry: JournalEntry, apiKey: string) {
             role: 'user',
             content: entryContent
           }
-        ]
+        ],
+        temperature: 0.7 // Adding temperature for more consistent outputs
       })
     });
     
     if (!response.ok) {
       const errorData = await response.json();
       console.error('OpenAI API error:', errorData);
-      throw new Error(`OpenAI API error: ${response.status}`);
+      throw new Error(`OpenAI API error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
     }
     
     const data = await response.json();
@@ -66,17 +67,34 @@ export async function analyzeEntryWithAI(entry: JournalEntry, apiKey: string) {
     // Extract the content and parse it as JSON, handling potential markdown formatting
     let contentStr = data.choices[0].message.content.trim();
     
-    // Remove any markdown code block formatting if present
+    // Enhanced markdown formatting removal
+    // Remove any markdown code block formatting if present (with language identifier)
     if (contentStr.startsWith('```json')) {
       contentStr = contentStr.replace(/^```json\n/, '').replace(/\n```$/, '');
     } else if (contentStr.startsWith('```')) {
       contentStr = contentStr.replace(/^```\n/, '').replace(/\n```$/, '');
     }
     
+    // Remove any remaining backticks
+    contentStr = contentStr.replace(/^```|```$/g, '');
+    
     console.log('Parsed content from OpenAI:', contentStr);
     
-    // Parse the JSON
-    const analysisResult = JSON.parse(contentStr);
+    // Use try-catch for safer JSON parsing
+    let analysisResult;
+    try {
+      analysisResult = JSON.parse(contentStr);
+    } catch (parseError) {
+      console.error('JSON parsing error:', parseError);
+      throw new Error('Failed to parse OpenAI response. Please try again.');
+    }
+    
+    // Validate the response has the expected structure
+    if (!analysisResult.themes || !analysisResult.beliefs || 
+        !analysisResult.distortions || !analysisResult.recommendations) {
+      console.error('Invalid response structure:', analysisResult);
+      throw new Error('OpenAI response is missing required fields');
+    }
     
     // Process the themes and add colors
     const keyThemes = analysisResult.themes.map((theme: any) => ({
