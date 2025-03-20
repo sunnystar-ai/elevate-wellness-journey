@@ -16,7 +16,8 @@ const RecommendationsTab = ({ recommendations, currentData }: RecommendationsTab
   
   // If we have no recommendations, show a default message
   const hasRecommendations = recommendations.length > 0;
-  const consistency = currentData.length > 0 ? Math.round(currentData[currentData.length - 1].consistencyScore * 100) : 0;
+  const latestData = currentData.length > 0 ? currentData[currentData.length - 1] : null;
+  const consistency = latestData ? Math.round(latestData.consistencyScore * 100) : 0;
 
   return (
     <Card>
@@ -91,7 +92,9 @@ const RecommendationsTab = ({ recommendations, currentData }: RecommendationsTab
             <p className="text-sm">
               Consistent journaling has shown to improve mental health scores by 15-20% over 8 weeks.
               {hasRecommendations ? (
-                <> Your current consistency rate of {consistency}% is excellent - keep it up!</>
+                consistency > 50 ? 
+                <> Your current consistency rate of {consistency}% is excellent - keep it up!</> :
+                <> Your consistency rate of {consistency}% is a good start. Try to journal more regularly for better insights.</>
               ) : (
                 <> Keep journaling regularly to build a habit and unlock more personalized insights.</>
               )}

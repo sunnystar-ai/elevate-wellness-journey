@@ -61,8 +61,8 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
         extractedDistortions 
       } = analyzeJournalEntry(latestEntry);
       
-      // Generate sentiment data based on the entry
-      const newSentimentData = generateTimeFrameData(latestEntry);
+      // Generate sentiment data based on the entry and all journal entries
+      const newSentimentData = generateTimeFrameData(latestEntry, journalEntries);
       
       // Update state with the extracted insights
       setRecommendations(newRecommendations);
@@ -85,10 +85,10 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
       return journalEntries.length > 0;
     }
     if (timeFrame === 'week') {
-      return journalEntries.length >= 7; // Need at least a week of data for weekly view
+      return journalEntries.length >= 1; // Show weekly view even with just one entry
     }
     if (timeFrame === 'month') {
-      return journalEntries.length >= 30; // Need at least a month of data for monthly view
+      return journalEntries.length >= 1; // Show monthly view even with just one entry
     }
     return false;
   };
@@ -124,11 +124,18 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
           </TabsList>
           
           <TabsContent value="overview">
-            <OverviewTab currentData={currentData} themeData={themeData} cognitiveDistortions={cognitiveDistortions} />
+            <OverviewTab 
+              currentData={currentData} 
+              themeData={themeData} 
+              cognitiveDistortions={cognitiveDistortions} 
+            />
           </TabsContent>
           
           <TabsContent value="sentiment">
-            <SentimentTab currentData={currentData} themeData={themeData} />
+            <SentimentTab 
+              currentData={currentData} 
+              themeData={themeData} 
+            />
           </TabsContent>
           
           <TabsContent value="beliefs">
@@ -136,7 +143,10 @@ const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthRepo
           </TabsContent>
           
           <TabsContent value="recommendations">
-            <RecommendationsTab recommendations={recommendations} currentData={currentData} />
+            <RecommendationsTab 
+              recommendations={recommendations} 
+              currentData={currentData} 
+            />
           </TabsContent>
         </Tabs>
       )}
