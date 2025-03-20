@@ -83,7 +83,7 @@ const SentimentTab = ({ currentData, themeData }: SentimentTabProps) => {
         <div className="mt-6">
           <h3 className="font-medium mb-3">Most Common Themes</h3>
           <div className="space-y-2">
-            {themeData.length > 0 ? (
+            {themeData && themeData.length > 0 ? (
               themeData.map((theme, index) => (
                 <div key={index} className="flex items-center">
                   <div 

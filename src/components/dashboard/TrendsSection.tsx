@@ -79,20 +79,23 @@ const TrendsSection = ({ journalEntries = [] }: TrendsSectionProps) => {
         View Detailed Reports
       </Button>
 
-      {/* Only render the Dialog when showReport is true and we have journal entries */}
-      {showReport && (
-        <Dialog open={showReport} onOpenChange={setShowReport}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Mental Health Analysis Report</DialogTitle>
-              <DialogDescription>
-                Analysis based on your journal entries
-              </DialogDescription>
-            </DialogHeader>
+      <Dialog open={showReport} onOpenChange={setShowReport}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Mental Health Analysis Report</DialogTitle>
+            <DialogDescription>
+              Analysis based on your journal entries
+            </DialogDescription>
+          </DialogHeader>
+          {journalEntries && journalEntries.length > 0 ? (
             <MentalHealthReport timeFrame={timeFrame} journalEntries={journalEntries} />
-          </DialogContent>
-        </Dialog>
-      )}
+          ) : (
+            <div className="py-8 text-center">
+              <p className="text-muted-foreground">No journal entries yet. Start journaling to see your mental health analysis.</p>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
