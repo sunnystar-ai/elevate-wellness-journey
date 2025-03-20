@@ -1,4 +1,3 @@
-
 export type JournalEntry = {
   feelings: string;
   thoughtProcess: string;
@@ -41,3 +40,7 @@ export type Recommendation = {
 };
 
 export type TimeFrame = 'day' | 'week' | 'month';
+
+// Import the SentimentResult type from analysisUtils
+import { SentimentResult } from './utils/analysisUtils/types';
+export { SentimentResult };
