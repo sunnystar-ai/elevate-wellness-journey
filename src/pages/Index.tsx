@@ -12,7 +12,6 @@ import QuickActionsBar from '@/components/home/QuickActionsBar';
 import ProgressCircle from '@/components/home/ProgressCircle';
 import AiChat from '@/components/home/AiChat';
 import RecommendationCards from '@/components/home/RecommendationCards';
-import StreakCard from '@/components/home/StreakCard';
 import DailyTip from '@/components/home/DailyTip';
 
 const Index = () => {
@@ -76,10 +75,6 @@ const Index = () => {
             </button>
           </div>
           <RecommendationCards />
-        </AnimatedSection>
-
-        <AnimatedSection className="mb-10">
-          <StreakCard />
         </AnimatedSection>
       </div>
 
