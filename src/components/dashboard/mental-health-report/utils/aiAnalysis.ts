@@ -52,7 +52,7 @@ export async function analyzeEntryWithAI(entry: JournalEntry, apiKey: string) {
             content: entryContent
           }
         ],
-        temperature: 0.7 // Adding temperature for more consistent outputs
+        temperature: 0.5 // Lower temperature for more consistent outputs
       })
     });
     
@@ -67,16 +67,16 @@ export async function analyzeEntryWithAI(entry: JournalEntry, apiKey: string) {
     // Extract the content and parse it as JSON, handling potential markdown formatting
     let contentStr = data.choices[0].message.content.trim();
     
-    // Enhanced markdown formatting removal
-    // Remove any markdown code block formatting if present (with language identifier)
-    if (contentStr.startsWith('```json')) {
-      contentStr = contentStr.replace(/^```json\n/, '').replace(/\n```$/, '');
-    } else if (contentStr.startsWith('```')) {
-      contentStr = contentStr.replace(/^```\n/, '').replace(/\n```$/, '');
+    // Comprehensive markdown and special character cleanup
+    // Remove any markdown code block formatting if present
+    if (contentStr.includes('```json')) {
+      contentStr = contentStr.replace(/```json\n/g, '').replace(/\n```/g, '');
+    } else if (contentStr.includes('```')) {
+      contentStr = contentStr.replace(/```\n/g, '').replace(/\n```/g, '').replace(/```/g, '');
     }
     
-    // Remove any remaining backticks
-    contentStr = contentStr.replace(/^```|```$/g, '');
+    // Remove any remaining backticks and whitespace
+    contentStr = contentStr.replace(/`/g, '').trim();
     
     console.log('Parsed content from OpenAI:', contentStr);
     
@@ -85,8 +85,23 @@ export async function analyzeEntryWithAI(entry: JournalEntry, apiKey: string) {
     try {
       analysisResult = JSON.parse(contentStr);
     } catch (parseError) {
-      console.error('JSON parsing error:', parseError);
-      throw new Error('Failed to parse OpenAI response. Please try again.');
+      console.error('JSON parsing error:', parseError, 'Content:', contentStr);
+      
+      // Try to extract just the JSON part if there's text before or after it
+      if (contentStr.includes('{') && contentStr.includes('}')) {
+        try {
+          const jsonStart = contentStr.indexOf('{');
+          const jsonEnd = contentStr.lastIndexOf('}') + 1;
+          const jsonPart = contentStr.substring(jsonStart, jsonEnd);
+          analysisResult = JSON.parse(jsonPart);
+          console.log('Extracted JSON part successfully:', jsonPart);
+        } catch (secondError) {
+          console.error('Failed to extract JSON part:', secondError);
+          throw new Error('Failed to parse OpenAI response. The API returned an invalid format.');
+        }
+      } else {
+        throw new Error('Failed to parse OpenAI response. Please try again.');
+      }
     }
     
     // Validate the response has the expected structure
@@ -103,15 +118,26 @@ export async function analyzeEntryWithAI(entry: JournalEntry, apiKey: string) {
       color: getColorForEmotion(theme.theme)
     }));
     
-    // Process beliefs
-    const extractedBeliefs = analysisResult.beliefs;
+    // Process beliefs with validation
+    const extractedBeliefs = analysisResult.beliefs.map((belief: any) => ({
+      belief: belief.belief || "Belief not specified",
+      confidence: typeof belief.confidence === 'number' ? belief.confidence : 0.5,
+      isPositive: typeof belief.isPositive === 'boolean' ? belief.isPositive : true
+    }));
     
-    // Process distortions
-    const extractedDistortions = analysisResult.distortions;
+    // Process distortions with validation
+    const extractedDistortions = analysisResult.distortions.map((distortion: any) => ({
+      type: distortion.type || "Unknown distortion",
+      description: distortion.description || "No description provided",
+      frequency: typeof distortion.frequency === 'number' ? distortion.frequency : 1,
+      example: distortion.example || "No example provided"
+    }));
     
-    // Process recommendations
+    // Process recommendations with validation
     const recommendations = analysisResult.recommendations.map((rec: any) => ({
-      ...rec,
+      title: rec.title || "Recommendation",
+      description: rec.description || "No description provided",
+      type: rec.type === 'long-term' ? 'long-term' : 'short-term',
       icon: React.createElement("div", { className: "h-4 w-4 text-harmony-lavender" })
     }));
     

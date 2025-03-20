@@ -14,13 +14,14 @@ export async function analyzeJournalEntry(entry: JournalEntry, apiKey?: string) 
   }
   
   // If no API key is provided, use the simplified analysis
-  if (!apiKey) {
+  if (!apiKey || apiKey.trim() === '') {
     console.log('No API key provided, using simplified analysis');
     return useSimplifiedAnalysis(entry);
   }
   
   try {
-    // Analyze with AI
+    // Attempt to analyze with AI
+    console.log('Attempting OpenAI analysis with API key', apiKey.substring(0, 3) + '...');
     return await analyzeEntryWithAI(entry, apiKey);
   } catch (error) {
     console.error('Error analyzing journal entry with OpenAI:', error);
@@ -30,8 +31,10 @@ export async function analyzeJournalEntry(entry: JournalEntry, apiKey?: string) 
       console.error('Error message:', error.message);
     }
     
-    // Fallback to simplified analysis if API fails
+    // Log the fallback to simplified analysis
     console.log('Falling back to simplified analysis due to API error');
+    
+    // Return simplified analysis instead of throwing
     return useSimplifiedAnalysis(entry);
   }
 }
