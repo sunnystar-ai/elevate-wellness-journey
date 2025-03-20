@@ -1,12 +1,10 @@
 
 import { useState, useEffect } from 'react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Info, Key, Copy, CheckCircle2, AlertCircle, Edit } from 'lucide-react';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Key } from 'lucide-react';
+import ApiKeyStatus from './ApiKeyStatus';
+import ApiKeyForm from './ApiKeyForm';
 
 interface ApiKeyInputProps {
   onApiKeySubmit: (apiKey: string) => void;
@@ -15,7 +13,6 @@ interface ApiKeyInputProps {
 const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
   const [apiKey, setApiKey] = useState('');
   const [isInputVisible, setIsInputVisible] = useState(false);
-  const [copied, setCopied] = useState(false);
   const [apiKeyType, setApiKeyType] = useState<'env' | 'localStorage' | 'none'>('none');
   const { toast } = useToast();
 
@@ -44,8 +41,8 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
     }
   }, [onApiKeySubmit]);
 
-  const handleSubmit = () => {
-    if (!apiKey.trim()) {
+  const handleSubmit = (submittedApiKey: string) => {
+    if (!submittedApiKey.trim()) {
       toast({
         title: "API Key Required",
         description: "Please enter your OpenAI API key",
@@ -54,7 +51,7 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
       return;
     }
     
-    if (!apiKey.startsWith('sk-')) {
+    if (!submittedApiKey.startsWith('sk-')) {
       toast({
         title: "Invalid API Key",
         description: "OpenAI API keys should start with 'sk-'",
@@ -64,9 +61,9 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
     }
     
     // Save to localStorage and notify parent component
-    localStorage.setItem('openai_api_key', apiKey);
+    localStorage.setItem('openai_api_key', submittedApiKey);
     setApiKeyType('localStorage');
-    onApiKeySubmit(apiKey);
+    onApiKeySubmit(submittedApiKey);
     setIsInputVisible(false);
     
     toast({
@@ -100,72 +97,17 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
       </CardHeader>
       <CardContent>
         {isInputVisible ? (
-          <div className="space-y-3">
-            <Tabs defaultValue="browser">
-              <TabsList className="w-full mb-2">
-                <TabsTrigger value="browser" className="flex-1">Browser Storage</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="browser" className="space-y-3">
-                <Alert className="bg-blue-50 border-blue-200">
-                  <Info className="h-4 w-4 text-blue-500" />
-                  <AlertTitle className="text-blue-700">Add your OpenAI API key</AlertTitle>
-                  <AlertDescription className="text-blue-600">
-                    <p>Your key will be stored in your browser's local storage.</p>
-                    <p className="mt-1 text-sm">Need an API key? Get one at <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" className="underline font-medium">platform.openai.com/api-keys</a></p>
-                  </AlertDescription>
-                </Alert>
-                
-                <div className="flex space-x-2">
-                  <Input 
-                    type="password"
-                    placeholder="sk-..." 
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                    className="flex-1"
-                  />
-                  <Button onClick={handleSubmit}>Save Key</Button>
-                </div>
-              </TabsContent>
-            </Tabs>
-          </div>
+          <ApiKeyForm 
+            apiKey={apiKey} 
+            setApiKey={setApiKey} 
+            onSubmit={() => handleSubmit(apiKey)} 
+          />
         ) : (
-          <div className="space-y-3">
-            <Alert className={`${apiKeyType === 'env' ? "bg-green-50 border-green-200" : "bg-blue-50 border-blue-200"}`}>
-              <CheckCircle2 className={`h-4 w-4 ${apiKeyType === 'env' ? "text-green-500" : "text-blue-500"}`} />
-              <AlertTitle className={`${apiKeyType === 'env' ? "text-green-700" : "text-blue-700"}`}>
-                {apiKeyType === 'env' 
-                  ? "Using API key from environment" 
-                  : "Using API key from browser storage"}
-              </AlertTitle>
-              <AlertDescription className={`${apiKeyType === 'env' ? "text-green-600" : "text-blue-600"}`}>
-                {apiKeyType === 'env'
-                  ? "Your OpenAI API key has been loaded from environment variables"
-                  : "Your OpenAI API key is stored in your browser's local storage"}
-              </AlertDescription>
-            </Alert>
-            
-            <div className="flex flex-col md:flex-row gap-2">
-              <Button 
-                variant="outline" 
-                onClick={() => setIsInputVisible(true)}
-                className="w-full md:w-auto"
-              >
-                <Edit className="h-4 w-4 mr-2" />
-                {apiKeyType === 'localStorage' ? 'Update API Key' : 'Add API Key'}
-              </Button>
-              
-              {apiKeyType === 'localStorage' && (
-                <Button 
-                  variant="destructive" 
-                  onClick={resetApiKey}
-                  className="w-full md:w-auto"
-                >
-                  Remove API Key
-                </Button>
-              )}
-            </div>
-          </div>
+          <ApiKeyStatus 
+            apiKeyType={apiKeyType} 
+            onEditClick={() => setIsInputVisible(true)} 
+            onResetClick={resetApiKey} 
+          />
         )}
       </CardContent>
     </Card>
