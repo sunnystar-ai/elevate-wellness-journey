@@ -75,7 +75,8 @@ export const useJournalAnalysis = (journalEntries: JournalEntry[] = []) => {
       const latestEntry = journalEntries[journalEntries.length - 1];
       console.log('Analyzing latest journal entry:', latestEntry);
       
-      // Analyze the journal entry to extract insights
+      // Analyze the journal entry to extract insights - this will never throw
+      // since analyzeJournalEntry handles errors internally and falls back to simplified analysis
       const { 
         recommendations: newRecommendations, 
         keyThemes, 
@@ -87,19 +88,22 @@ export const useJournalAnalysis = (journalEntries: JournalEntry[] = []) => {
       const newSentimentData = generateTimeFrameData(latestEntry, journalEntries);
       
       // Update state with the extracted insights
-      setRecommendations(newRecommendations);
-      setThemeData(keyThemes.slice(0, 5)); // Top 5 themes
-      setSentimentData(newSentimentData);
-      setBeliefData(extractedBeliefs);
-      setCognitiveDistortions(extractedDistortions);
-      
-      toast({
-        title: "Analysis Complete",
-        description: "Your journal entry has been analyzed successfully.",
-      });
+      setRecommendations(newRecommendations || []);
+      setThemeData(keyThemes?.slice(0, 5) || []); // Top 5 themes
+      setSentimentData(newSentimentData || { day: [], week: [], month: [] });
+      setBeliefData(extractedBeliefs || []);
+      setCognitiveDistortions(extractedDistortions || []);
       
       // Clear any previous errors
       setAnalysisError(null);
+      
+      // Show success toast only if we're using the API key (not simplified analysis)
+      if (currentApiKey && currentApiKey.trim() !== '') {
+        toast({
+          title: "Analysis Complete",
+          description: "Your journal entry has been analyzed successfully.",
+        });
+      }
     } catch (error) {
       console.error('Error analyzing journal entries:', error);
       let errorMessage = 'An error occurred during journal analysis.';
@@ -125,10 +129,12 @@ export const useJournalAnalysis = (journalEntries: JournalEntry[] = []) => {
         variant: "destructive"
       });
       
-      // Still try to load simplified analysis
+      // We've already tried the simplified analysis in analyzeJournalEntry,
+      // but if we somehow got here, try again directly
       try {
         const latestEntry = journalEntries[journalEntries.length - 1];
-        const simplifiedResults = await analyzeJournalEntry(latestEntry, undefined);
+        const { useSimplifiedAnalysis } = await import('../utils/simplifiedAnalysis');
+        const simplifiedResults = useSimplifiedAnalysis(latestEntry);
         
         // Update state with simplified analysis
         setRecommendations(simplifiedResults.recommendations);

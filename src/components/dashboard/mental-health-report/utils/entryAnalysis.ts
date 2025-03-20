@@ -13,7 +13,7 @@ export async function analyzeJournalEntry(entry: JournalEntry, apiKey?: string) 
     apiKey = import.meta.env.VITE_OPENAI_API_KEY;
   }
   
-  // If no API key is provided, use the simplified analysis
+  // If no API key is provided, use the simplified analysis right away
   if (!apiKey || apiKey.trim() === '') {
     console.log('No API key provided, using simplified analysis');
     return useSimplifiedAnalysis(entry);
@@ -22,7 +22,16 @@ export async function analyzeJournalEntry(entry: JournalEntry, apiKey?: string) 
   try {
     // Attempt to analyze with AI
     console.log('Attempting OpenAI analysis with API key', apiKey.substring(0, 3) + '...');
-    return await analyzeEntryWithAI(entry, apiKey);
+    const aiResults = await analyzeEntryWithAI(entry, apiKey);
+    
+    // Validate the results structure to ensure it has all required properties
+    if (!aiResults.recommendations || !aiResults.keyThemes || 
+        !aiResults.extractedBeliefs || !aiResults.extractedDistortions) {
+      console.error('Invalid OpenAI analysis result structure', aiResults);
+      throw new Error('Invalid analysis structure returned from API');
+    }
+    
+    return aiResults;
   } catch (error) {
     console.error('Error analyzing journal entry with OpenAI:', error);
     
