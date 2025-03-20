@@ -19,7 +19,7 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
     // First check for environment variable (Vite exposes env vars with VITE_ prefix)
     const envApiKey = import.meta.env.VITE_OPENAI_API_KEY;
     
-    if (envApiKey) {
+    if (envApiKey && envApiKey.trim() !== '') {
       console.log('Using API key from environment variables');
       onApiKeySubmit(envApiKey);
       return;
@@ -30,6 +30,9 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
     if (savedKey) {
       console.log('Using API key from localStorage');
       onApiKeySubmit(savedKey);
+    } else {
+      // Show input if no key is found
+      setIsInputVisible(true);
     }
   }, [onApiKeySubmit]);
 
@@ -88,17 +91,19 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
               <Button variant="outline" onClick={() => setIsInputVisible(false)}>Cancel</Button>
             </div>
             <p className="text-xs text-muted-foreground mt-2">
-              Alternatively, you can set the VITE_OPENAI_API_KEY environment variable.
+              Set the VITE_OPENAI_API_KEY in your .env file to avoid entering it here.
             </p>
           </div>
         ) : (
           <div className="space-y-2">
             <p className="text-sm text-muted-foreground">
-              {import.meta.env.VITE_OPENAI_API_KEY 
+              {(import.meta.env.VITE_OPENAI_API_KEY && import.meta.env.VITE_OPENAI_API_KEY.trim() !== '')
                 ? "Using OpenAI API key from environment variables" 
-                : "Use OpenAI's advanced AI to analyze your journal entries for deeper insights."}
+                : localStorage.getItem('openai_api_key')
+                  ? "Using saved OpenAI API key"
+                  : "Use OpenAI's advanced AI to analyze your journal entries for deeper insights."}
             </p>
-            {!import.meta.env.VITE_OPENAI_API_KEY && (
+            {(!import.meta.env.VITE_OPENAI_API_KEY || import.meta.env.VITE_OPENAI_API_KEY.trim() === '') && (
               <Button 
                 variant="outline" 
                 onClick={() => setIsInputVisible(true)}
