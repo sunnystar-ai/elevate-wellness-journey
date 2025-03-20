@@ -40,6 +40,15 @@ const ReportContent = ({
     );
   }
 
+  // If there are no journal entries, show a message
+  if (!journalEntries || journalEntries.length === 0) {
+    return (
+      <div className="bg-secondary/20 p-8 rounded-lg text-center">
+        <p className="text-muted-foreground">No journal entries found. Start journaling to see your mental health analysis.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {analysisError && (
@@ -52,7 +61,7 @@ const ReportContent = ({
         <LatestJournalAnalysis latestEntry={journalEntries[journalEntries.length - 1]} />
       )}
       
-      {!hasEnoughData && timeFrame !== 'day' ? (
+      {!hasEnoughData ? (
         <InsufficientDataMessage timeFrame={timeFrame} />
       ) : (
         <ReportTabs
