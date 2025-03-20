@@ -12,7 +12,6 @@ import QuickActionsBar from '@/components/home/QuickActionsBar';
 import ProgressCircle from '@/components/home/ProgressCircle';
 import AiChat from '@/components/home/AiChat';
 import RecommendationCards from '@/components/home/RecommendationCards';
-import CommunityHighlights from '@/components/home/CommunityHighlights';
 import StreakCard from '@/components/home/StreakCard';
 import DailyTip from '@/components/home/DailyTip';
 
@@ -77,11 +76,6 @@ const Index = () => {
             </button>
           </div>
           <RecommendationCards />
-        </AnimatedSection>
-
-        <AnimatedSection className="mb-10">
-          <h2 className="text-lg font-medium mb-4">Community</h2>
-          <CommunityHighlights />
         </AnimatedSection>
 
         <AnimatedSection className="mb-10">
