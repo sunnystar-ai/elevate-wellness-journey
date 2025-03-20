@@ -1,180 +1,111 @@
 
-import React from 'react';
-import { 
-  JournalEntry, 
-  ThemeData, 
-  BeliefData, 
-  CognitiveDistortion, 
-  Recommendation 
-} from '../types';
+import { JournalEntry } from '../types';
 import { getColorForEmotion } from './colorUtils';
 
-// Simplified analysis function for fallback
-export function useSimplifiedAnalysis(entry: JournalEntry) {
-  // Real analysis based on entry content
-  const allText = `${entry.feelings} ${entry.thoughtProcess} ${entry.gratitude}`.toLowerCase();
+// Basic sentiment analysis function to extract positive/negative keywords
+const extractSentiment = (text: string) => {
+  const positiveWords = ['happy', 'joy', 'grateful', 'excited', 'love', 'enjoy', 'good', 'great', 'positive', 'hope'];
+  const negativeWords = ['sad', 'angry', 'stress', 'tired', 'frustrate', 'anxiety', 'fear', 'worry', 'tough', 'bad'];
   
-  let recommendations: Recommendation[] = [];
-  let keyThemes: ThemeData[] = [];
-  let extractedBeliefs: BeliefData[] = [];
-  let extractedDistortions: CognitiveDistortion[] = [];
+  const words = text.toLowerCase().split(/\s+/);
+  const foundPositive = words.filter(word => positiveWords.some(pos => word.includes(pos)));
+  const foundNegative = words.filter(word => negativeWords.some(neg => word.includes(neg)));
   
-  // Extract meaningful words for theme analysis
-  const wordCounts: Record<string, number> = {};
-  const words = allText.split(/\s+/);
-  words.forEach(word => {
-    if (word.length > 3) { // Only count words with more than 3 characters
-      wordCounts[word] = (wordCounts[word] || 0) + 1;
-    }
-  });
-  
-  // Sort words by frequency
-  const sortedWords = Object.entries(wordCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 15) // Take top 15 words
-    .map(([word]) => word);
-  
-  // Extract common emotions and themes
-  const emotionMapping: Record<string, string[]> = {
-    stress: ['stress', 'pressure', 'overwhelm', 'tension', 'anxiety'],
-    anxious: ['anxious', 'nervous', 'worry', 'afraid', 'fear'],
-    happy: ['happy', 'joy', 'enjoy', 'pleased', 'content', 'excitement'],
-    sad: ['sad', 'down', 'upset', 'disappointed', 'unhappy'],
-    grateful: ['grateful', 'thankful', 'appreciate', 'blessing', 'budget'],
-    work: ['work', 'job', 'career', 'project', 'task', 'outcome'],
-    learning: ['learn', 'skill', 'knowledge', 'understand', 'education'],
-    technology: ['computer', 'technology', 'tech', 'digital', 'software'],
-    relationships: ['friend', 'family', 'relationship', 'connection', 'social']
+  return { 
+    positive: foundPositive,
+    negative: foundNegative,
+    sentiment: (foundPositive.length > foundNegative.length) ? 'positive' : 'negative'
   };
+};
+
+// Simplified analysis for when API is not available
+export function useSimplifiedAnalysis(entry: JournalEntry) {
+  console.log('Using simplified analysis for entry:', entry);
   
-  // Check for themes in the entry
-  Object.entries(emotionMapping).forEach(([theme, relatedWords]) => {
-    let count = 0;
-    relatedWords.forEach(word => {
-      if (allText) {
-        const regex = new RegExp(`\\b${word}\\b`, 'gi');
-        const matches = allText.match(regex);
-        if (matches) {
-          count += matches.length;
-        }
-      }
-    });
-    
-    if (count > 0) {
-      keyThemes.push({
-        theme: theme.charAt(0).toUpperCase() + theme.slice(1),
-        count: count,
-        color: getColorForEmotion(theme)
-      });
+  // Extract basic sentiments from each section
+  const feelingsSentiment = extractSentiment(entry.feelings);
+  const thoughtsSentiment = extractSentiment(entry.thoughtProcess);
+  const gratitudeSentiment = extractSentiment(entry.gratitude);
+  
+  // Generate basic themes
+  const allKeywords = [
+    ...feelingsSentiment.positive, 
+    ...feelingsSentiment.negative,
+    ...thoughtsSentiment.positive,
+    ...thoughtsSentiment.negative
+  ];
+  
+  // Count occurrences of keywords to get themes
+  const keywordCounts: Record<string, number> = {};
+  allKeywords.forEach(keyword => {
+    keywordCounts[keyword] = (keywordCounts[keyword] || 0) + 1;
+  });
+  
+  // Convert to themes array
+  const keyThemes = Object.entries(keywordCounts)
+    .map(([theme, count]) => ({
+      theme,
+      count,
+      color: getColorForEmotion(theme)
+    }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
+  
+  // Generate basic beliefs
+  const extractedBeliefs = [
+    {
+      belief: feelingsSentiment.sentiment === 'positive' 
+        ? "I can handle my current challenges" 
+        : "Things are difficult right now",
+      confidence: 0.7,
+      isPositive: feelingsSentiment.sentiment === 'positive'
+    },
+    {
+      belief: gratitudeSentiment.positive.length > 0 
+        ? "I have things to be grateful for" 
+        : "It's hard to find things to be grateful for",
+      confidence: 0.8,
+      isPositive: gratitudeSentiment.positive.length > 0
     }
-  });
+  ];
   
-  // Add any frequently occurring words that weren't mapped to emotions
-  sortedWords.forEach(word => {
-    // Check if word is already covered by a theme
-    const isAlreadyThemed = keyThemes.some(theme => {
-      const themeLower = theme.theme.toLowerCase();
-      return emotionMapping[themeLower] && emotionMapping[themeLower].includes(word);
-    });
-    
-    if (!isAlreadyThemed && wordCounts[word] > 1) {
-      keyThemes.push({
-        theme: word.charAt(0).toUpperCase() + word.slice(1),
-        count: wordCounts[word],
-        color: getColorForEmotion(word)
-      });
+  // Generate cognitive distortions
+  const extractedDistortions = [
+    {
+      type: "All-or-Nothing Thinking",
+      description: "Seeing things in black-and-white categories",
+      frequency: feelingsSentiment.negative.length > feelingsSentiment.positive.length ? 3 : 1,
+      example: "Found patterns of extreme thinking in journal entry"
     }
-  });
+  ];
   
-  // Sort themes by count
-  keyThemes.sort((a, b) => b.count - a.count);
-  const limitedThemes = keyThemes.slice(0, 7); // Limit to top 7 themes
+  // Generate recommendations based on sentiment
+  const recommendations = [
+    {
+      title: "Practice Mindfulness",
+      description: "Take 5 minutes today to breathe deeply and be present with your emotions",
+      type: "short-term",
+      icon: { className: "h-4 w-4 text-harmony-lavender" }
+    },
+    {
+      title: feelingsSentiment.sentiment === 'positive' ? "Build on Positive Emotions" : "Address Negative Feelings",
+      description: feelingsSentiment.sentiment === 'positive' 
+        ? "Journal about what's contributing to your positive state" 
+        : "Identify one small action to improve your mood today",
+      type: "short-term",
+      icon: { className: "h-4 w-4 text-harmony-lavender" }
+    },
+    {
+      title: "Gratitude Practice",
+      description: "Continue noting things you're grateful for each day to build resilience",
+      type: "long-term",
+      icon: { className: "h-4 w-4 text-harmony-lavender" }
+    }
+  ];
   
-  // Create personalized recommendations
-  if (allText && allText.includes('stress') || (allText && allText.includes('anxious')) || (allText && allText.includes('worry'))) {
-    recommendations.push({
-      title: 'Practice mindfulness',
-      description: `Your entry shows feelings of ${keyThemes.find(t => ['Stress', 'Anxious', 'Worry'].includes(t.theme))?.theme.toLowerCase() || 'stress'}. Try a 5-minute breathing exercise.`,
-      icon: React.createElement("div", { className: "h-4 w-4 text-harmony-lavender" }),
-      type: 'short-term'
-    });
-  }
-  
-  if (allText && allText.includes('work') && ((allText && allText.includes('stress')) || (allText && allText.includes('overwhelm')))) {
-    recommendations.push({
-      title: 'Work-life balance',
-      description: 'You mentioned stress about work outcomes. Try setting clear boundaries between work and personal time.',
-      icon: React.createElement("div", { className: "h-4 w-4 text-harmony-blue" }),
-      type: 'short-term'
-    });
-  }
-  
-  if (allText && (allText.includes('friend') || allText.includes('social') || allText.includes('connection'))) {
-    recommendations.push({
-      title: 'Nurture social connections',
-      description: 'Your entry references relationships. Schedule time to connect with a friend or family member.',
-      icon: React.createElement("div", { className: "h-4 w-4 text-harmony-blue" }),
-      type: 'short-term'
-    });
-  }
-  
-  // Add default recommendations if none created
-  if (recommendations.length === 0) {
-    recommendations.push({
-      title: 'Continue journaling',
-      description: 'Regular journaling helps build self-awareness around your emotional patterns.',
-      icon: React.createElement("div", { className: "h-4 w-4 text-harmony-mint" }),
-      type: 'short-term'
-    });
-  }
-
-  // Add at least one long-term recommendation
-  recommendations.push({
-    title: 'Develop self-reflection practice',
-    description: 'Continue your journaling to build self-awareness around your emotional patterns.',
-    icon: React.createElement("div", { className: "h-4 w-4 text-harmony-peach" }),
-    type: 'long-term'
-  });
-  
-  // Extract beliefs from latest entry
-  if (allText && allText.includes('skill') && allText.includes('learn')) {
-    extractedBeliefs.push({
-      belief: 'I am capable of learning new skills',
-      confidence: 0.75,
-      isPositive: true
-    });
-  }
-  
-  if (allText && allText.includes('work') && allText.includes('stress')) {
-    extractedBeliefs.push({
-      belief: 'Work outcomes should be perfect',
-      confidence: 0.65,
-      isPositive: false
-    });
-  }
-
-  // Default beliefs if none detected
-  if (extractedBeliefs.length === 0) {
-    extractedBeliefs.push({
-      belief: 'I can grow through journaling',
-      confidence: 0.70,
-      isPositive: true
-    });
-  }
-
-  // Create cognitive distortions based on entry text
-  if (allText && allText.includes('expect') && ((allText && allText.includes('stress')) || (allText && allText.includes('worry')))) {
-    extractedDistortions.push({
-      type: 'Fortune telling',
-      description: 'Predicting negative outcomes without sufficient evidence',
-      frequency: 2,
-      example: 'Expecting things will go poorly before they happen'
-    });
-  }
-
   return {
     recommendations,
-    keyThemes: limitedThemes, // Return the limited themes
+    keyThemes,
     extractedBeliefs,
     extractedDistortions
   };

@@ -37,7 +37,7 @@ export async function analyzeEntryWithAI(entry: JournalEntry, apiKey: string) {
             3. Any cognitive distortions present with frequency scores (1-5)
             4. 3-4 tailored recommendations based on the content
             
-            Format your response as JSON with these exact keys:
+            Format your response as JSON without any markdown formatting like \`\`\`json or \`\`\`:
             {
               "themes": [{"theme": "string", "count": number, "color": "string"}],
               "beliefs": [{"belief": "string", "confidence": number, "isPositive": boolean}],
@@ -60,7 +60,21 @@ export async function analyzeEntryWithAI(entry: JournalEntry, apiKey: string) {
     }
     
     const data = await response.json();
-    const analysisResult = JSON.parse(data.choices[0].message.content);
+    
+    // Extract the content and parse it as JSON, handling potential markdown formatting
+    let contentStr = data.choices[0].message.content.trim();
+    
+    // Remove any markdown code block formatting if present
+    if (contentStr.startsWith('```json')) {
+      contentStr = contentStr.replace(/^```json\n/, '').replace(/\n```$/, '');
+    } else if (contentStr.startsWith('```')) {
+      contentStr = contentStr.replace(/^```\n/, '').replace(/\n```$/, '');
+    }
+    
+    console.log('Parsed content from OpenAI:', contentStr);
+    
+    // Parse the JSON
+    const analysisResult = JSON.parse(contentStr);
     
     // Process the themes and add colors
     const keyThemes = analysisResult.themes.map((theme: any) => ({
