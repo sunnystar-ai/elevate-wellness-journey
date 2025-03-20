@@ -2,111 +2,111 @@
 import { JournalEntry, CognitiveDistortion } from '../../types';
 import { SentimentResult } from './types';
 
-// Function to extract cognitive distortions from journal entry
+// Common cognitive distortions to check for
+const distortionPatterns = [
+  {
+    type: 'All-or-Nothing Thinking',
+    description: 'Seeing things in black and white categories without acknowledging shades of gray.',
+    keywords: ['always', 'never', 'every', 'all', 'none', 'impossible', 'completely'],
+    example: 'Using absolute terms like "always" or "never"'
+  },
+  {
+    type: 'Overgeneralization',
+    description: 'Drawing sweeping conclusions based on a single event.',
+    keywords: ['nothing good ever', 'everything always', 'everyone', 'nobody', 'forever'],
+    example: 'Generalizing from one specific situation to all situations'
+  },
+  {
+    type: 'Mental Filter',
+    description: 'Focusing on negatives while filtering out positives.',
+    keywords: ['terrible', 'awful', 'horrible', 'disaster', 'worst'],
+    example: 'Focusing exclusively on negative aspects'
+  },
+  {
+    type: 'Disqualifying the Positive',
+    description: 'Rejecting positive experiences by insisting they "don\'t count".',
+    keywords: ['but', 'doesn\'t matter', 'doesn\'t count', 'still bad', 'yeah but'],
+    example: 'Using "but" to invalidate positives'
+  },
+  {
+    type: 'Jumping to Conclusions',
+    description: 'Making negative interpretations without supporting facts.',
+    keywords: ['probably thinks', 'must be thinking', 'know they', 'they must'],
+    example: 'Mind reading or fortune telling without evidence'
+  },
+  {
+    type: 'Magnification or Minimization',
+    description: 'Exaggerating negatives or downplaying positives.',
+    keywords: ['worst', 'terrible', 'unbearable', 'huge', 'tiny', 'just a little'],
+    example: 'Exaggerating problems or diminishing accomplishments'
+  },
+  {
+    type: 'Emotional Reasoning',
+    description: 'Assuming feelings reflect reality: "I feel it, so it must be true."',
+    keywords: ['feel like', 'feels like', 'because I feel'],
+    example: 'Basing conclusions primarily on feelings'
+  },
+  {
+    type: 'Should Statements',
+    description: 'Using "should," "must," or "ought" statements that create unrealistic expectations.',
+    keywords: ['should', 'must', 'have to', 'ought to', 'supposed to'],
+    example: 'Using "should" or "must" statements'
+  },
+  {
+    type: 'Labeling',
+    description: 'Attaching negative labels to yourself or others instead of describing behavior.',
+    keywords: ['I am a', 'they are', 'I\'m so', 'what a', 'loser', 'failure', 'stupid'],
+    example: 'Using negative labels instead of describing specific behaviors'
+  },
+  {
+    type: 'Personalization',
+    description: 'Taking responsibility for external events outside your control.',
+    keywords: ['my fault', 'because of me', 'blame', 'responsible for', 'caused'],
+    example: 'Taking excessive responsibility for things outside your control'
+  }
+];
+
+/**
+ * Extracts cognitive distortions from journal entries based on text patterns
+ * @param entry The journal entry to analyze
+ * @param sentimentResult The sentiment analysis results
+ * @returns Array of detected cognitive distortions
+ */
 export function extractDistortions(entry: JournalEntry, sentimentResult: SentimentResult): CognitiveDistortion[] {
+  // Combine all text for analysis
   const { feelings, thoughtProcess, gratitude } = entry;
-  const combinedText = `${feelings} ${thoughtProcess} ${gratitude}`;
+  const combinedText = `${feelings} ${thoughtProcess} ${gratitude}`.toLowerCase();
+  
   const distortions: CognitiveDistortion[] = [];
-
-  // Example: All-or-Nothing Thinking
-  if (combinedText.includes('always') || combinedText.includes('never')) {
-    distortions.push({
-      type: 'All-or-Nothing Thinking',
-      description: 'Seeing things in black and white categories. If a situation falls short of perfect, it is a total failure.',
-      frequency: 1,
-      example: 'Using words like "always" or "never"'
-    });
-  }
-
-  // Example: Overgeneralization
-  if (combinedText.includes('nothing good ever happens')) {
-    distortions.push({
-      type: 'Overgeneralization',
-      description: 'Drawing sweeping conclusions based on a single event. Using words like "always" or "never" when they are not true.',
-      frequency: 1,
-      example: 'Phrase like "nothing good ever happens"'
-    });
-  }
-
-  // Example: Mental Filter
-  if (sentimentResult.negative.length > sentimentResult.positive.length) {
-    distortions.push({
-      type: 'Mental Filter',
-      description: 'Dwelling on the negatives and ignoring the positives. Focusing on the bad and filtering out the good.',
-      frequency: 1,
-      example: 'More negative than positive language'
-    });
-  }
-
-  // Example: Disqualifying the Positive
-  if (combinedText.includes('but')) {
-    distortions.push({
-      type: 'Disqualifying the Positive',
-      description: 'Rejecting positive experiences by insisting they "don\'t count" for some reason. Maintaining a negative belief despite contradictory evidence.',
-      frequency: 1,
-      example: 'Using "but" to invalidate positives'
-    });
-  }
-
-  // Example: Jumping to Conclusions (Mind Reading)
-  if (combinedText.includes('I know they')) {
-    distortions.push({
-      type: 'Jumping to Conclusions (Mind Reading)',
-      description: 'Assuming that you know what people are thinking without having sufficient evidence to back it up.',
-      frequency: 1,
-      example: 'Phrases like "I know they..."'
-    });
-  }
-
-  // Example: Magnification (Catastrophizing) or Minimization
-  if (combinedText.includes('worst thing')) {
-    distortions.push({
-      type: 'Magnification (Catastrophizing) or Minimization',
-      description: 'Exaggerating the importance of things (such as your mistakes or someone else\'s achievements) or inappropriately shrinking things until they appear tiny (your own desirable qualities or other people\'s imperfections).',
-      frequency: 1,
-      example: 'Phrases like "worst thing"'
-    });
-  }
-
-  // Example: Emotional Reasoning
-  if (feelings.includes('feel')) {
-    distortions.push({
-      type: 'Emotional Reasoning',
-      description: 'Assuming that your negative emotions necessarily reflect the way things really are: "I feel it, therefore it must be true."',
-      frequency: 1,
-      example: 'Basing conclusions on feelings'
-    });
-  }
-
-  // Example: Should Statements
-  if (thoughtProcess.includes('should')) {
-    distortions.push({
-      type: 'Should Statements',
-      description: 'Trying to motivate yourself with shoulds and shouldn\'ts, as if you had to be whipped and punished before you could be expected to do anything. "Musts" and "oughts" are also offenders. The emotional consequence is guilt. When you direct should statements toward others, you feel anger, frustration, and resentment.',
-      frequency: 1,
-      example: 'Use of "should" statements'
-    });
-  }
-
-  // Example: Labeling and Mislabeling
-  if (combinedText.includes('I am a')) {
-    distortions.push({
-      type: 'Labeling and Mislabeling',
-      description: 'An extreme form of overgeneralization. Instead of describing your error, you attach a negative label to yourself: "I\'m a loser." Mislabeling involves describing an event with language that is highly colored and emotionally loaded.',
-      frequency: 1,
-      example: 'Phrases like "I am a..."'
-    });
-  }
-
-  // Example: Personalization
-  if (thoughtProcess.includes('my fault')) {
-    distortions.push({
-      type: 'Personalization',
-      description: 'Seeing yourself as the cause of some negative external event which in fact you were not primarily responsible for.',
-      frequency: 1,
-      example: 'Phrases like "my fault"'
-    });
-  }
-
-  return distortions;
+  
+  // Check each distortion pattern against the text
+  distortionPatterns.forEach(pattern => {
+    // Check if any keywords match in the text
+    const hasMatch = pattern.keywords.some(keyword => 
+      combinedText.includes(keyword.toLowerCase())
+    );
+    
+    // Special case for mental filter based on sentiment
+    const isMentalFilter = pattern.type === 'Mental Filter' && 
+      sentimentResult.negative.length > sentimentResult.positive.length;
+    
+    if (hasMatch || isMentalFilter) {
+      distortions.push({
+        type: pattern.type,
+        description: pattern.description,
+        frequency: 1, // Basic frequency count, could be improved in future
+        example: pattern.example
+      });
+    }
+  });
+  
+  // Return found distortions, or a default if none found
+  return distortions.length > 0 ? distortions : [
+    {
+      type: 'No Significant Distortions',
+      description: 'No notable cognitive distortions were detected in this entry.',
+      frequency: 0,
+      example: 'Your journaling appears balanced in this entry'
+    }
+  ];
 }
