@@ -10,7 +10,7 @@ import AppHeader from '@/components/home/AppHeader';
 import GreetingHeader from '@/components/home/GreetingHeader';
 import QuickActionsBar from '@/components/home/QuickActionsBar';
 import ProgressCircle from '@/components/home/ProgressCircle';
-import DailyTimeline from '@/components/home/DailyTimeline';
+import AiChat from '@/components/home/AiChat';
 import RecommendationCards from '@/components/home/RecommendationCards';
 import CommunityHighlights from '@/components/home/CommunityHighlights';
 import StreakCard from '@/components/home/StreakCard';
@@ -60,9 +60,9 @@ const Index = () => {
 
         <AnimatedSection className="mb-10">
           <div className="flex justify-between items-baseline mb-4">
-            <h2 className="text-lg font-medium">Coming Up Today</h2>
+            <h2 className="text-lg font-medium">Belief System Reframing</h2>
           </div>
-          <DailyTimeline />
+          <AiChat />
         </AnimatedSection>
 
         <AnimatedSection className="mb-10">
