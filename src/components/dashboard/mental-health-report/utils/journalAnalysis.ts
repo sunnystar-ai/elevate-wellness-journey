@@ -96,10 +96,13 @@ export function analyzeJournalEntry(entry: JournalEntry) {
   });
   
   // Add any frequently occurring words that weren't mapped to emotions
+  // Fix: Check if theme.theme exists and emotionMapping[theme.theme.toLowerCase()] exists before using includes
   sortedWords.forEach(word => {
-    const isAlreadyThemed = keyThemes.some(theme => 
-      emotionMapping[theme.theme.toLowerCase()].includes(word)
-    );
+    // Fixed potential undefined issue with proper type checking
+    const isAlreadyThemed = keyThemes.some(theme => {
+      const themeLower = theme.theme.toLowerCase();
+      return emotionMapping[themeLower] && emotionMapping[themeLower].includes(word);
+    });
     
     if (!isAlreadyThemed && wordCounts[word] > 1) {
       keyThemes.push({
@@ -112,7 +115,7 @@ export function analyzeJournalEntry(entry: JournalEntry) {
   
   // Sort themes by count
   keyThemes.sort((a, b) => b.count - a.count);
-  keyThemes.slice(0, 7); // Limit to top 7 themes
+  const limitedThemes = keyThemes.slice(0, 7); // Limit to top 7 themes
   
   // Create personalized recommendations based on journal content
   if (allText.includes('stress') || allText.includes('anxious') || allText.includes('worry')) {
@@ -232,7 +235,7 @@ export function analyzeJournalEntry(entry: JournalEntry) {
 
   return {
     recommendations,
-    keyThemes,
+    keyThemes: limitedThemes, // Return the limited themes
     extractedBeliefs,
     extractedDistortions
   };

@@ -12,11 +12,23 @@ type OverviewTabProps = {
 };
 
 const OverviewTab = ({ currentData, themeData, cognitiveDistortions }: OverviewTabProps) => {
+  // Add a safety check for empty current data
+  if (!currentData || currentData.length === 0) {
+    return (
+      <div className="p-4 text-center">
+        <p className="text-muted-foreground">No data available. Please continue journaling to see insights.</p>
+      </div>
+    );
+  }
+
+  // Get the latest data point safely
+  const latestData = currentData[currentData.length - 1];
+  
   return (
     <div className="space-y-4">
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-lg">Mental Health Score: {Math.round(currentData[currentData.length - 1].overallScore * 100)}/100</CardTitle>
+          <CardTitle className="text-lg">Mental Health Score: {Math.round(latestData.overallScore * 100)}/100</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground mb-4">
@@ -69,21 +81,27 @@ const OverviewTab = ({ currentData, themeData, cognitiveDistortions }: OverviewT
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={themeData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="theme" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="count" name="Mentions" fill="#8884d8">
-                    {themeData.map((entry, index) => (
-                      <rect key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            {themeData && themeData.length > 0 ? (
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={themeData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="theme" />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="count" name="Mentions" fill="#8884d8">
+                      {themeData.map((entry, index) => (
+                        <rect key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="py-4 text-center">
+                <p className="text-muted-foreground">No theme data available yet.</p>
+              </div>
+            )}
           </CardContent>
         </Card>
         
@@ -95,18 +113,24 @@ const OverviewTab = ({ currentData, themeData, cognitiveDistortions }: OverviewT
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {cognitiveDistortions.map((distortion, index) => (
-                <div key={index} className="border-b pb-2 last:border-0">
-                  <div className="flex justify-between">
-                    <span className="font-medium">{distortion.type}</span>
-                    <span className="text-sm text-muted-foreground">{distortion.frequency}x detected</span>
+            {cognitiveDistortions && cognitiveDistortions.length > 0 ? (
+              <div className="space-y-3">
+                {cognitiveDistortions.map((distortion, index) => (
+                  <div key={index} className="border-b pb-2 last:border-0">
+                    <div className="flex justify-between">
+                      <span className="font-medium">{distortion.type}</span>
+                      <span className="text-sm text-muted-foreground">{distortion.frequency}x detected</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{distortion.description}</p>
+                    <p className="text-xs italic mt-1">Example: {distortion.example}</p>
                   </div>
-                  <p className="text-sm text-muted-foreground">{distortion.description}</p>
-                  <p className="text-xs italic mt-1">Example: {distortion.example}</p>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="py-4 text-center">
+                <p className="text-muted-foreground">No cognitive distortions detected.</p>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
