@@ -1,25 +1,10 @@
-import { useState, useEffect } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import OverviewTab from './OverviewTab';
-import SentimentTab from './SentimentTab';
-import BeliefsTab from './BeliefsTab';
-import RecommendationsTab from './RecommendationsTab';
-import LatestJournalAnalysis from './LatestJournalAnalysis';
-import InsufficientDataMessage from './InsufficientDataMessage';
+
+import { useState } from 'react';
+import { TimeFrame, JournalEntry } from './types';
 import ApiKeyInput from './ApiKeyInput';
-import { 
-  analyzeJournalEntry, 
-  generateTimeFrameData 
-} from './utils';
-import {
-  JournalEntry,
-  SentimentData,
-  ThemeData,
-  BeliefData,
-  CognitiveDistortion,
-  Recommendation,
-  TimeFrame
-} from './types';
+import ReportContent from './ReportContent';
+import { useJournalAnalysis } from './hooks/useJournalAnalysis';
+import { hasEnoughData } from './utils';
 
 // Re-export types for backward compatibility
 export type {
@@ -29,7 +14,7 @@ export type {
   BeliefData,
   CognitiveDistortion,
   Recommendation
-};
+} from './types';
 
 type MentalHealthReportProps = {
   timeFrame: TimeFrame;
@@ -37,182 +22,40 @@ type MentalHealthReportProps = {
 };
 
 const MentalHealthReport = ({ timeFrame, journalEntries = [] }: MentalHealthReportProps) => {
-  const [loading, setLoading] = useState(true);
-  const [apiKey, setApiKey] = useState<string | undefined>(undefined);
-  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
-  const [themeData, setThemeData] = useState<ThemeData[]>([]);
-  const [beliefData, setBeliefData] = useState<BeliefData[]>([]);
-  const [cognitiveDistortions, setCognitiveDistortions] = useState<CognitiveDistortion[]>([]);
-  const [sentimentData, setSentimentData] = useState<Record<TimeFrame, SentimentData[]>>({
-    day: [],
-    week: [],
-    month: []
-  });
-  const [analysisError, setAnalysisError] = useState<string | null>(null);
-
-  const handleApiKeySubmit = (key: string) => {
-    setApiKey(key);
-    setLoading(true);
-    // Re-analyze with the new API key
-    analyzeJournalEntries(key);
-  };
-
-  const analyzeJournalEntries = async (currentApiKey = apiKey) => {
-    if (!currentApiKey) {
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    setAnalysisError(null);
-    
-    if (journalEntries && journalEntries.length > 0) {
-      try {
-        const latestEntry = journalEntries[journalEntries.length - 1];
-        
-        // Analyze the journal entry to extract insights
-        const { 
-          recommendations: newRecommendations, 
-          keyThemes, 
-          extractedBeliefs, 
-          extractedDistortions 
-        } = await analyzeJournalEntry(latestEntry, currentApiKey);
-        
-        // Generate sentiment data based on the entry and all journal entries
-        const newSentimentData = generateTimeFrameData(latestEntry, journalEntries);
-        
-        // Update state with the extracted insights
-        setRecommendations(newRecommendations);
-        setThemeData(keyThemes.slice(0, 5)); // Top 5 themes
-        setSentimentData(newSentimentData);
-        setBeliefData(extractedBeliefs);
-        setCognitiveDistortions(extractedDistortions);
-      } catch (error) {
-        console.error('Error analyzing journal entries:', error);
-        setAnalysisError('An error occurred during journal analysis. Please check your OpenAI API key or try again later.');
-      }
-    }
-    
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-    
-    return () => clearTimeout(timer);
-  };
-
-  // Analyze journal entries and generate insights when entries or API key changes
-  useEffect(() => {
-    // If we already have an API key, use it immediately
-    if (apiKey) {
-      analyzeJournalEntries();
-      return;
-    }
-    
-    // Otherwise check for environment variables first
-    const envApiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    if (envApiKey && envApiKey.trim() !== '') {
-      setApiKey(envApiKey);
-      analyzeJournalEntries(envApiKey);
-      return;
-    }
-    
-    // Finally check localStorage
-    const savedKey = localStorage.getItem('openai_api_key');
-    if (savedKey) {
-      setApiKey(savedKey);
-      analyzeJournalEntries(savedKey);
-    } else {
-      setLoading(false);
-    }
-  }, [journalEntries]);
-
-  // Check if we have enough data for the selected time frame
-  const hasEnoughData = () => {
-    if (timeFrame === 'day') {
-      return journalEntries.length > 0;
-    }
-    if (timeFrame === 'week') {
-      return journalEntries.length >= 1; // Show weekly view even with just one entry
-    }
-    if (timeFrame === 'month') {
-      return journalEntries.length >= 1; // Show monthly view even with just one entry
-    }
-    return false;
-  };
-
-  // Loading state
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-harmony-lavender"></div>
-      </div>
-    );
-  }
+  const {
+    loading,
+    apiKey,
+    analysisError,
+    recommendations,
+    themeData,
+    beliefData,
+    cognitiveDistortions,
+    sentimentData,
+    handleApiKeySubmit
+  } = useJournalAnalysis(journalEntries);
 
   // Only show data for the day view when there's only one journal entry
-  const currentData = hasEnoughData() ? sentimentData[timeFrame] : [];
-  const showInsufficientDataMessage = !hasEnoughData() && timeFrame !== 'day';
-  const noApiKey = !apiKey;
+  const currentData = hasEnoughData(journalEntries, timeFrame) ? sentimentData[timeFrame] : [];
+  const hasData = hasEnoughData(journalEntries, timeFrame);
 
   return (
     <div className="space-y-6">
       {/* API Key Input Component */}
       <ApiKeyInput onApiKeySubmit={handleApiKeySubmit} />
       
-      {analysisError && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
-          {analysisError}
-        </div>
-      )}
-      
-      {noApiKey && (
-        <div className="bg-amber-50 border border-amber-200 text-amber-700 px-4 py-3 rounded-lg mb-4">
-          Please add an OpenAI API key above to enable journal analysis.
-        </div>
-      )}
-      
-      {!noApiKey && journalEntries && journalEntries.length > 0 && (
-        <LatestJournalAnalysis latestEntry={journalEntries[journalEntries.length - 1]} />
-      )}
-      
-      {showInsufficientDataMessage ? (
-        <InsufficientDataMessage timeFrame={timeFrame} />
-      ) : (
-        <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="mb-4">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="sentiment">Sentiment Analysis</TabsTrigger>
-            <TabsTrigger value="beliefs">Belief System</TabsTrigger>
-            <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="overview">
-            <OverviewTab 
-              currentData={currentData} 
-              themeData={themeData} 
-              cognitiveDistortions={cognitiveDistortions} 
-            />
-          </TabsContent>
-          
-          <TabsContent value="sentiment">
-            <SentimentTab 
-              currentData={currentData} 
-              themeData={themeData} 
-            />
-          </TabsContent>
-          
-          <TabsContent value="beliefs">
-            <BeliefsTab beliefData={beliefData} />
-          </TabsContent>
-          
-          <TabsContent value="recommendations">
-            <RecommendationsTab 
-              recommendations={recommendations} 
-              currentData={currentData} 
-            />
-          </TabsContent>
-        </Tabs>
-      )}
+      <ReportContent
+        timeFrame={timeFrame}
+        journalEntries={journalEntries}
+        loading={loading}
+        apiKey={apiKey}
+        analysisError={analysisError}
+        currentData={currentData}
+        hasEnoughData={hasData}
+        themeData={themeData}
+        cognitiveDistortions={cognitiveDistortions}
+        beliefData={beliefData}
+        recommendations={recommendations}
+      />
     </div>
   );
 };
