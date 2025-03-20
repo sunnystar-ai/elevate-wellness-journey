@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Lightbulb, TrendingUp } from 'lucide-react';
-import { Recommendation, SentimentData } from './index';
+import { Recommendation, SentimentData } from './types';
 
 type RecommendationsTabProps = {
   recommendations: Recommendation[];

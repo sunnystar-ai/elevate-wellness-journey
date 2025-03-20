@@ -4,7 +4,7 @@ import { CheckCircle2, Heart, Brain, Star, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { JournalEntry } from './mental-health-report';
+import { JournalEntry } from './mental-health-report/types';
 import TrendsSection from './TrendsSection';
 
 const RecommendedNextSteps = () => {

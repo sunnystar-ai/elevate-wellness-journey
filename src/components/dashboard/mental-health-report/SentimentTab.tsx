@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Heart, Star, Check } from 'lucide-react';
-import { SentimentData, ThemeData } from './index';
+import { SentimentData, ThemeData } from './types';
 
 type SentimentTabProps = {
   currentData: SentimentData[];

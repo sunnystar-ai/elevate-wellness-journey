@@ -2,7 +2,8 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import MentalHealthReport, { JournalEntry } from './mental-health-report';
+import MentalHealthReport from './mental-health-report';
+import { JournalEntry } from './mental-health-report/types';
 
 type TrendsSectionProps = {
   journalEntries?: JournalEntry[];

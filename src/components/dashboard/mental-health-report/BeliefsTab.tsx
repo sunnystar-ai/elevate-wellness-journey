@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BeliefData } from './index';
+import { BeliefData } from './types';
 
 type BeliefsTabProps = {
   beliefData: BeliefData[];

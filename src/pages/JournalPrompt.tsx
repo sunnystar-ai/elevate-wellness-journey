@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Heart, Brain, Star, Send } from 'lucide-react';
 import BottomNav from '@/components/my-journey/BottomNav';
 import { useToast } from '@/hooks/use-toast';
-import { JournalEntry } from '@/components/dashboard/mental-health-report';
+import { JournalEntry } from '@/components/dashboard/mental-health-report/types';
 
 const JournalPrompt = () => {
   const navigate = useNavigate();

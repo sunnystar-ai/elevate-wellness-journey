@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, BarChart, Bar } from 'recharts';
 import { Heart, AlertTriangle } from 'lucide-react';
-import { SentimentData, ThemeData, CognitiveDistortion } from './index';
+import { SentimentData, ThemeData, CognitiveDistortion } from './types';
 
 type OverviewTabProps = {
   currentData: SentimentData[];
