@@ -7,6 +7,7 @@ import {
   CognitiveDistortion, 
   Recommendation 
 } from '../types';
+import React from 'react';
 
 // Helper function to assign colors to emotions
 export function getColorForEmotion(emotion: string): string {
@@ -71,7 +72,7 @@ export function analyzeJournalEntry(entry: JournalEntry) {
     recommendations.push({
       title: 'Practice mindfulness',
       description: `Your latest entry mentions feelings of ${keyThemes.find(t => ['Stress', 'Anxious', 'Worry'].includes(t.theme))?.theme.toLowerCase() || 'stress'}. Try a 5-minute breathing exercise.`,
-      icon: <div className="h-4 w-4 text-harmony-lavender" />,
+      icon: React.createElement("div", { className: "h-4 w-4 text-harmony-lavender" }),
       type: 'short-term'
     });
   }
@@ -80,7 +81,7 @@ export function analyzeJournalEntry(entry: JournalEntry) {
     recommendations.push({
       title: 'Nurture social connections',
       description: 'Your entry highlights the importance of relationships. Schedule time to connect with a friend.',
-      icon: <div className="h-4 w-4 text-harmony-blue" />,
+      icon: React.createElement("div", { className: "h-4 w-4 text-harmony-blue" }),
       type: 'short-term'
     });
   }
@@ -89,7 +90,7 @@ export function analyzeJournalEntry(entry: JournalEntry) {
     recommendations.push({
       title: 'Daily gratitude practice',
       description: 'Continue expressing gratitude in your journal. Consider noting 3 specific things each morning.',
-      icon: <div className="h-4 w-4 text-harmony-mint" />,
+      icon: React.createElement("div", { className: "h-4 w-4 text-harmony-mint" }),
       type: 'short-term'
     });
   }
@@ -99,14 +100,14 @@ export function analyzeJournalEntry(entry: JournalEntry) {
     recommendations.push({
       title: 'Recognize your contributions',
       description: 'Work on acknowledging the value you bring to your collaborations and projects.',
-      icon: <div className="h-4 w-4 text-harmony-peach" />,
+      icon: React.createElement("div", { className: "h-4 w-4 text-harmony-peach" }),
       type: 'long-term'
     });
   } else {
     recommendations.push({
       title: 'Develop self-reflection practice',
       description: 'Set aside time weekly to reflect on your personal growth and learning experiences.',
-      icon: <div className="h-4 w-4 text-harmony-peach" />,
+      icon: React.createElement("div", { className: "h-4 w-4 text-harmony-peach" }),
       type: 'long-term'
     });
   }
