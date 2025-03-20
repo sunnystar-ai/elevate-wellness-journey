@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { 
   analyzeJournalEntry, 
@@ -12,6 +13,7 @@ import {
   Recommendation,
   TimeFrame
 } from '../types';
+import { useToast } from '@/hooks/use-toast';
 
 export const useJournalAnalysis = (journalEntries: JournalEntry[] = []) => {
   const [loading, setLoading] = useState(true);
@@ -26,12 +28,19 @@ export const useJournalAnalysis = (journalEntries: JournalEntry[] = []) => {
     month: []
   });
   const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const handleApiKeySubmit = (key: string) => {
     setApiKey(key);
     setLoading(true);
+    setAnalysisError(null);
     // Re-analyze with the new API key
     analyzeJournalEntries(key);
+    
+    toast({
+      title: "API Key Updated",
+      description: "Your OpenAI API key has been updated and will be used for journal analysis.",
+    });
   };
 
   const analyzeJournalEntries = async (currentApiKey = apiKey) => {
@@ -46,6 +55,7 @@ export const useJournalAnalysis = (journalEntries: JournalEntry[] = []) => {
     if (journalEntries && journalEntries.length > 0) {
       try {
         const latestEntry = journalEntries[journalEntries.length - 1];
+        console.log('Analyzing latest journal entry:', latestEntry);
         
         // Analyze the journal entry to extract insights
         const { 
@@ -64,9 +74,20 @@ export const useJournalAnalysis = (journalEntries: JournalEntry[] = []) => {
         setSentimentData(newSentimentData);
         setBeliefData(extractedBeliefs);
         setCognitiveDistortions(extractedDistortions);
+        
+        toast({
+          title: "Analysis Complete",
+          description: "Your journal entry has been analyzed successfully.",
+        });
       } catch (error) {
         console.error('Error analyzing journal entries:', error);
         setAnalysisError('An error occurred during journal analysis. Please check your OpenAI API key or try again later.');
+        
+        toast({
+          title: "Analysis Failed",
+          description: "There was a problem analyzing your journal. Please check your API key.",
+          variant: "destructive"
+        });
       }
     }
     

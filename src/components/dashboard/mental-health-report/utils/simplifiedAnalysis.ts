@@ -1,6 +1,7 @@
 
 import { JournalEntry } from '../types';
 import { getColorForEmotion } from './colorUtils';
+import React from 'react';
 
 // Basic sentiment analysis function to extract positive/negative keywords
 const extractSentiment = (text: string) => {
@@ -51,6 +52,14 @@ export function useSimplifiedAnalysis(entry: JournalEntry) {
     .sort((a, b) => b.count - a.count)
     .slice(0, 5);
   
+  // If no themes were found, add default ones
+  if (keyThemes.length === 0) {
+    keyThemes.push(
+      { theme: 'Reflection', count: 5, color: getColorForEmotion('Reflection') },
+      { theme: 'Growth', count: 4, color: getColorForEmotion('Growth') }
+    );
+  }
+  
   // Generate basic beliefs
   const extractedBeliefs = [
     {
@@ -85,7 +94,7 @@ export function useSimplifiedAnalysis(entry: JournalEntry) {
       title: "Practice Mindfulness",
       description: "Take 5 minutes today to breathe deeply and be present with your emotions",
       type: "short-term",
-      icon: { className: "h-4 w-4 text-harmony-lavender" }
+      icon: React.createElement("div", { className: "h-4 w-4 text-harmony-lavender" })
     },
     {
       title: feelingsSentiment.sentiment === 'positive' ? "Build on Positive Emotions" : "Address Negative Feelings",
@@ -93,13 +102,13 @@ export function useSimplifiedAnalysis(entry: JournalEntry) {
         ? "Journal about what's contributing to your positive state" 
         : "Identify one small action to improve your mood today",
       type: "short-term",
-      icon: { className: "h-4 w-4 text-harmony-lavender" }
+      icon: React.createElement("div", { className: "h-4 w-4 text-harmony-lavender" })
     },
     {
       title: "Gratitude Practice",
       description: "Continue noting things you're grateful for each day to build resilience",
       type: "long-term",
-      icon: { className: "h-4 w-4 text-harmony-lavender" }
+      icon: React.createElement("div", { className: "h-4 w-4 text-harmony-lavender" })
     }
   ];
   

@@ -12,6 +12,8 @@ import { getColorForEmotion } from './colorUtils';
 // Function to analyze journal entries using OpenAI
 export async function analyzeEntryWithAI(entry: JournalEntry, apiKey: string) {
   try {
+    console.log('Analyzing entry with OpenAI:', entry);
+    
     // Prepare the entry content for analysis
     const entryContent = `
       Feelings: ${entry.feelings}
@@ -37,9 +39,9 @@ export async function analyzeEntryWithAI(entry: JournalEntry, apiKey: string) {
             3. Any cognitive distortions present with frequency scores (1-5)
             4. 3-4 tailored recommendations based on the content
             
-            Format your response as JSON without any markdown formatting like \`\`\`json or \`\`\`:
+            Format your response as JSON without any markdown formatting:
             {
-              "themes": [{"theme": "string", "count": number, "color": "string"}],
+              "themes": [{"theme": "string", "count": number}],
               "beliefs": [{"belief": "string", "confidence": number, "isPositive": boolean}],
               "distortions": [{"type": "string", "description": "string", "frequency": number, "example": "string"}],
               "recommendations": [{"title": "string", "description": "string", "type": "short-term" or "long-term"}]
@@ -103,6 +105,7 @@ export async function analyzeEntryWithAI(entry: JournalEntry, apiKey: string) {
     };
   } catch (error) {
     console.error('Error analyzing journal entry with OpenAI:', error);
-    throw error;
+    // Return a more detailed error for debugging
+    throw new Error(`OpenAI analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
