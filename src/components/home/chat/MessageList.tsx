@@ -14,28 +14,26 @@ interface MessageListProps {
 
 const MessageList = ({ messages, isLoading, messagesEndRef, scrollAreaRef }: MessageListProps) => {
   return (
-    <div className="flex-1 overflow-hidden">
-      <ScrollArea className="h-full p-3" ref={scrollAreaRef}>
-        <div className="space-y-3">
-          {messages.map(message => (
-            <ChatMessage key={message.id} message={message} />
-          ))}
-          
-          {isLoading && (
-            <div className="flex justify-start">
-              <div className="max-w-[80%] p-3 rounded-lg bg-muted mr-4">
-                <div className="flex items-center gap-2 mb-1 text-xs opacity-70">
-                  <Loader2 className="h-3 w-3 animate-spin" />
-                  <span>Assistant</span>
-                </div>
-                <Loader2 className="h-4 w-4 animate-spin" />
+    <ScrollArea className="h-full p-3 flex-1" ref={scrollAreaRef}>
+      <div className="space-y-3">
+        {messages.map(message => (
+          <ChatMessage key={message.id} message={message} />
+        ))}
+        
+        {isLoading && (
+          <div className="flex justify-start">
+            <div className="max-w-[80%] p-3 rounded-lg bg-muted mr-4">
+              <div className="flex items-center gap-2 mb-1 text-xs opacity-70">
+                <Loader2 className="h-3 w-3 animate-spin" />
+                <span>Assistant</span>
               </div>
+              <Loader2 className="h-4 w-4 animate-spin" />
             </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-      </ScrollArea>
-    </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+    </ScrollArea>
   );
 };
 

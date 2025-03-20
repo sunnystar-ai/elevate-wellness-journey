@@ -20,16 +20,16 @@ const AiChat = () => {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   // Only scroll to bottom when new messages are added or when loading state changes
   useEffect(() => {
     if (messages.length > 0 || isLoading === false) {
       scrollToBottom();
     }
   }, [messages.length, isLoading]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   const handleSendMessage = async (input: string) => {
     // Get API key from localStorage or environment variable
@@ -92,12 +92,14 @@ const AiChat = () => {
   return (
     <div className="rounded-lg bg-white shadow-md h-[400px] flex flex-col overflow-hidden">
       <ChatHeader />
-      <MessageList 
-        messages={messages}
-        isLoading={isLoading}
-        messagesEndRef={messagesEndRef}
-        scrollAreaRef={scrollAreaRef}
-      />
+      <div className="flex-1 overflow-hidden relative flex flex-col">
+        <MessageList 
+          messages={messages}
+          isLoading={isLoading}
+          messagesEndRef={messagesEndRef}
+          scrollAreaRef={scrollAreaRef}
+        />
+      </div>
       <ChatInput 
         onSendMessage={handleSendMessage}
         isLoading={isLoading}
