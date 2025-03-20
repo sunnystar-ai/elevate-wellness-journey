@@ -79,17 +79,20 @@ const TrendsSection = ({ journalEntries = [] }: TrendsSectionProps) => {
         View Detailed Reports
       </Button>
 
-      <Dialog open={showReport} onOpenChange={setShowReport}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Mental Health Analysis Report</DialogTitle>
-            <DialogDescription>
-              Analysis based on your journal entries
-            </DialogDescription>
-          </DialogHeader>
-          <MentalHealthReport timeFrame={timeFrame} journalEntries={journalEntries} />
-        </DialogContent>
-      </Dialog>
+      {/* Only render the Dialog when showReport is true and we have journal entries */}
+      {showReport && (
+        <Dialog open={showReport} onOpenChange={setShowReport}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Mental Health Analysis Report</DialogTitle>
+              <DialogDescription>
+                Analysis based on your journal entries
+              </DialogDescription>
+            </DialogHeader>
+            <MentalHealthReport timeFrame={timeFrame} journalEntries={journalEntries} />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };

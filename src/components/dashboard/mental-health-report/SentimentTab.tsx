@@ -13,8 +13,25 @@ const SentimentTab = ({ currentData, themeData }: SentimentTabProps) => {
   // Get the latest data point
   const latestData = currentData.length > 0 ? currentData[currentData.length - 1] : null;
   
-  // Calculate journaling days
+  // Calculate journaling days - based on consistency score
   const journalingDays = latestData ? Math.round(latestData.consistencyScore * 7) : 0;
+  
+  // Helper function to get sentiment description
+  const getSentimentDescription = (score: number) => {
+    if (score > 0.7) return "Your entries show a very positive emotional tone.";
+    if (score > 0.6) return "Your entries indicate a positive outlook.";
+    if (score > 0.4) return "Your entries show a balanced emotional tone.";
+    if (score > 0.3) return "Your entries indicate some challenging emotions to work through.";
+    return "Your entries suggest you may be going through a difficult time.";
+  };
+  
+  // Helper function to get gratitude description
+  const getGratitudeDescription = (ratio: number) => {
+    if (ratio > 0.6) return "Your entries frequently express thankfulness and appreciation.";
+    if (ratio > 0.4) return "You mention gratitude periodically in your journaling.";
+    if (ratio > 0.2) return "Consider focusing more on things you're grateful for.";
+    return "Adding more gratitude to your journal may improve your well-being.";
+  };
   
   return (
     <Card>
@@ -32,11 +49,7 @@ const SentimentTab = ({ currentData, themeData }: SentimentTabProps) => {
               {latestData ? Math.round(latestData.sentimentScore * 100) : 0}%
             </div>
             <p className="text-sm text-muted-foreground">
-              {latestData && latestData.sentimentScore > 0.6 
-                ? "Your entries show a positive emotional tone." 
-                : latestData && latestData.sentimentScore > 0.4
-                ? "Your entries show a neutral emotional tone with some stress." 
-                : "Your entries indicate some challenging emotions to work through."}
+              {latestData ? getSentimentDescription(latestData.sentimentScore) : "No data available yet."}
             </p>
           </div>
           
@@ -49,9 +62,7 @@ const SentimentTab = ({ currentData, themeData }: SentimentTabProps) => {
               {latestData ? Math.round(latestData.gratitudeRatio * 100) : 0}%
             </div>
             <p className="text-sm text-muted-foreground">
-              {latestData && latestData.gratitudeRatio > 0.6
-                ? "Your entries frequently express thankfulness and appreciation."
-                : "Percentage of content expressing thankfulness or appreciation."}
+              {latestData ? getGratitudeDescription(latestData.gratitudeRatio) : "No gratitude entries detected yet."}
             </p>
           </div>
           
