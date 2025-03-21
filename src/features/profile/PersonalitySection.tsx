@@ -38,7 +38,7 @@ const PersonalitySection = ({ mbtiType, mbtiDescription }: PersonalitySectionPro
 
   return (
     <section>
-      <h3 className="text-lg font-semibold mb-3">Personality Test</h3>
+      <h3 className="text-lg font-semibold mb-3">Personality Type</h3>
       {mbtiType ? (
         <>
           <Card className="mb-3">
