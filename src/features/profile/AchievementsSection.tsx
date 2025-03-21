@@ -1,6 +1,6 @@
 
 import { Button } from '@/components/ui/button';
-import { Heart, Smile, FaceSmile, TrendingUp, TrendingDown } from 'lucide-react';
+import { Heart, Smile, Brain, TrendingUp, TrendingDown } from 'lucide-react';
 
 const EmotionTendenciesSection = () => {
   return (
@@ -52,7 +52,7 @@ const EmotionTendenciesSection = () => {
         
         <div className="flex flex-col items-center">
           <div className="h-16 w-16 rounded-full bg-purple-500/10 flex items-center justify-center mb-1">
-            <FaceSmile className="h-8 w-8 text-purple-500" />
+            <Brain className="h-8 w-8 text-purple-500" />
           </div>
           <p className="text-xs font-medium">Resilience</p>
           <p className="text-[10px] text-muted-foreground">79%</p>
