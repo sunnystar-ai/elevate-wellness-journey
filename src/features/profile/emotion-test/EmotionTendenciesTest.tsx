@@ -36,8 +36,8 @@ const EmotionTendenciesTest = ({ open, onOpenChange, onTestComplete }: EmotionTe
     
     // Notify user
     toast({
-      title: "Test Completed",
-      description: "Your emotion tendencies results have been updated."
+      title: "Assessment Completed",
+      description: "Your Big Five personality traits have been updated."
     });
     
     // Pass results to parent component
@@ -66,9 +66,9 @@ const EmotionTendenciesTest = ({ open, onOpenChange, onTestComplete }: EmotionTe
     }}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Emotion Tendencies Test</DialogTitle>
+          <DialogTitle>Big Five Personality Assessment</DialogTitle>
           <DialogDescription>
-            Answer honestly to get the most accurate results about your emotional tendencies.
+            Answer honestly to get the most accurate assessment of your personality traits.
           </DialogDescription>
         </DialogHeader>
         

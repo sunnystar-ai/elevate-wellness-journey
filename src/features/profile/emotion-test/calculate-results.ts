@@ -56,13 +56,12 @@ export const calculateResults = (
     ? Math.round((traitScores.conscientiousness / (traitCounts.conscientiousness * 5)) * 100) 
     : 50;
 
-  // Map Big Five traits to our emotion traits
+  // Return the Big Five traits directly
   return {
-    happiness: extraversion,
-    empathy: agreeableness,
-    optimism: openness,
-    calmness: 100 - neuroticism, // Inverse of neuroticism
-    stress: neuroticism,
-    resilience: conscientiousness
+    openness,
+    conscientiousness,
+    extraversion,
+    agreeableness,
+    neuroticism
   };
 };

@@ -1,27 +1,30 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Heart, Smile, Brain, TrendingUp, TrendingDown } from 'lucide-react';
+import { Brain, Heart, Users, Sparkle, AlertTriangle } from 'lucide-react';
+import { 
+  Popover,
+  PopoverContent,
+  PopoverTrigger 
+} from '@/components/ui/popover';
 import EmotionTendenciesTest from './emotion-test/EmotionTendenciesTest';
 
 interface EmotionData {
-  happiness: number;
-  empathy: number;
-  optimism: number;
-  calmness: number;
-  stress: number;
-  resilience: number;
+  openness: number;
+  conscientiousness: number;
+  extraversion: number;
+  agreeableness: number;
+  neuroticism: number;
 }
 
 const EmotionTendenciesSection = () => {
   const [isTestOpen, setIsTestOpen] = useState(false);
   const [emotionData, setEmotionData] = useState<EmotionData>({
-    happiness: 75,
-    empathy: 82,
-    optimism: 68,
-    calmness: 61,
-    stress: 42,
-    resilience: 79
+    openness: 70,
+    conscientiousness: 75,
+    extraversion: 65,
+    agreeableness: 80,
+    neuroticism: 40
   });
 
   useEffect(() => {
@@ -33,14 +36,13 @@ const EmotionTendenciesSection = () => {
   }, []);
 
   const handleTestComplete = (results: Record<string, number>) => {
-    // Make sure we're setting a value that matches our EmotionData type
+    // Map the results to our EmotionData type
     const typedResults: EmotionData = {
-      happiness: results.happiness || emotionData.happiness,
-      empathy: results.empathy || emotionData.empathy,
-      optimism: results.optimism || emotionData.optimism,
-      calmness: results.calmness || emotionData.calmness,
-      stress: results.stress || emotionData.stress,
-      resilience: results.resilience || emotionData.resilience
+      openness: results.openness || emotionData.openness,
+      conscientiousness: results.conscientiousness || emotionData.conscientiousness,
+      extraversion: results.extraversion || emotionData.extraversion,
+      agreeableness: results.agreeableness || emotionData.agreeableness,
+      neuroticism: results.neuroticism || emotionData.neuroticism
     };
     
     // Save to localStorage
@@ -50,64 +52,139 @@ const EmotionTendenciesSection = () => {
     setEmotionData(typedResults);
   };
 
+  const traitDescriptions = {
+    openness: {
+      title: "Openness",
+      description: "Curious, imaginative, and appreciative of art/emotion. Creative, adventurous, open to abstract ideas.",
+      color: "text-yellow-500",
+      bgColor: "bg-yellow-500/10"
+    },
+    conscientiousness: {
+      title: "Conscientiousness",
+      description: "Self-disciplined, goal-oriented behavior, and impulse control. Organized, reliable, deliberate.",
+      color: "text-purple-500",
+      bgColor: "bg-purple-500/10"
+    },
+    extraversion: {
+      title: "Extraversion",
+      description: "Sociable, assertive, and tendency to experience positive emotions. Outgoing, energetic, excitement-seeking.",
+      color: "text-primary",
+      bgColor: "bg-primary/10"
+    },
+    agreeableness: {
+      title: "Empathy/Agreeableness",
+      description: "Empathetic, compassionate, and trusting of others. Cooperative, kind, conflict-averse.",
+      color: "text-primary",
+      bgColor: "bg-primary/10"
+    },
+    neuroticism: {
+      title: "Neuroticism",
+      description: "Emotional stability vs. tendency toward negative emotions (anxiety, sadness). Worrying, mood swings, stress sensitivity.",
+      color: "text-red-500",
+      bgColor: "bg-red-500/10"
+    }
+  };
+
   return (
     <section>
       <div className="mb-3">
-        <h3 className="text-lg font-semibold">Emotion Tendencies</h3>
+        <h3 className="text-lg font-semibold">Big Five Personality Traits</h3>
       </div>
       <div className="grid grid-cols-3 gap-3 mb-3">
-        <div className="flex flex-col items-center">
-          <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mb-1">
-            <Smile className="h-8 w-8 text-primary" />
-          </div>
-          <p className="text-xs font-medium">Happiness</p>
-          <p className="text-[10px] text-muted-foreground">{emotionData.happiness}%</p>
-        </div>
+        <Popover>
+          <PopoverTrigger asChild>
+            <div className="flex flex-col items-center cursor-pointer">
+              <div className={`h-16 w-16 rounded-full ${traitDescriptions.openness.bgColor} flex items-center justify-center mb-1`}>
+                <Sparkle className={`h-8 w-8 ${traitDescriptions.openness.color}`} />
+              </div>
+              <p className="text-xs font-medium">Openness</p>
+              <p className="text-[10px] text-muted-foreground">{emotionData.openness}%</p>
+            </div>
+          </PopoverTrigger>
+          <PopoverContent className="w-72">
+            <div className="space-y-2">
+              <h4 className="font-medium">{traitDescriptions.openness.title}</h4>
+              <p className="text-sm text-muted-foreground">{traitDescriptions.openness.description}</p>
+            </div>
+          </PopoverContent>
+        </Popover>
         
-        <div className="flex flex-col items-center">
-          <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mb-1">
-            <Heart className="h-8 w-8 text-primary" />
-          </div>
-          <p className="text-xs font-medium">Empathy</p>
-          <p className="text-[10px] text-muted-foreground">{emotionData.empathy}%</p>
-        </div>
+        <Popover>
+          <PopoverTrigger asChild>
+            <div className="flex flex-col items-center cursor-pointer">
+              <div className={`h-16 w-16 rounded-full ${traitDescriptions.conscientiousness.bgColor} flex items-center justify-center mb-1`}>
+                <Brain className={`h-8 w-8 ${traitDescriptions.conscientiousness.color}`} />
+              </div>
+              <p className="text-xs font-medium">Conscientiousness</p>
+              <p className="text-[10px] text-muted-foreground">{emotionData.conscientiousness}%</p>
+            </div>
+          </PopoverTrigger>
+          <PopoverContent className="w-72">
+            <div className="space-y-2">
+              <h4 className="font-medium">{traitDescriptions.conscientiousness.title}</h4>
+              <p className="text-sm text-muted-foreground">{traitDescriptions.conscientiousness.description}</p>
+            </div>
+          </PopoverContent>
+        </Popover>
         
-        <div className="flex flex-col items-center">
-          <div className="h-16 w-16 rounded-full bg-yellow-500/10 flex items-center justify-center mb-1">
-            <TrendingUp className="h-8 w-8 text-yellow-500" />
-          </div>
-          <p className="text-xs font-medium">Optimism</p>
-          <p className="text-[10px] text-muted-foreground">{emotionData.optimism}%</p>
-        </div>
+        <Popover>
+          <PopoverTrigger asChild>
+            <div className="flex flex-col items-center cursor-pointer">
+              <div className={`h-16 w-16 rounded-full ${traitDescriptions.extraversion.bgColor} flex items-center justify-center mb-1`}>
+                <Users className={`h-8 w-8 ${traitDescriptions.extraversion.color}`} />
+              </div>
+              <p className="text-xs font-medium">Extraversion</p>
+              <p className="text-[10px] text-muted-foreground">{emotionData.extraversion}%</p>
+            </div>
+          </PopoverTrigger>
+          <PopoverContent className="w-72">
+            <div className="space-y-2">
+              <h4 className="font-medium">{traitDescriptions.extraversion.title}</h4>
+              <p className="text-sm text-muted-foreground">{traitDescriptions.extraversion.description}</p>
+            </div>
+          </PopoverContent>
+        </Popover>
         
-        <div className="flex flex-col items-center">
-          <div className="h-16 w-16 rounded-full bg-blue-500/10 flex items-center justify-center mb-1">
-            <Smile className="h-8 w-8 text-blue-500" />
-          </div>
-          <p className="text-xs font-medium">Calmness</p>
-          <p className="text-[10px] text-muted-foreground">{emotionData.calmness}%</p>
-        </div>
+        <Popover>
+          <PopoverTrigger asChild>
+            <div className="flex flex-col items-center cursor-pointer">
+              <div className={`h-16 w-16 rounded-full ${traitDescriptions.agreeableness.bgColor} flex items-center justify-center mb-1`}>
+                <Heart className={`h-8 w-8 ${traitDescriptions.agreeableness.color}`} />
+              </div>
+              <p className="text-xs font-medium">Empathy</p>
+              <p className="text-[10px] text-muted-foreground">{emotionData.agreeableness}%</p>
+            </div>
+          </PopoverTrigger>
+          <PopoverContent className="w-72">
+            <div className="space-y-2">
+              <h4 className="font-medium">{traitDescriptions.agreeableness.title}</h4>
+              <p className="text-sm text-muted-foreground">{traitDescriptions.agreeableness.description}</p>
+            </div>
+          </PopoverContent>
+        </Popover>
         
-        <div className="flex flex-col items-center">
-          <div className="h-16 w-16 rounded-full bg-red-500/10 flex items-center justify-center mb-1">
-            <TrendingDown className="h-8 w-8 text-red-500" />
-          </div>
-          <p className="text-xs font-medium">Stress</p>
-          <p className="text-[10px] text-muted-foreground">{emotionData.stress}%</p>
-        </div>
-        
-        <div className="flex flex-col items-center">
-          <div className="h-16 w-16 rounded-full bg-purple-500/10 flex items-center justify-center mb-1">
-            <Brain className="h-8 w-8 text-purple-500" />
-          </div>
-          <p className="text-xs font-medium">Resilience</p>
-          <p className="text-[10px] text-muted-foreground">{emotionData.resilience}%</p>
-        </div>
+        <Popover>
+          <PopoverTrigger asChild>
+            <div className="flex flex-col items-center cursor-pointer">
+              <div className={`h-16 w-16 rounded-full ${traitDescriptions.neuroticism.bgColor} flex items-center justify-center mb-1`}>
+                <AlertTriangle className={`h-8 w-8 ${traitDescriptions.neuroticism.color}`} />
+              </div>
+              <p className="text-xs font-medium">Neuroticism</p>
+              <p className="text-[10px] text-muted-foreground">{emotionData.neuroticism}%</p>
+            </div>
+          </PopoverTrigger>
+          <PopoverContent className="w-72">
+            <div className="space-y-2">
+              <h4 className="font-medium">{traitDescriptions.neuroticism.title}</h4>
+              <p className="text-sm text-muted-foreground">{traitDescriptions.neuroticism.description}</p>
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
 
       {/* Full Width Button similar to the Personality Test */}
       <Button className="w-full" onClick={() => setIsTestOpen(true)}>
-        Take Emotion Tendencies Test
+        Take Big Five Assessment
       </Button>
 
       {/* Emotion Tendencies Test Dialog */}
