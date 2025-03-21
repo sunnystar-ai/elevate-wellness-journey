@@ -90,7 +90,12 @@ const EmotionTendenciesSection = () => {
       <div className="mb-3">
         <h3 className="text-lg font-semibold">Big Five Personality Traits</h3>
       </div>
-      <div className="grid grid-cols-3 gap-3 mb-3">
+      
+      <div className="flex justify-center mb-4">
+        <h4 className="text-base font-medium">Big Five Personality Traits</h4>
+      </div>
+      
+      <div className="grid grid-cols-3 gap-4 mb-5">
         <Popover>
           <PopoverTrigger asChild>
             <div className="flex flex-col items-center cursor-pointer">
@@ -98,7 +103,7 @@ const EmotionTendenciesSection = () => {
                 <Sparkle className={`h-8 w-8 ${traitDescriptions.openness.color}`} />
               </div>
               <p className="text-xs font-medium">Openness</p>
-              <p className="text-[10px] text-muted-foreground">{emotionData.openness}%</p>
+              <p className="text-sm font-medium">{emotionData.openness}%</p>
             </div>
           </PopoverTrigger>
           <PopoverContent className="w-72">
@@ -116,7 +121,7 @@ const EmotionTendenciesSection = () => {
                 <Brain className={`h-8 w-8 ${traitDescriptions.conscientiousness.color}`} />
               </div>
               <p className="text-xs font-medium">Conscientiousness</p>
-              <p className="text-[10px] text-muted-foreground">{emotionData.conscientiousness}%</p>
+              <p className="text-sm font-medium">{emotionData.conscientiousness}%</p>
             </div>
           </PopoverTrigger>
           <PopoverContent className="w-72">
@@ -134,7 +139,7 @@ const EmotionTendenciesSection = () => {
                 <Users className={`h-8 w-8 ${traitDescriptions.extraversion.color}`} />
               </div>
               <p className="text-xs font-medium">Extraversion</p>
-              <p className="text-[10px] text-muted-foreground">{emotionData.extraversion}%</p>
+              <p className="text-sm font-medium">{emotionData.extraversion}%</p>
             </div>
           </PopoverTrigger>
           <PopoverContent className="w-72">
@@ -152,7 +157,7 @@ const EmotionTendenciesSection = () => {
                 <Heart className={`h-8 w-8 ${traitDescriptions.agreeableness.color}`} />
               </div>
               <p className="text-xs font-medium">Empathy</p>
-              <p className="text-[10px] text-muted-foreground">{emotionData.agreeableness}%</p>
+              <p className="text-sm font-medium">{emotionData.agreeableness}%</p>
             </div>
           </PopoverTrigger>
           <PopoverContent className="w-72">
@@ -170,7 +175,7 @@ const EmotionTendenciesSection = () => {
                 <AlertTriangle className={`h-8 w-8 ${traitDescriptions.neuroticism.color}`} />
               </div>
               <p className="text-xs font-medium">Neuroticism</p>
-              <p className="text-[10px] text-muted-foreground">{emotionData.neuroticism}%</p>
+              <p className="text-sm font-medium">{emotionData.neuroticism}%</p>
             </div>
           </PopoverTrigger>
           <PopoverContent className="w-72">

@@ -34,14 +34,14 @@ const EmotionTendenciesTest = ({ open, onOpenChange, onTestComplete }: EmotionTe
     // Calculate results
     const results = calculateResults(questions, answers);
     
+    // Pass results to parent component
+    onTestComplete(results);
+    
     // Notify user
     toast({
       title: "Assessment Completed",
       description: "Your Big Five personality traits have been updated."
     });
-    
-    // Pass results to parent component
-    onTestComplete(results);
     
     // Close the dialog
     onOpenChange(false);
