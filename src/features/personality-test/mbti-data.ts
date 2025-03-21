@@ -1,4 +1,3 @@
-
 import { Brain, User, PenTool, Compass } from 'lucide-react';
 import React from 'react';
 
@@ -62,35 +61,43 @@ export const mbtiDescriptions: Record<string, string> = {
   'ENTJ': 'Strategic, logical, and efficient leader. You have a clear vision of possibilities and mobilize others toward goals.'
 };
 
-// Personality trait percentages based on MBTI type
+// MBTI trait percentages based on the type
 export const getPersonalityTraits = (mbtiType: string) => {
   const traits = {
-    extroversion: 50,
-    openness: 50,
-    conscientiousness: 50
+    introversion: 50,  // I/E dimension
+    intuition: 50,     // S/N dimension
+    feeling: 50,       // T/F dimension
+    judging: 50        // J/P dimension
   };
   
   if (!mbtiType) return traits;
   
-  // Extroversion (I/E scale)
+  // Introversion/Extroversion (I/E scale)
   if (mbtiType.startsWith('I')) {
-    traits.extroversion = 25; // Introverted
+    traits.introversion = 85; // Introverted
   } else if (mbtiType.startsWith('E')) {
-    traits.extroversion = 85; // Extroverted
+    traits.introversion = 25; // Extroverted (low on introversion scale)
   }
   
-  // Openness (S/N scale)
-  if (mbtiType.includes('S')) {
-    traits.openness = 40; // Sensing types tend to be more practical and traditional
-  } else if (mbtiType.includes('N')) {
-    traits.openness = 85; // iNtuitive types tend to be more imaginative and open to new ideas
+  // Intuition/Sensing (N/S scale)
+  if (mbtiType.includes('N')) {
+    traits.intuition = 85; // Intuitive
+  } else if (mbtiType.includes('S')) {
+    traits.intuition = 25; // Sensing (low on intuition scale)
   }
   
-  // Conscientiousness (J/P scale)
+  // Feeling/Thinking (F/T scale)
+  if (mbtiType.includes('F')) {
+    traits.feeling = 85; // Feeling
+  } else if (mbtiType.includes('T')) {
+    traits.feeling = 25; // Thinking (low on feeling scale)
+  }
+  
+  // Judging/Perceiving (J/P scale)
   if (mbtiType.endsWith('J')) {
-    traits.conscientiousness = 80; // Judging types tend to be more organized and structured
+    traits.judging = 85; // Judging
   } else if (mbtiType.endsWith('P')) {
-    traits.conscientiousness = 40; // Perceiving types tend to be more flexible and spontaneous
+    traits.judging = 25; // Perceiving (low on judging scale)
   }
   
   return traits;

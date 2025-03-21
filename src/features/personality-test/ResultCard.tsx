@@ -2,7 +2,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Brain } from 'lucide-react';
+import { Brain, User, Compass, PenTool, HeartHandshake } from 'lucide-react';
 import { mbtiDescriptions, getPersonalityTraits } from './mbti-data';
 
 interface ResultCardProps {
@@ -23,26 +23,46 @@ const ResultCard = ({ mbtiResult }: ResultCardProps) => {
         <div className="space-y-4 mb-4 text-left">
           <div>
             <div className="flex justify-between items-center mb-1">
-              <span className="text-sm font-medium">Extroversion</span>
-              <span className="text-xs">{traits.extroversion}%</span>
+              <div className="flex items-center gap-1">
+                <User className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium">Introversion</span>
+              </div>
+              <span className="text-xs">{traits.introversion}%</span>
             </div>
-            <Progress value={traits.extroversion} className="h-2" />
+            <Progress value={traits.introversion} className="h-2" />
           </div>
           
           <div>
             <div className="flex justify-between items-center mb-1">
-              <span className="text-sm font-medium">Openness</span>
-              <span className="text-xs">{traits.openness}%</span>
+              <div className="flex items-center gap-1">
+                <Compass className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium">Intuition</span>
+              </div>
+              <span className="text-xs">{traits.intuition}%</span>
             </div>
-            <Progress value={traits.openness} className="h-2" />
+            <Progress value={traits.intuition} className="h-2" />
           </div>
           
           <div>
             <div className="flex justify-between items-center mb-1">
-              <span className="text-sm font-medium">Conscientiousness</span>
-              <span className="text-xs">{traits.conscientiousness}%</span>
+              <div className="flex items-center gap-1">
+                <HeartHandshake className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium">Feeling</span>
+              </div>
+              <span className="text-xs">{traits.feeling}%</span>
             </div>
-            <Progress value={traits.conscientiousness} className="h-2" />
+            <Progress value={traits.feeling} className="h-2" />
+          </div>
+          
+          <div>
+            <div className="flex justify-between items-center mb-1">
+              <div className="flex items-center gap-1">
+                <PenTool className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium">Judging</span>
+              </div>
+              <span className="text-xs">{traits.judging}%</span>
+            </div>
+            <Progress value={traits.judging} className="h-2" />
           </div>
         </div>
         
