@@ -62,6 +62,40 @@ export const mbtiDescriptions: Record<string, string> = {
   'ENTJ': 'Strategic, logical, and efficient leader. You have a clear vision of possibilities and mobilize others toward goals.'
 };
 
+// Personality trait percentages based on MBTI type
+export const getPersonalityTraits = (mbtiType: string) => {
+  const traits = {
+    extroversion: 50,
+    openness: 50,
+    conscientiousness: 50
+  };
+  
+  if (!mbtiType) return traits;
+  
+  // Extroversion (I/E scale)
+  if (mbtiType.startsWith('I')) {
+    traits.extroversion = 25; // Introverted
+  } else if (mbtiType.startsWith('E')) {
+    traits.extroversion = 85; // Extroverted
+  }
+  
+  // Openness (S/N scale)
+  if (mbtiType.includes('S')) {
+    traits.openness = 40; // Sensing types tend to be more practical and traditional
+  } else if (mbtiType.includes('N')) {
+    traits.openness = 85; // iNtuitive types tend to be more imaginative and open to new ideas
+  }
+  
+  // Conscientiousness (J/P scale)
+  if (mbtiType.endsWith('J')) {
+    traits.conscientiousness = 80; // Judging types tend to be more organized and structured
+  } else if (mbtiType.endsWith('P')) {
+    traits.conscientiousness = 40; // Perceiving types tend to be more flexible and spontaneous
+  }
+  
+  return traits;
+};
+
 export type FormValues = {
   energy: 'I' | 'E';
   information: 'S' | 'N';
