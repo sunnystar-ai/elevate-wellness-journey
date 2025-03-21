@@ -4,9 +4,18 @@ import { Button } from '@/components/ui/button';
 import { Heart, Smile, Brain, TrendingUp, TrendingDown } from 'lucide-react';
 import EmotionTendenciesTest from './emotion-test/EmotionTendenciesTest';
 
+interface EmotionData {
+  happiness: number;
+  empathy: number;
+  optimism: number;
+  calmness: number;
+  stress: number;
+  resilience: number;
+}
+
 const EmotionTendenciesSection = () => {
   const [isTestOpen, setIsTestOpen] = useState(false);
-  const [emotionData, setEmotionData] = useState({
+  const [emotionData, setEmotionData] = useState<EmotionData>({
     happiness: 75,
     empathy: 82,
     optimism: 68,
@@ -24,7 +33,17 @@ const EmotionTendenciesSection = () => {
   }, []);
 
   const handleTestComplete = (results: Record<string, number>) => {
-    setEmotionData(results);
+    // Make sure we're setting a value that matches our EmotionData type
+    const typedResults: EmotionData = {
+      happiness: results.happiness || emotionData.happiness,
+      empathy: results.empathy || emotionData.empathy,
+      optimism: results.optimism || emotionData.optimism,
+      calmness: results.calmness || emotionData.calmness,
+      stress: results.stress || emotionData.stress,
+      resilience: results.resilience || emotionData.resilience
+    };
+    
+    setEmotionData(typedResults);
   };
 
   return (
