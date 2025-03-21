@@ -1,7 +1,7 @@
 
 import PersonalInfoSection from '../PersonalInfoSection';
 import PersonalitySection from '../PersonalitySection';
-import EmotionTendenciesSection from '../AchievementsSection';
+import EmotionTendenciesSection from '../EmotionTendenciesSection';
 
 interface ProfileTabProps {
   mbtiType: string | null;
