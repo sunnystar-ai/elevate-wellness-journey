@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,6 +20,7 @@ import Meditation from "./pages/Meditation";
 import Workouts from "./pages/Workouts";
 import Nutrition from "./pages/Nutrition";
 import JournalPrompt from "./pages/JournalPrompt";
+import PersonalityTest from "./pages/PersonalityTest";
 
 const queryClient = new QueryClient();
 
@@ -89,6 +89,7 @@ const App = () => (
             
             {/* Catch-all route */}
             <Route path="*" element={<NotFound />} />
+            <Route path="/personality-test" element={<PersonalityTest />} />
           </Routes>
         </TooltipProvider>
       </BrowserRouter>
