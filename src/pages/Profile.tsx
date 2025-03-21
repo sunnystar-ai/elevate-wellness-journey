@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -11,11 +10,13 @@ import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import StatusBar from '@/components/community/StatusBar';
 import BottomNav from '@/components/my-journey/BottomNav';
+import { getPersonalityTraits } from '@/features/personality-test/mbti-data';
 import { 
   User, Settings, Activity, Edit, Award, 
   Clock, BarChart2, Trophy, ChevronRight,
   Lock, Bell, Eye, Link, CreditCard, HelpCircle,
-  LogOut, Info, Sun, Moon, UserCircle, Brain
+  LogOut, Info, Sun, Moon, UserCircle, Brain, 
+  Compass, HeartHandshake, PenTool
 } from 'lucide-react';
 
 const Profile = () => {
@@ -38,15 +39,21 @@ const Profile = () => {
     }
   }, []);
 
-  // Calculate personality trait percentages
-  const getTraitPercentage = (index: number) => {
-    if (!mbtiType) return 65; // Default value
+  // Calculate personality trait percentages based on MBTI type
+  const getTraitValues = () => {
+    if (!mbtiType) {
+      return {
+        introversion: 65,
+        intuition: 78,
+        feeling: 82,
+        judging: 75
+      };
+    }
     
-    const baseValues = [65, 78, 82];
-    
-    // If we have a real MBTI result, calculate a semi-random but consistent value
-    return baseValues[index] || 70;
+    return getPersonalityTraits(mbtiType);
   };
+
+  const traits = getTraitValues();
 
   const handleTakeTest = () => {
     navigate('/personality-test');
@@ -181,12 +188,12 @@ const Profile = () => {
                   <CardContent className="p-4">
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <h4 className="font-medium">Extroversion</h4>
+                        <h4 className="font-medium">Introversion</h4>
                         <p className="text-xs text-muted-foreground">How you interact with others</p>
                       </div>
-                      <Badge variant="outline">{getTraitPercentage(0)}%</Badge>
+                      <Badge variant="outline">{traits.introversion}%</Badge>
                     </div>
-                    <Progress value={getTraitPercentage(0)} className="h-1.5" />
+                    <Progress value={traits.introversion} className="h-1.5" />
                   </CardContent>
                 </Card>
                 
@@ -194,12 +201,12 @@ const Profile = () => {
                   <CardContent className="p-4">
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <h4 className="font-medium">Openness</h4>
-                        <p className="text-xs text-muted-foreground">Your curiosity and creativity</p>
+                        <h4 className="font-medium">Intuition</h4>
+                        <p className="text-xs text-muted-foreground">How you process information</p>
                       </div>
-                      <Badge variant="outline">{getTraitPercentage(1)}%</Badge>
+                      <Badge variant="outline">{traits.intuition}%</Badge>
                     </div>
-                    <Progress value={getTraitPercentage(1)} className="h-1.5" />
+                    <Progress value={traits.intuition} className="h-1.5" />
                   </CardContent>
                 </Card>
                 
@@ -207,12 +214,25 @@ const Profile = () => {
                   <CardContent className="p-4">
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <h4 className="font-medium">Conscientiousness</h4>
-                        <p className="text-xs text-muted-foreground">Your organization and reliability</p>
+                        <h4 className="font-medium">Feeling</h4>
+                        <p className="text-xs text-muted-foreground">How you make decisions</p>
                       </div>
-                      <Badge variant="outline">{getTraitPercentage(2)}%</Badge>
+                      <Badge variant="outline">{traits.feeling}%</Badge>
                     </div>
-                    <Progress value={getTraitPercentage(2)} className="h-1.5" />
+                    <Progress value={traits.feeling} className="h-1.5" />
+                  </CardContent>
+                </Card>
+
+                <Card className="mb-3">
+                  <CardContent className="p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <h4 className="font-medium">Judging</h4>
+                        <p className="text-xs text-muted-foreground">How you organize your life</p>
+                      </div>
+                      <Badge variant="outline">{traits.judging}%</Badge>
+                    </div>
+                    <Progress value={traits.judging} className="h-1.5" />
                   </CardContent>
                 </Card>
                 
@@ -224,7 +244,7 @@ const Profile = () => {
                   <CardContent className="p-4">
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <h4 className="font-medium">Extroversion</h4>
+                        <h4 className="font-medium">Introversion</h4>
                         <p className="text-xs text-muted-foreground">How you interact with others</p>
                       </div>
                       <Badge variant="outline">65%</Badge>
@@ -237,8 +257,8 @@ const Profile = () => {
                   <CardContent className="p-4">
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <h4 className="font-medium">Openness</h4>
-                        <p className="text-xs text-muted-foreground">Your curiosity and creativity</p>
+                        <h4 className="font-medium">Intuition</h4>
+                        <p className="text-xs text-muted-foreground">How you process information</p>
                       </div>
                       <Badge variant="outline">78%</Badge>
                     </div>
@@ -250,12 +270,25 @@ const Profile = () => {
                   <CardContent className="p-4">
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <h4 className="font-medium">Conscientiousness</h4>
-                        <p className="text-xs text-muted-foreground">Your organization and reliability</p>
+                        <h4 className="font-medium">Feeling</h4>
+                        <p className="text-xs text-muted-foreground">How you make decisions</p>
                       </div>
                       <Badge variant="outline">82%</Badge>
                     </div>
                     <Progress value={82} className="h-1.5" />
+                  </CardContent>
+                </Card>
+
+                <Card className="mb-3">
+                  <CardContent className="p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <h4 className="font-medium">Judging</h4>
+                        <p className="text-xs text-muted-foreground">How you organize your life</p>
+                      </div>
+                      <Badge variant="outline">75%</Badge>
+                    </div>
+                    <Progress value={75} className="h-1.5" />
                   </CardContent>
                 </Card>
                 
