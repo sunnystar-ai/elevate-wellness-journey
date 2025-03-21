@@ -48,18 +48,10 @@ const EmotionTendenciesSection = () => {
 
   return (
     <section>
-      <div className="flex justify-between items-center mb-3">
+      <div className="mb-3">
         <h3 className="text-lg font-semibold">Emotion Tendencies</h3>
-        <Button 
-          variant="link" 
-          className="h-auto p-0" 
-          size="sm"
-          onClick={() => setIsTestOpen(true)}
-        >
-          Take Test
-        </Button>
       </div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-3 mb-3">
         <div className="flex flex-col items-center">
           <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mb-1">
             <Smile className="h-8 w-8 text-primary" />
@@ -108,6 +100,11 @@ const EmotionTendenciesSection = () => {
           <p className="text-[10px] text-muted-foreground">{emotionData.resilience}%</p>
         </div>
       </div>
+
+      {/* Full Width Button similar to the Personality Test */}
+      <Button className="w-full" onClick={() => setIsTestOpen(true)}>
+        Take Emotion Tendencies Test
+      </Button>
 
       {/* Emotion Tendencies Test Dialog */}
       <EmotionTendenciesTest 
