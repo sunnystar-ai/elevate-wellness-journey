@@ -25,20 +25,44 @@ export const calculateResults = (
 
   // Calculate scores
   questions.forEach(question => {
-    const answer = answers[question.id];
-    const score = question.reverse ? 6 - answer : answer; // Reverse scoring if needed
-    
-    traitScores[question.trait as keyof typeof traitScores] += score;
-    traitCounts[question.trait as keyof typeof traitCounts]++;
+    if (answers[question.id]) {  // Only process if there's an answer
+      const answer = answers[question.id];
+      const score = question.reverse ? 6 - answer : answer; // Reverse scoring if needed
+      
+      traitScores[question.trait as keyof typeof traitScores] += score;
+      traitCounts[question.trait as keyof typeof traitCounts]++;
+    }
   });
 
-  // Calculate averages and convert to percentages (1-5 scale to 0-100%)
+  // Calculate percentages (1-5 scale to 0-100%)
+  // Handle potential division by zero
+  const extraversion = traitCounts.extraversion > 0 
+    ? Math.round((traitScores.extraversion / (traitCounts.extraversion * 5)) * 100) 
+    : 50;
+  
+  const agreeableness = traitCounts.agreeableness > 0 
+    ? Math.round((traitScores.agreeableness / (traitCounts.agreeableness * 5)) * 100) 
+    : 50;
+  
+  const openness = traitCounts.openness > 0 
+    ? Math.round((traitScores.openness / (traitCounts.openness * 5)) * 100) 
+    : 50;
+  
+  const neuroticism = traitCounts.neuroticism > 0 
+    ? Math.round((traitScores.neuroticism / (traitCounts.neuroticism * 5)) * 100) 
+    : 50;
+  
+  const conscientiousness = traitCounts.conscientiousness > 0 
+    ? Math.round((traitScores.conscientiousness / (traitCounts.conscientiousness * 5)) * 100) 
+    : 50;
+
+  // Map Big Five traits to our emotion traits
   return {
-    happiness: Math.round((traitScores.extraversion / (traitCounts.extraversion * 5)) * 100),
-    empathy: Math.round((traitScores.agreeableness / (traitCounts.agreeableness * 5)) * 100),
-    optimism: Math.round((traitScores.openness / (traitCounts.openness * 5)) * 100),
-    calmness: Math.round((100 - (traitScores.neuroticism / (traitCounts.neuroticism * 5)) * 100)),
-    stress: Math.round((traitScores.neuroticism / (traitCounts.neuroticism * 5)) * 100),
-    resilience: Math.round((traitScores.conscientiousness / (traitCounts.conscientiousness * 5)) * 100)
+    happiness: extraversion,
+    empathy: agreeableness,
+    optimism: openness,
+    calmness: 100 - neuroticism, // Inverse of neuroticism
+    stress: neuroticism,
+    resilience: conscientiousness
   };
 };

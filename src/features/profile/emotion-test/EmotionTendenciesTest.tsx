@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
 import { EmotionTendenciesTestProps, FormValues } from './types';
 import QuestionForm from './QuestionForm';
@@ -12,12 +12,13 @@ const EmotionTendenciesTest = ({ open, onOpenChange, onTestComplete }: EmotionTe
   const [answers, setAnswers] = useState<Record<number, number>>({});
 
   const handleNext = (data: FormValues) => {
-    const value = parseInt(data[`question-${questions[currentQuestion].id}`]);
+    const questionId = questions[currentQuestion].id;
+    const value = parseInt(data[`question-${questionId}`]);
     
     // Save the answer
     setAnswers(prev => ({
       ...prev,
-      [questions[currentQuestion].id]: value
+      [questionId]: value
     }));
 
     if (currentQuestion < questions.length - 1) {
@@ -32,9 +33,6 @@ const EmotionTendenciesTest = ({ open, onOpenChange, onTestComplete }: EmotionTe
   const completeTest = () => {
     // Calculate results
     const results = calculateResults(questions, answers);
-
-    // Save results
-    localStorage.setItem('emotionTendencies', JSON.stringify(results));
     
     // Notify user
     toast({
@@ -42,20 +40,36 @@ const EmotionTendenciesTest = ({ open, onOpenChange, onTestComplete }: EmotionTe
       description: "Your emotion tendencies results have been updated."
     });
     
-    // Close the dialog and pass results to parent
+    // Pass results to parent component
     onTestComplete(results);
+    
+    // Close the dialog
     onOpenChange(false);
     
-    // Reset the test
-    setCurrentQuestion(0);
-    setAnswers({});
+    // Reset the test for next time
+    setTimeout(() => {
+      setCurrentQuestion(0);
+      setAnswers({});
+    }, 500);
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(newOpen) => {
+      // Reset the test when closing without completing
+      if (!newOpen) {
+        setTimeout(() => {
+          setCurrentQuestion(0);
+          setAnswers({});
+        }, 500);
+      }
+      onOpenChange(newOpen);
+    }}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Emotion Tendencies Test</DialogTitle>
+          <DialogDescription>
+            Answer honestly to get the most accurate results about your emotional tendencies.
+          </DialogDescription>
         </DialogHeader>
         
         <div className="py-4">

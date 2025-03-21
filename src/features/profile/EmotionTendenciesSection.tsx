@@ -43,6 +43,10 @@ const EmotionTendenciesSection = () => {
       resilience: results.resilience || emotionData.resilience
     };
     
+    // Save to localStorage
+    localStorage.setItem('emotionTendencies', JSON.stringify(typedResults));
+    
+    // Update state
     setEmotionData(typedResults);
   };
 
