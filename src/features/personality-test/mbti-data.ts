@@ -9,8 +9,8 @@ export const mbtiQuestions = [
     label: 'Energy Source',
     description: 'How you gain energy and interact with the world',
     options: [
-      { value: 'I', label: 'I prefer quiet, reflective environments and need time alone to recharge.', icon: <User className="h-5 w-5 text-primary" /> },
-      { value: 'E', label: 'I feel energized by social interaction and prefer being around people.', icon: <User className="h-5 w-5 text-primary" /> }
+      { value: 'I', label: 'I prefer quiet, reflective environments and need time alone to recharge.', icon: React.createElement(User, { className: "h-5 w-5 text-primary" }) },
+      { value: 'E', label: 'I feel energized by social interaction and prefer being around people.', icon: React.createElement(User, { className: "h-5 w-5 text-primary" }) }
     ]
   },
   {
@@ -18,8 +18,8 @@ export const mbtiQuestions = [
     label: 'Information Processing',
     description: 'How you perceive and gather information',
     options: [
-      { value: 'S', label: 'I focus on concrete details and practical applications.', icon: <Compass className="h-5 w-5 text-primary" /> },
-      { value: 'N', label: 'I focus on patterns, possibilities, and the bigger picture.', icon: <Compass className="h-5 w-5 text-primary" /> }
+      { value: 'S', label: 'I focus on concrete details and practical applications.', icon: React.createElement(Compass, { className: "h-5 w-5 text-primary" }) },
+      { value: 'N', label: 'I focus on patterns, possibilities, and the bigger picture.', icon: React.createElement(Compass, { className: "h-5 w-5 text-primary" }) }
     ]
   },
   {
@@ -27,8 +27,8 @@ export const mbtiQuestions = [
     label: 'Decision-Making',
     description: 'How you make decisions',
     options: [
-      { value: 'T', label: 'I make decisions based on logic, analysis, and objective criteria.', icon: <Brain className="h-5 w-5 text-primary" /> },
-      { value: 'F', label: 'I make decisions based on personal values and how they affect others.', icon: <Brain className="h-5 w-5 text-primary" /> }
+      { value: 'T', label: 'I make decisions based on logic, analysis, and objective criteria.', icon: React.createElement(Brain, { className: "h-5 w-5 text-primary" }) },
+      { value: 'F', label: 'I make decisions based on personal values and how they affect others.', icon: React.createElement(Brain, { className: "h-5 w-5 text-primary" }) }
     ]
   },
   {
@@ -36,8 +36,8 @@ export const mbtiQuestions = [
     label: 'Lifestyle',
     description: 'How you organize your world',
     options: [
-      { value: 'J', label: 'I prefer structure, planning, and resolving matters decisively.', icon: <PenTool className="h-5 w-5 text-primary" /> },
-      { value: 'P', label: 'I prefer flexibility, spontaneity, and keeping options open.', icon: <PenTool className="h-5 w-5 text-primary" /> }
+      { value: 'J', label: 'I prefer structure, planning, and resolving matters decisively.', icon: React.createElement(PenTool, { className: "h-5 w-5 text-primary" }) },
+      { value: 'P', label: 'I prefer flexibility, spontaneity, and keeping options open.', icon: React.createElement(PenTool, { className: "h-5 w-5 text-primary" }) }
     ]
   }
 ];
