@@ -1,7 +1,7 @@
 
 import PersonalInfoSection from '../PersonalInfoSection';
 import PersonalitySection from '../PersonalitySection';
-import AchievementsSection from '../AchievementsSection';
+import EmotionTendenciesSection from '../AchievementsSection';
 
 interface ProfileTabProps {
   mbtiType: string | null;
@@ -13,7 +13,7 @@ const ProfileTab = ({ mbtiType, mbtiDescription }: ProfileTabProps) => {
     <div className="space-y-5">
       <PersonalInfoSection />
       <PersonalitySection mbtiType={mbtiType} mbtiDescription={mbtiDescription} />
-      <AchievementsSection />
+      <EmotionTendenciesSection />
     </div>
   );
 };
