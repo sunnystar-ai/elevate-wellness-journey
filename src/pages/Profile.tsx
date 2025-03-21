@@ -130,15 +130,15 @@ const Profile = () => {
             <Button className="w-full mt-3">Edit Personal Info</Button>
           </section>
           
-          {/* Wellness Goals */}
+          {/* Personality Test (previously Wellness Goals) */}
           <section>
-            <h3 className="text-lg font-semibold mb-3">My Wellness Goals</h3>
+            <h3 className="text-lg font-semibold mb-3">Personality Test</h3>
             <Card className="mb-3">
               <CardContent className="p-4">
                 <div className="flex justify-between items-start mb-2">
                   <div>
-                    <h4 className="font-medium">Meditate 10 minutes daily</h4>
-                    <p className="text-xs text-muted-foreground">Target: April 30, 2024</p>
+                    <h4 className="font-medium">Extroversion</h4>
+                    <p className="text-xs text-muted-foreground">How you interact with others</p>
                   </div>
                   <Badge variant="outline">65%</Badge>
                 </div>
@@ -149,27 +149,27 @@ const Profile = () => {
               <CardContent className="p-4">
                 <div className="flex justify-between items-start mb-2">
                   <div>
-                    <h4 className="font-medium">Run 20 miles per week</h4>
-                    <p className="text-xs text-muted-foreground">Target: May 15, 2024</p>
+                    <h4 className="font-medium">Openness</h4>
+                    <p className="text-xs text-muted-foreground">Your curiosity and creativity</p>
                   </div>
-                  <Badge variant="outline">45%</Badge>
+                  <Badge variant="outline">78%</Badge>
                 </div>
-                <Progress value={45} className="h-1.5" />
+                <Progress value={78} className="h-1.5" />
               </CardContent>
             </Card>
             <Card className="mb-3">
               <CardContent className="p-4">
                 <div className="flex justify-between items-start mb-2">
                   <div>
-                    <h4 className="font-medium">Drink 2L water daily</h4>
-                    <p className="text-xs text-muted-foreground">Target: Ongoing</p>
+                    <h4 className="font-medium">Conscientiousness</h4>
+                    <p className="text-xs text-muted-foreground">Your organization and reliability</p>
                   </div>
-                  <Badge variant="outline">88%</Badge>
+                  <Badge variant="outline">82%</Badge>
                 </div>
-                <Progress value={88} className="h-1.5" />
+                <Progress value={82} className="h-1.5" />
               </CardContent>
             </Card>
-            <Button className="w-full">Manage Goals</Button>
+            <Button className="w-full">Take Full Personality Test</Button>
           </section>
           
           {/* Achievements & Badges */}
