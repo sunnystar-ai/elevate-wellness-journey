@@ -8,6 +8,8 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Form, FormField, FormItem, FormLabel, FormControl } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import StatusBar from '@/components/community/StatusBar';
 import BottomNav from '@/components/my-journey/BottomNav';
 import { ArrowLeft, Brain, User, PenTool, Compass } from 'lucide-react';
@@ -121,6 +123,9 @@ const PersonalityTest = () => {
   };
 
   const progress = ((currentQuestion + 1) / mbtiQuestions.length) * 100;
+
+  // Get the current question data
+  const currentQuestionData = mbtiQuestions[currentQuestion];
   
   return (
     <div className="bg-background min-h-screen pb-24">
@@ -158,38 +163,29 @@ const PersonalityTest = () => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <Card className="mb-6">
                 <CardContent className="p-6">
-                  <h2 className="text-xl font-bold mb-2">{mbtiQuestions[currentQuestion].label}</h2>
-                  <p className="text-muted-foreground mb-4">{mbtiQuestions[currentQuestion].description}</p>
+                  <h2 className="text-xl font-bold mb-2">{currentQuestionData.label}</h2>
+                  <p className="text-muted-foreground mb-4">{currentQuestionData.description}</p>
                   
                   <FormField
                     control={form.control}
-                    name={mbtiQuestions[currentQuestion].id as keyof FormValues}
+                    name={currentQuestionData.id as keyof FormValues}
                     render={({ field }) => (
                       <FormItem className="space-y-4">
                         <RadioGroup
                           onValueChange={field.onChange}
-                          defaultValue={field.value}
+                          value={field.value}
                           className="flex flex-col gap-4"
                         >
-                          {mbtiQuestions[currentQuestion].options.map((option) => (
-                            <FormItem key={option.value} className="border rounded-lg p-4 hover:bg-accent cursor-pointer">
-                              <FormControl>
-                                <RadioGroupItem 
-                                  value={option.value} 
-                                  id={option.value} 
-                                  className="absolute top-4 right-4" 
-                                />
-                              </FormControl>
-                              <div className="flex items-start gap-3">
-                                <div className="mt-1">{option.icon}</div>
-                                <FormLabel 
-                                  htmlFor={option.value} 
-                                  className="text-base font-normal cursor-pointer"
-                                >
-                                  {option.label}
-                                </FormLabel>
-                              </div>
-                            </FormItem>
+                          {currentQuestionData.options.map((option) => (
+                            <div key={option.value} className="flex items-center space-x-2">
+                              <RadioGroupItem value={option.value} id={`${currentQuestionData.id}-${option.value}`} />
+                              <Label htmlFor={`${currentQuestionData.id}-${option.value}`} className="cursor-pointer">
+                                <div className="flex items-start gap-3">
+                                  <div className="mt-1">{option.icon}</div>
+                                  <div>{option.label}</div>
+                                </div>
+                              </Label>
+                            </div>
                           ))}
                         </RadioGroup>
                       </FormItem>
@@ -198,7 +194,11 @@ const PersonalityTest = () => {
                 </CardContent>
               </Card>
               
-              <Button type="submit" className="w-full">
+              <Button 
+                type="submit" 
+                className="w-full"
+                disabled={!form.getValues()[currentQuestionData.id as keyof FormValues]}
+              >
                 {currentQuestion < mbtiQuestions.length - 1 ? 'Next Question' : 'See Your Results'}
               </Button>
             </form>
