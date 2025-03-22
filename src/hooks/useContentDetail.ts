@@ -7,8 +7,35 @@ import {
   sleepContent
 } from '@/components/discover/data/discoverData';
 
+// Define a common interface for all content types
+interface ContentItem {
+  id: number;
+  title: string;
+  image: string;
+  duration?: string;
+  prepTime?: string;
+  difficulty?: string;
+  intensity?: string;
+  equipment?: string;
+  tags?: string[];
+  recommended?: string;
+  type?: string;
+  description?: string;
+  benefits?: string[];
+  creator?: string;
+  relatedContent?: ContentItem[];
+}
+
+// Helper function to get random related content
+function getRandomRelatedContent(excludeId: number, allContentItems: ContentItem[]): ContentItem[] {
+  return allContentItems
+    .filter(item => item.id !== excludeId)
+    .sort(() => 0.5 - Math.random())
+    .slice(0, 2);
+}
+
 // Combine all content data into one array for easy lookup
-const allContent = [
+const allContent: ContentItem[] = [
   ...mentalWellnessContent,
   ...physicalWellnessContent,
   ...nutritionContent,
@@ -26,21 +53,18 @@ const allContent = [
     ],
     creator: content.creator || "Wellness Experts Team",
     // Add some mock related content
-    relatedContent: getRandomRelatedContent(content.id)
+    relatedContent: getRandomRelatedContent(content.id, [
+      ...mentalWellnessContent,
+      ...physicalWellnessContent,
+      ...nutritionContent,
+      ...sleepContent
+    ] as ContentItem[])
   };
 });
 
-// Helper function to get random related content
-function getRandomRelatedContent(excludeId: number) {
-  return allContent
-    .filter(item => item.id !== excludeId)
-    .sort(() => 0.5 - Math.random())
-    .slice(0, 2);
-}
-
 export function useContentDetail(contentId: string | undefined, contentType?: string | undefined) {
   const [state, setState] = useState<{
-    content: any | null;
+    content: ContentItem | null;
     isLoading: boolean;
     error: Error | null;
   }>({
