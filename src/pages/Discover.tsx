@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -11,7 +10,8 @@ import {
   Heart, 
   Bookmark, 
   TrendingUp,
-  ChevronRight
+  ChevronRight,
+  BookOpen
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,7 +21,6 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import FeatureCard from '@/components/ui/FeatureCard';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 
-// Sample data for the content
 const featuredProgram = {
   title: "21-Day Mindfulness Challenge",
   image: "https://images.unsplash.com/photo-1499728603263-13726abce5fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
@@ -160,30 +159,30 @@ const sleepContent = [
   }
 ];
 
-const wellnessPrograms = [
+const personalGrowthBooks = [
   {
     id: 1,
-    title: "30-Day Stress Reduction",
-    sessions: 30,
-    totalDuration: "5 hours total",
-    progress: 0.4,
-    image: "https://images.unsplash.com/photo-1516214104703-d870798883c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+    title: "Atomic Habits",
+    author: "James Clear",
+    rating: 4.8,
+    reviewCount: 4250,
+    image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
   },
   {
     id: 2,
-    title: "14-Day Sleep Improvement",
-    sessions: 14,
-    totalDuration: "3 hours total",
-    progress: 0,
-    image: "https://images.unsplash.com/photo-1505649118510-a5d934d3ab8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+    title: "Mindset: The New Psychology of Success",
+    author: "Carol S. Dweck",
+    rating: 4.6,
+    reviewCount: 3184,
+    image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
   },
   {
     id: 3,
-    title: "21-Day Healthy Habits",
-    sessions: 21,
-    totalDuration: "4 hours total",
-    progress: 0.1,
-    image: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+    title: "The Power of Now",
+    author: "Eckhart Tolle",
+    rating: 4.7,
+    reviewCount: 5762,
+    image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
   }
 ];
 
@@ -261,7 +260,6 @@ const Discover = () => {
 
   return (
     <div className={`page-container page-transition pb-20 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
-      {/* Top Section */}
       <section className="mb-6">
         <AnimatedSection>
           <div className="flex justify-between items-center mb-4">
@@ -281,7 +279,6 @@ const Discover = () => {
         </AnimatedSection>
       </section>
 
-      {/* Category Navigation */}
       <AnimatedSection delay={100}>
         <div className="overflow-x-auto pb-2 mb-6">
           <div className="flex space-x-2">
@@ -299,7 +296,6 @@ const Discover = () => {
         </div>
       </AnimatedSection>
 
-      {/* Featured Content */}
       <AnimatedSection delay={200} className="mb-8">
         <div className="relative rounded-xl overflow-hidden h-48">
           <img 
@@ -317,7 +313,6 @@ const Discover = () => {
         </div>
       </AnimatedSection>
 
-      {/* Content Filters */}
       <AnimatedSection delay={300} className="mb-6">
         <div className="flex justify-between items-center">
           <Button variant="outline" size="sm" className="rounded-full">
@@ -340,7 +335,6 @@ const Discover = () => {
         </div>
       </AnimatedSection>
 
-      {/* Mental Wellness Section */}
       <AnimatedSection delay={400} className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-medium">Mental Wellness</h2>
@@ -392,7 +386,6 @@ const Discover = () => {
         </ScrollArea>
       </AnimatedSection>
 
-      {/* Physical Wellness Section */}
       <AnimatedSection delay={500} className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-medium">Physical Wellness</h2>
@@ -452,7 +445,6 @@ const Discover = () => {
         </ScrollArea>
       </AnimatedSection>
 
-      {/* Nutrition Section */}
       <AnimatedSection delay={600} className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-medium">Nutrition</h2>
@@ -503,7 +495,6 @@ const Discover = () => {
         </ScrollArea>
       </AnimatedSection>
 
-      {/* Sleep Section */}
       <AnimatedSection delay={700} className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-medium">Sleep</h2>
@@ -550,60 +541,52 @@ const Discover = () => {
         </ScrollArea>
       </AnimatedSection>
 
-      {/* Programs Section */}
       <AnimatedSection delay={800} className="mb-8">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-medium">Wellness Programs</h2>
-          <Link to="/programs" className="text-primary text-sm flex items-center">
+          <h2 className="text-lg font-medium">Personal Growth Books</h2>
+          <Link to="/books" className="text-primary text-sm flex items-center">
             See All
             <ChevronRight className="h-4 w-4 ml-1" />
           </Link>
         </div>
         
         <div className="space-y-4">
-          {wellnessPrograms.map((program) => (
+          {personalGrowthBooks.map((book) => (
             <div 
-              key={program.id} 
+              key={book.id} 
               className="rounded-xl overflow-hidden bg-card shadow-sm flex"
             >
               <div className="w-1/3 h-24">
                 <img 
-                  src={program.image} 
-                  alt={program.title} 
+                  src={book.image} 
+                  alt={book.title} 
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="p-3 flex-1 flex flex-col justify-between">
                 <div>
-                  <h3 className="font-medium">{program.title}</h3>
-                  <div className="flex items-center text-xs text-muted-foreground mt-1">
-                    <span className="mr-2">{program.sessions} sessions</span>
-                    <span>{program.totalDuration}</span>
+                  <h3 className="font-medium">{book.title}</h3>
+                  <div className="text-xs text-muted-foreground mt-1">
+                    by {book.author}
                   </div>
                 </div>
                 
-                {program.progress > 0 ? (
-                  <div className="mt-2">
-                    <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-primary rounded-full" 
-                        style={{ width: `${program.progress * 100}%` }}
-                      ></div>
-                    </div>
-                    <div className="text-xs text-right mt-1">
-                      {Math.round(program.progress * 100)}% complete
-                    </div>
+                <div className="flex items-center mt-2">
+                  <div className="flex items-center">
+                    <Star className="h-3 w-3 text-yellow-400 fill-yellow-400 mr-1" />
+                    <span className="text-sm font-medium mr-1">{book.rating}</span>
+                    <span className="text-xs text-muted-foreground">({book.reviewCount} reviews)</span>
                   </div>
-                ) : (
-                  <Button size="sm" className="self-start mt-2">Start</Button>
-                )}
+                  <Button size="sm" variant="ghost" className="ml-auto p-0 h-8 w-8">
+                    <BookOpen className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           ))}
         </div>
       </AnimatedSection>
 
-      {/* Trending Content */}
       <AnimatedSection delay={900} className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-medium">Trending Now</h2>
@@ -637,7 +620,6 @@ const Discover = () => {
         </div>
       </AnimatedSection>
 
-      {/* Community Picks */}
       <AnimatedSection delay={1000} className="mb-20">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-medium">Community Favorites</h2>
@@ -675,7 +657,6 @@ const Discover = () => {
         </ScrollArea>
       </AnimatedSection>
 
-      {/* Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 bg-background border-t px-6 py-2 flex justify-between items-center">
         <Link to="/" className="flex flex-col items-center">
           <div className="p-1">
@@ -713,3 +694,4 @@ const Discover = () => {
 };
 
 export default Discover;
+
