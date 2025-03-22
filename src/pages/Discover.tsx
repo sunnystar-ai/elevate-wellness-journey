@@ -9,7 +9,6 @@ import FilterBar from '@/components/discover/FilterBar';
 import ContentSection from '@/components/discover/ContentSection';
 import BooksSection from '@/components/discover/BooksSection';
 import TrendingSection from '@/components/discover/TrendingSection';
-import CommunitySection from '@/components/discover/CommunitySection';
 import BottomNavbar from '@/components/discover/BottomNavbar';
 
 import {
@@ -20,7 +19,6 @@ import {
   sleepContent,
   personalGrowthBooks,
   trendingContent,
-  communityPicks,
   categories
 } from '@/components/discover/data/discoverData';
 
@@ -108,12 +106,6 @@ const Discover = () => {
         title="Trending Now"
         items={trendingContent}
         delay={900}
-      />
-
-      <CommunitySection 
-        title="Community Favorites"
-        picks={communityPicks}
-        delay={1000}
       />
 
       <BottomNavbar />
