@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,6 +22,7 @@ import Workouts from "./pages/Workouts";
 import Nutrition from "./pages/Nutrition";
 import JournalPrompt from "./pages/JournalPrompt";
 import PersonalityTest from "./pages/PersonalityTest";
+import ContentDetail from "./pages/ContentDetail"; // Add import for new page
 
 const queryClient = new QueryClient();
 
@@ -57,6 +59,13 @@ const App = () => (
             <Route path="/profile" element={
               <ProtectedRoute requireAuth={false}>
                 <Profile />
+              </ProtectedRoute>
+            } />
+            
+            {/* Content detail page */}
+            <Route path="/content/:contentType/:contentId" element={
+              <ProtectedRoute requireAuth={false}>
+                <ContentDetail />
               </ProtectedRoute>
             } />
             

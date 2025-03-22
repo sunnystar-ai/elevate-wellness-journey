@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Clock, Bookmark, Heart, Dumbbell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,9 +16,11 @@ interface ContentCardProps {
   tags?: string[];
   recommended?: string;
   prepTime?: string;
+  type?: string;
 }
 
 const ContentCard = ({ 
+  id,
   title, 
   image, 
   duration, 
@@ -26,12 +29,16 @@ const ContentCard = ({
   equipment,
   tags,
   recommended,
-  prepTime
+  prepTime,
+  type = 'content'
 }: ContentCardProps) => {
   const displayDuration = prepTime || duration;
   
   return (
-    <div className="min-w-[240px] rounded-xl overflow-hidden bg-card shadow-sm flex flex-col">
+    <Link 
+      to={`/content/${type}/${id}`} 
+      className="min-w-[240px] rounded-xl overflow-hidden bg-card shadow-sm flex flex-col hover:shadow-md transition-shadow"
+    >
       <div className="relative h-32">
         <img 
           src={image} 
@@ -46,6 +53,10 @@ const ContentCard = ({
           size="icon" 
           variant="ghost"
           className="absolute top-2 right-2 h-7 w-7 rounded-full bg-black/30 hover:bg-black/50 text-white"
+          onClick={(e) => {
+            e.preventDefault(); // Prevent navigation
+            // Bookmark logic would go here
+          }}
         >
           <Bookmark className="h-3 w-3" />
         </Button>
@@ -58,7 +69,15 @@ const ContentCard = ({
             <Badge variant="outline" className="text-xs bg-muted/50">
               {difficulty}
             </Badge>
-            <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-7 w-7 p-0"
+              onClick={(e) => {
+                e.preventDefault(); // Prevent navigation
+                // Like logic would go here
+              }}
+            >
               <Heart className="h-4 w-4" />
             </Button>
           </div>
@@ -77,7 +96,15 @@ const ContentCard = ({
                 </span>
               )}
             </div>
-            <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-7 w-7 p-0"
+              onClick={(e) => {
+                e.preventDefault(); // Prevent navigation
+                // Like logic would go here
+              }}
+            >
               <Heart className="h-4 w-4" />
             </Button>
           </div>
@@ -99,7 +126,7 @@ const ContentCard = ({
           </div>
         )}
       </div>
-    </div>
+    </Link>
   );
 };
 
