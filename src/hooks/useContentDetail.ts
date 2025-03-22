@@ -8,7 +8,7 @@ import {
 } from '@/components/discover/data/discoverData';
 
 // Define a common interface for all content types
-interface ContentItem {
+export interface ContentItem {
   id: number;
   title: string;
   image: string;
@@ -34,14 +34,20 @@ function getRandomRelatedContent(excludeId: number, allContentItems: ContentItem
     .slice(0, 2);
 }
 
+// Cast each content array to ContentItem[] to ensure TypeScript knows they match the interface
+const typedMentalWellnessContent = mentalWellnessContent as ContentItem[];
+const typedPhysicalWellnessContent = physicalWellnessContent as ContentItem[];
+const typedNutritionContent = nutritionContent as ContentItem[];
+const typedSleepContent = sleepContent as ContentItem[];
+
 // Combine all content data into one array for easy lookup
 const allContent: ContentItem[] = [
-  ...mentalWellnessContent,
-  ...physicalWellnessContent,
-  ...nutritionContent,
-  ...sleepContent
+  ...typedMentalWellnessContent,
+  ...typedPhysicalWellnessContent,
+  ...typedNutritionContent,
+  ...typedSleepContent
 ].map(content => {
-  // Add default benefits and descriptions for demo purposes
+  // Add default benefits and descriptions for demo purposes if they don't exist
   return {
     ...content,
     description: content.description || "Experience a transformative journey through this carefully crafted content designed to enhance your wellbeing.",
@@ -54,11 +60,11 @@ const allContent: ContentItem[] = [
     creator: content.creator || "Wellness Experts Team",
     // Add some mock related content
     relatedContent: getRandomRelatedContent(content.id, [
-      ...mentalWellnessContent,
-      ...physicalWellnessContent,
-      ...nutritionContent,
-      ...sleepContent
-    ] as ContentItem[])
+      ...typedMentalWellnessContent,
+      ...typedPhysicalWellnessContent,
+      ...typedNutritionContent,
+      ...typedSleepContent
+    ])
   };
 });
 
