@@ -13,12 +13,12 @@ export const personalGrowthBooks = [
   },
   {
     id: 2,
-    title: "Mindset: The New Psychology of Success",
-    author: "Carol S. Dweck",
-    rating: 4.6,
-    reviewCount: 3184,
+    title: "Psycho-Cybernetics",
+    author: "Maxwell Maltz",
+    rating: 4.7,
+    reviewCount: 3420,
     image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    audioSample: "https://samples.audible.com/bk/rand/004956/bk_rand_004956_sample.mp3"
+    audioSample: "https://samples.audible.com/bk/gdan/002459/bk_gdan_002459_sample.mp3"
   },
   {
     id: 3,
