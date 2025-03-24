@@ -159,12 +159,12 @@ export const personalGrowthBooks = [
   },
   {
     id: 3,
-    title: "The Power of Now",
-    author: "Eckhart Tolle",
+    title: "The Gifts of Imperfection",
+    author: "Brené Brown",
     rating: 4.7,
     reviewCount: 5762,
     image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    audioSample: "https://samples.audible.com/bk/neww/000001/bk_neww_000001_sample.mp3"
+    audioSample: "https://samples.audible.com/bk/haza/000086/bk_haza_000086_sample.mp3"
   }
 ];
 
