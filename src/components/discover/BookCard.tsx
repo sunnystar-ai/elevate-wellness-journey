@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { BookOpen, Star, BookAudio, X } from 'lucide-react';
+import { BookOpen, Star, Volume, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 
@@ -44,7 +44,7 @@ const BookCard = ({ title, author, rating, reviewCount, image, audioSample }: Bo
             <div className="ml-auto flex space-x-1">
               {audioSample && (
                 <Button size="sm" variant="ghost" className="p-0 h-8 w-8" onClick={() => setAudioOpen(true)}>
-                  <BookAudio className="h-4 w-4" />
+                  <Volume className="h-4 w-4" />
                 </Button>
               )}
               <Button size="sm" variant="ghost" className="p-0 h-8 w-8">
