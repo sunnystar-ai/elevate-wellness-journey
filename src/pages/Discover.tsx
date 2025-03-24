@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import AnimatedSection from '@/components/ui/AnimatedSection';
@@ -20,7 +19,7 @@ import {
   personalGrowthBooks,
   trendingContent,
   categories
-} from '@/components/discover/data/discoverData';
+} from '@/components/discover/data';
 
 const Discover = () => {
   const [loaded, setLoaded] = useState(false);

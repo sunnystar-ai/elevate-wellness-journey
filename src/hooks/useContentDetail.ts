@@ -4,7 +4,7 @@ import {
   physicalWellnessContent, 
   nutritionContent, 
   sleepContent
-} from '@/components/discover/data/discoverData';
+} from '@/components/discover/data';
 
 // Define a common interface for all content types
 export interface ContentItem {
