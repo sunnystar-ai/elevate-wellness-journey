@@ -12,6 +12,7 @@ interface Book {
   rating: number;
   reviewCount: number;
   image: string;
+  audioSample?: string;
 }
 
 interface BooksSectionProps {
@@ -44,6 +45,7 @@ const BooksSection = ({ title, books, linkTo, delay = 0 }: BooksSectionProps) =>
             rating={book.rating}
             reviewCount={book.reviewCount}
             image={book.image}
+            audioSample={book.audioSample}
           />
         ))}
       </div>

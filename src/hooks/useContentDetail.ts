@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { 
   mentalWellnessContent, 
@@ -24,6 +23,7 @@ export interface ContentItem {
   benefits?: string[];
   creator?: string;
   relatedContent?: ContentItem[];
+  audioSample?: string;
 }
 
 // Helper function to get random related content
