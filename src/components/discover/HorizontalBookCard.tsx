@@ -112,11 +112,7 @@ const HorizontalBookCard = ({ id, title, author, rating, image }: HorizontalBook
                 size="sm" 
                 variant="ghost" 
                 className="p-0 h-6 w-6"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  generateSummary();
-                }}
+                onClick={generateSummary}
               >
                 <BookOpen className="h-3 w-3" />
               </Button>
@@ -151,3 +147,4 @@ const HorizontalBookCard = ({ id, title, author, rating, image }: HorizontalBook
 };
 
 export default HorizontalBookCard;
+
