@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import AnimatedSection from '@/components/ui/AnimatedSection';
@@ -6,7 +7,7 @@ import CategoryFilter from '@/components/discover/CategoryFilter';
 import FeaturedProgram from '@/components/discover/FeaturedProgram';
 import FilterBar from '@/components/discover/FilterBar';
 import ContentSection from '@/components/discover/ContentSection';
-import BooksSection from '@/components/discover/BooksSection';
+import HorizontalBooksList from '@/components/discover/HorizontalBooksList';
 import TrendingSection from '@/components/discover/TrendingSection';
 import BottomNavbar from '@/components/discover/BottomNavbar';
 
@@ -80,24 +81,24 @@ const Discover = () => {
         delay={500}
       />
 
+      <HorizontalBooksList
+        title="Personal Growth Books"
+        books={personalGrowthBooks}
+        linkTo="/books"
+        delay={600}
+      />
+
       <ContentSection 
         title="Nutrition"
         items={nutritionContent}
         linkTo="/nutrition"
-        delay={600}
+        delay={700}
       />
 
       <ContentSection 
         title="Sleep"
         items={sleepContent}
         linkTo="/sleep"
-        delay={700}
-      />
-
-      <BooksSection 
-        title="Personal Growth Books"
-        books={personalGrowthBooks}
-        linkTo="/books"
         delay={800}
       />
 
