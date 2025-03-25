@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Star, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -89,7 +88,7 @@ const HorizontalBookCard = ({ id, title, author, rating, image }: HorizontalBook
 
   return (
     <>
-      <Link to={`/content/book/${id}`} className="flex-shrink-0 w-36 mr-4">
+      <div className="flex-shrink-0 w-36 mr-4">
         <div className="rounded-lg overflow-hidden bg-card shadow-sm h-full flex flex-col">
           <div className="h-52 w-full relative">
             <img 
@@ -124,7 +123,7 @@ const HorizontalBookCard = ({ id, title, author, rating, image }: HorizontalBook
             </div>
           </div>
         </div>
-      </Link>
+      </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-h-[80vh] overflow-y-auto">
