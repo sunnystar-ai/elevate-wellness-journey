@@ -1,8 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, Star } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Star } from 'lucide-react';
 
 interface HorizontalBookCardProps {
   id: number;
@@ -18,7 +17,7 @@ const HorizontalBookCard = ({ id, title, author, rating, image }: HorizontalBook
   return (
     <Link to={`/content/book/${id}`} className="flex-shrink-0 w-36 mr-4">
       <div className="rounded-lg overflow-hidden bg-card shadow-sm h-full flex flex-col">
-        <div className="h-52 w-full">
+        <div className="h-52 w-full relative">
           <img 
             src={image} 
             alt={title} 
