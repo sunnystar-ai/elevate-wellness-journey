@@ -7,12 +7,14 @@ import CategoryFilter from '@/components/discover/CategoryFilter';
 import FeaturedProgram from '@/components/discover/FeaturedProgram';
 import FilterBar from '@/components/discover/FilterBar';
 import ContentSection from '@/components/discover/ContentSection';
+import HorizontalBooksList from '@/components/discover/HorizontalBooksList';
 import BottomNavbar from '@/components/discover/BottomNavbar';
 
 import {
   featuredProgram,
   mentalWellnessContent,
   physicalWellnessContent,
+  personalGrowthBooks,
   categories
 } from '@/components/discover/data';
 
@@ -61,21 +63,26 @@ const Discover = () => {
         <FilterBar />
       </AnimatedSection>
 
-      <div className="flex flex-col space-y-8 overflow-y-auto max-h-[calc(100vh-20rem)]">
-        <ContentSection 
-          title="Mental Wellness"
-          items={mentalWellnessContent}
-          linkTo="/meditation"
-          delay={400}
-        />
+      <ContentSection 
+        title="Mental Wellness"
+        items={mentalWellnessContent}
+        linkTo="/meditation"
+        delay={400}
+      />
 
-        <ContentSection 
-          title="Physical Wellness"
-          items={physicalWellnessContent}
-          linkTo="/workouts"
-          delay={500}
-        />
-      </div>
+      <ContentSection 
+        title="Physical Wellness"
+        items={physicalWellnessContent}
+        linkTo="/workouts"
+        delay={500}
+      />
+
+      <HorizontalBooksList
+        title="Personal Growth Books"
+        books={personalGrowthBooks}
+        linkTo="/books"
+        delay={600}
+      />
 
       <BottomNavbar />
     </div>
