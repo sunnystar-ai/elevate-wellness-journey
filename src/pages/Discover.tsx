@@ -8,7 +8,6 @@ import FeaturedProgram from '@/components/discover/FeaturedProgram';
 import FilterBar from '@/components/discover/FilterBar';
 import ContentSection from '@/components/discover/ContentSection';
 import HorizontalBooksList from '@/components/discover/HorizontalBooksList';
-import TrendingSection from '@/components/discover/TrendingSection';
 import BottomNavbar from '@/components/discover/BottomNavbar';
 
 import {
@@ -16,9 +15,7 @@ import {
   mentalWellnessContent,
   physicalWellnessContent,
   nutritionContent,
-  sleepContent,
   personalGrowthBooks,
-  trendingContent,
   categories
 } from '@/components/discover/data';
 
@@ -93,19 +90,6 @@ const Discover = () => {
         items={nutritionContent}
         linkTo="/nutrition"
         delay={700}
-      />
-
-      <ContentSection 
-        title="Sleep"
-        items={sleepContent}
-        linkTo="/sleep"
-        delay={800}
-      />
-
-      <TrendingSection 
-        title="Trending Now"
-        items={trendingContent}
-        delay={900}
       />
 
       <BottomNavbar />
