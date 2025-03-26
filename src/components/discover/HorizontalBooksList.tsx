@@ -30,6 +30,10 @@ interface HorizontalBooksListProps {
 }
 
 const HorizontalBooksList = ({ title, books, linkTo, delay = 0 }: HorizontalBooksListProps) => {
+  // Split books into two rows
+  const firstRowBooks = books.slice(0, Math.ceil(books.length / 2));
+  const secondRowBooks = books.slice(Math.ceil(books.length / 2));
+
   return (
     <AnimatedSection delay={delay} className="mb-8">
       <div className="flex justify-between items-center mb-4">
@@ -45,31 +49,61 @@ const HorizontalBooksList = ({ title, books, linkTo, delay = 0 }: HorizontalBook
         )}
       </div>
       
-      <Carousel
-        opts={{
-          align: "start",
-          loop: true,
-        }}
-        className="w-full"
-      >
-        <CarouselContent className="-ml-2 md:-ml-4">
-          {books.map((book) => (
-            <CarouselItem key={book.id} className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5">
-              <HorizontalBookCard
-                id={book.id}
-                title={book.title}
-                author={book.author}
-                rating={book.rating}
-                reviewCount={book.reviewCount}
-                image={book.image}
-                audioSample={book.audioSample}
-              />
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious className="hidden md:flex -left-4" />
-        <CarouselNext className="hidden md:flex -right-4" />
-      </Carousel>
+      <div className="space-y-4">
+        {/* First Row */}
+        <Carousel
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+          className="w-full"
+        >
+          <CarouselContent className="-ml-2 md:-ml-4">
+            {firstRowBooks.map((book) => (
+              <CarouselItem key={book.id} className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5">
+                <HorizontalBookCard
+                  id={book.id}
+                  title={book.title}
+                  author={book.author}
+                  rating={book.rating}
+                  reviewCount={book.reviewCount}
+                  image={book.image}
+                  audioSample={book.audioSample}
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="hidden md:flex -left-4" />
+          <CarouselNext className="hidden md:flex -right-4" />
+        </Carousel>
+
+        {/* Second Row */}
+        <Carousel
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+          className="w-full"
+        >
+          <CarouselContent className="-ml-2 md:-ml-4">
+            {secondRowBooks.map((book) => (
+              <CarouselItem key={book.id} className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5">
+                <HorizontalBookCard
+                  id={book.id}
+                  title={book.title}
+                  author={book.author}
+                  rating={book.rating}
+                  reviewCount={book.reviewCount}
+                  image={book.image}
+                  audioSample={book.audioSample}
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="hidden md:flex -left-4" />
+          <CarouselNext className="hidden md:flex -right-4" />
+        </Carousel>
+      </div>
     </AnimatedSection>
   );
 };
