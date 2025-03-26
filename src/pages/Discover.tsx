@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import AnimatedSection from '@/components/ui/AnimatedSection';
@@ -80,7 +79,6 @@ const Discover = () => {
       <HorizontalBooksList
         title="Personal Growth Books"
         books={personalGrowthBooks}
-        linkTo="/books"
         delay={600}
       />
 
