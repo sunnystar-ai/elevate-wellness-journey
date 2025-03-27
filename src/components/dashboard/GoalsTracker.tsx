@@ -13,11 +13,8 @@ const GoalsTracker = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-baseline mb-4">
+      <div className="mb-4">
         <h2 className="text-lg font-medium">Your Goals</h2>
-        <button className="text-primary hover:underline text-sm font-medium">
-          See All
-        </button>
       </div>
       
       <div className="space-y-3">
