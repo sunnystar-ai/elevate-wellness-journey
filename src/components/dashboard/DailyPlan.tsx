@@ -39,7 +39,7 @@ const DailyPlan = () => {
     if (!activityDurations[activity]) {
       toast({
         title: "Duration required",
-        description: "Please enter how long you did this activity.",
+        description: "Please enter how long you did this activity in minutes.",
         variant: "destructive"
       });
       return;
@@ -89,14 +89,17 @@ const DailyPlan = () => {
                 Completed ({activityDurations[item.activity]} min)
               </div>
             ) : (
-              <div className="flex items-center">
-                <Input
-                  type="number"
-                  placeholder="Duration (min)"
-                  value={activityDurations[item.activity]}
-                  onChange={(e) => handleDurationChange(item.activity, e.target.value)}
-                  className="w-28 h-8 mr-2"
-                />
+              <div className="flex flex-col sm:flex-row items-start sm:items-center">
+                <div className="flex items-center mb-2 sm:mb-0">
+                  <Input
+                    type="number"
+                    placeholder="Duration"
+                    value={activityDurations[item.activity]}
+                    onChange={(e) => handleDurationChange(item.activity, e.target.value)}
+                    className="w-20 h-8 mr-1"
+                  />
+                  <span className="text-sm mr-2">minutes</span>
+                </div>
                 <Button 
                   size="sm" 
                   onClick={() => handleSubmitDuration(item.activity)}
