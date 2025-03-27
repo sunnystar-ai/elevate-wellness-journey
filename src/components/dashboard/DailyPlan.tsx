@@ -21,9 +21,9 @@ const DailyPlan = () => {
   });
 
   const dailyPlan = [
-    { time: "7:00 AM", activity: "Morning meditation", completed: completedActivities["Morning meditation"], icon: <Flame className="h-4 w-4 text-harmony-lavender" /> },
-    { time: "6:00 PM", activity: "Evening workout", completed: completedActivities["Evening workout"], icon: <Award className="h-4 w-4 text-harmony-mint" /> },
-    { time: "10:00 PM", activity: "Sleep preparation", completed: completedActivities["Sleep preparation"], icon: <Clock className="h-4 w-4 text-harmony-peach" /> }
+    { time: "7:00 AM", activity: "Morning meditation", completed: completedActivities["Morning meditation"], icon: <Flame className="h-4 w-4 text-harmony-lavender" />, unit: "minutes" },
+    { time: "6:00 PM", activity: "Evening workout", completed: completedActivities["Evening workout"], icon: <Award className="h-4 w-4 text-harmony-mint" />, unit: "minutes" },
+    { time: "10:00 PM", activity: "Sleep preparation", completed: completedActivities["Sleep preparation"], icon: <Clock className="h-4 w-4 text-harmony-peach" />, unit: "hours" }
   ];
 
   // Function to handle duration input changes
@@ -39,7 +39,7 @@ const DailyPlan = () => {
     if (!activityDurations[activity]) {
       toast({
         title: "Duration required",
-        description: "Please enter how long you did this activity in minutes.",
+        description: `Please enter how long you did this activity in ${activity === "Sleep preparation" ? "hours" : "minutes"}.`,
         variant: "destructive"
       });
       return;
@@ -52,7 +52,7 @@ const DailyPlan = () => {
 
     toast({
       title: "Activity logged",
-      description: `You completed ${activity} for ${activityDurations[activity]} minutes.`,
+      description: `You completed ${activity} for ${activityDurations[activity]} ${activity === "Sleep preparation" ? "hours" : "minutes"}.`,
       variant: "default"
     });
   };
@@ -86,7 +86,7 @@ const DailyPlan = () => {
             
             {item.completed ? (
               <div className="text-sm text-harmony-mint font-medium">
-                Completed ({activityDurations[item.activity]} min)
+                Completed ({activityDurations[item.activity]} {item.unit})
               </div>
             ) : (
               <div className="flex flex-col sm:flex-row items-start sm:items-center">
@@ -98,7 +98,7 @@ const DailyPlan = () => {
                     onChange={(e) => handleDurationChange(item.activity, e.target.value)}
                     className="w-20 h-8 mr-1"
                   />
-                  <span className="text-sm mr-2">minutes</span>
+                  <span className="text-sm mr-2">{item.unit}</span>
                 </div>
                 <Button 
                   size="sm" 
