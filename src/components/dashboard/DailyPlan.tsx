@@ -1,13 +1,23 @@
+
 import { useState } from 'react';
 import { CalendarCheck, Flame, Brain, Award, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { toast } from '@/hooks/use-toast';
 
 const DailyPlan = () => {
-  // Daily plan data - keep track of completed activities
+  // Daily plan data - track completed activities and durations
   const [completedActivities, setCompletedActivities] = useState<Record<string, boolean>>({
     "Morning meditation": false,
     "Evening workout": false,
     "Sleep preparation": false
+  });
+
+  // New state to track duration inputs
+  const [activityDurations, setActivityDurations] = useState<Record<string, string>>({
+    "Morning meditation": "",
+    "Evening workout": "",
+    "Sleep preparation": ""
   });
 
   const dailyPlan = [
@@ -16,12 +26,35 @@ const DailyPlan = () => {
     { time: "10:00 PM", activity: "Sleep preparation", completed: completedActivities["Sleep preparation"], icon: <Clock className="h-4 w-4 text-harmony-peach" /> }
   ];
 
-  // Function to handle marking activities as done
-  const handleMarkDone = (activity: string) => {
+  // Function to handle duration input changes
+  const handleDurationChange = (activity: string, value: string) => {
+    setActivityDurations(prev => ({
+      ...prev,
+      [activity]: value
+    }));
+  };
+
+  // Function to handle submitting activity duration
+  const handleSubmitDuration = (activity: string) => {
+    if (!activityDurations[activity]) {
+      toast({
+        title: "Duration required",
+        description: "Please enter how long you did this activity.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setCompletedActivities(prev => ({
       ...prev,
-      [activity]: !prev[activity]
+      [activity]: true
     }));
+
+    toast({
+      title: "Activity logged",
+      description: `You completed ${activity} for ${activityDurations[activity]} minutes.`,
+      variant: "default"
+    });
   };
 
   return (
@@ -50,14 +83,28 @@ const DailyPlan = () => {
             <div className="flex-grow mr-2">
               <div className="font-medium">{item.activity}</div>
             </div>
-            <Button 
-              size="sm" 
-              variant={item.completed ? "outline" : "default"}
-              className={item.completed ? "border-harmony-mint text-harmony-mint" : ""}
-              onClick={() => handleMarkDone(item.activity)}
-            >
-              {item.completed ? "Done" : "Mark Done"}
-            </Button>
+            
+            {item.completed ? (
+              <div className="text-sm text-harmony-mint font-medium">
+                Completed ({activityDurations[item.activity]} min)
+              </div>
+            ) : (
+              <div className="flex items-center">
+                <Input
+                  type="number"
+                  placeholder="Duration (min)"
+                  value={activityDurations[item.activity]}
+                  onChange={(e) => handleDurationChange(item.activity, e.target.value)}
+                  className="w-28 h-8 mr-2"
+                />
+                <Button 
+                  size="sm" 
+                  onClick={() => handleSubmitDuration(item.activity)}
+                >
+                  Submit
+                </Button>
+              </div>
+            )}
           </div>
         ))}
       </div>
