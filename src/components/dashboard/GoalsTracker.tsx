@@ -6,8 +6,8 @@ import { Progress } from '@/components/ui/progress';
 const GoalsTracker = () => {
   // Goals data
   const goals = [
-    { title: "Meditate 10 minutes daily", completed: true, streak: 8, progress: 80 },
-    { title: "Walk 10,000 steps", completed: false, streak: 5, progress: 65 },
+    { title: "Meditate 30 minutes daily", completed: true, streak: 8, progress: 80 },
+    { title: "Walk 60 minutes", completed: false, streak: 5, progress: 65 },
     { title: "Sleep 7+ hours", completed: true, streak: 3, progress: 100 }
   ];
 
