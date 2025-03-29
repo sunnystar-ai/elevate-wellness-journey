@@ -1,64 +1,99 @@
 
-import { Progress } from '@/components/ui/progress';
+import { useState, useEffect } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from 'recharts';
 
-const DailyOverview = () => {
+interface DailyOverviewProps {
+  activityDurations?: Record<string, string>;
+  mentalScore?: number;
+}
+
+const DailyOverview = ({ activityDurations, mentalScore }: DailyOverviewProps) => {
+  const [dailyScore, setDailyScore] = useState<number>(70);
+  const [scoreBreakdown, setScoreBreakdown] = useState([
+    { name: 'Walk', score: 0.8 },
+    { name: 'Sleep', score: 0.7 },
+    { name: 'Meditation', score: 0.6 },
+    { name: 'Mental', score: 0.7 }
+  ]);
+
+  useEffect(() => {
+    if (activityDurations) {
+      // Calculate scores for each activity
+      let walkScore = 0;
+      let sleepScore = 0;
+      let meditationScore = 0;
+      
+      // Walk score calculation (60 minutes = full credit)
+      const walkDuration = parseFloat(activityDurations["Evening workout"] || "0");
+      walkScore = Math.min(1, walkDuration / 60);
+      
+      // Sleep score calculation (7 hours = full credit)
+      const sleepDuration = parseFloat(activityDurations["Sleep preparation"] || "0");
+      sleepScore = Math.min(1, sleepDuration / 7);
+      
+      // Meditation score calculation (30 minutes = full credit)
+      const meditationDuration = parseFloat(activityDurations["Morning meditation"] || "0");
+      meditationScore = Math.min(1, meditationDuration / 30);
+      
+      // Mental score (from mental wellness analysis)
+      const mentalScoreValue = mentalScore !== undefined ? mentalScore : 0.7;
+      
+      // Calculate daily overall score
+      const totalScore = walkScore + sleepScore + meditationScore + mentalScoreValue;
+      const percentageScore = Math.round((totalScore / 4) * 100);
+      
+      setDailyScore(percentageScore);
+      
+      // Update score breakdown
+      setScoreBreakdown([
+        { name: 'Walk', score: walkScore },
+        { name: 'Sleep', score: sleepScore },
+        { name: 'Meditation', score: meditationScore },
+        { name: 'Mental', score: mentalScoreValue }
+      ]);
+    }
+  }, [activityDurations, mentalScore]);
+
+  // Chart data
+  const chartData = scoreBreakdown.map(item => ({
+    name: item.name,
+    score: Math.round(item.score * 100)
+  }));
+
+  // Custom tooltip
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="p-2 bg-white shadow-md rounded-md border border-gray-200">
+          <p className="font-medium">{`${payload[0].name}: ${payload[0].value}%`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
-    <div className="flex flex-col items-center text-center mb-6">
-      <div className="relative w-40 h-40 mb-4">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-3xl font-bold">70%</div>
-        </div>
-        <svg className="w-full h-full" viewBox="0 0 100 100">
-          <circle 
-            cx="50" cy="50" r="40" 
-            fill="none" 
-            stroke="hsl(var(--muted))" 
-            strokeWidth="8"
-          />
-          <circle 
-            cx="50" cy="50" r="40" 
-            fill="none" 
-            stroke="hsl(var(--primary))" 
-            strokeWidth="8"
-            strokeDasharray="251.2"
-            strokeDashoffset="75.36" 
-            transform="rotate(-90 50 50)"
-          />
-        </svg>
+    <div className="p-4 rounded-lg bg-white shadow-sm">
+      <div className="flex justify-between mb-3">
+        <div className="text-lg font-bold">Today's Progress</div>
+        <div className="text-xl font-bold text-harmony-lavender">{dailyScore}%</div>
       </div>
-
-      <div className="grid grid-cols-2 gap-3 w-full">
-        <div className="p-3 rounded-lg bg-white shadow-sm">
-          <div className="text-sm font-medium mb-1 flex justify-between">
-            <span>Mental</span>
-            <span>3/4</span>
-          </div>
-          <Progress value={75} className="h-2" />
-        </div>
-        
-        <div className="p-3 rounded-lg bg-white shadow-sm">
-          <div className="text-sm font-medium mb-1 flex justify-between">
-            <span>Physical</span>
-            <span>2/3</span>
-          </div>
-          <Progress value={66} className="h-2" />
-        </div>
-        
-        <div className="p-3 rounded-lg bg-white shadow-sm">
-          <div className="text-sm font-medium mb-1 flex justify-between">
-            <span>Nutrition</span>
-            <span>4/5</span>
-          </div>
-          <Progress value={80} className="h-2" />
-        </div>
-        
-        <div className="p-3 rounded-lg bg-white shadow-sm">
-          <div className="text-sm font-medium mb-1 flex justify-between">
-            <span>Sleep</span>
-            <span>7.5hrs</span>
-          </div>
-          <Progress value={85} className="h-2" />
-        </div>
+      
+      <div className="h-64">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis domain={[0, 100]} />
+            <Tooltip content={<CustomTooltip />} />
+            <Bar 
+              dataKey="score" 
+              fill="#8884d8" 
+              radius={[4, 4, 0, 0]}
+              barSize={40}
+            />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );

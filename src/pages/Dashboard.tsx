@@ -21,6 +21,8 @@ const Dashboard = () => {
   const isMobile = useIsMobile();
   // Add state to track activity durations
   const [activityDurations, setActivityDurations] = useState<Record<string, string>>({});
+  // Add state for mental wellness score
+  const [mentalScore, setMentalScore] = useState<number>(0.85); // Default value
 
   useEffect(() => {
     setLoaded(true);
@@ -69,8 +71,7 @@ const Dashboard = () => {
 
         {/* Daily Overview Card */}
         <AnimatedSection animation="scale-in" className="mb-8">
-          <h2 className="text-lg font-medium mb-4">Today's Progress</h2>
-          <DailyOverview />
+          <DailyOverview activityDurations={activityDurations} mentalScore={mentalScore} />
         </AnimatedSection>
 
         {/* Quick Stats Summary */}
