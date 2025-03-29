@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Flame, CheckCircle } from 'lucide-react';
+import { Flame, CheckCircle, CirclePercent } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 
 interface GoalTrackerProps {
@@ -113,11 +113,15 @@ const GoalsTracker = ({ activityDurations }: GoalTrackerProps) => {
                   <Flame className="h-3 w-3 text-harmony-peach mr-1" />
                   <span>{goal.streak}-day streak</span>
                 </div>
-                {goal.actualValue !== undefined && (
-                  <div className="text-xs font-medium">
-                    {goal.actualValue}/{goal.target} {goal.unit}
-                  </div>
-                )}
+                <div className="flex items-center text-xs font-medium">
+                  {goal.actualValue !== undefined && (
+                    <span className="mr-2">
+                      {goal.actualValue}/{goal.target} {goal.unit}
+                    </span>
+                  )}
+                  <CirclePercent className="h-3 w-3 mr-1" />
+                  <span>{goal.progress}%</span>
+                </div>
               </div>
             </div>
             <Progress value={goal.progress} className="w-16 h-1" />
