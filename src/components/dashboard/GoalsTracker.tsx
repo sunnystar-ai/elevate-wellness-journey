@@ -7,9 +7,21 @@ interface GoalTrackerProps {
   activityDurations?: Record<string, string>;
 }
 
+// Define a proper interface for the goal object
+interface Goal {
+  title: string;
+  activity: string;
+  target: number;
+  unit: string;
+  completed: boolean;
+  streak: number;
+  progress: number;
+  actualValue?: number; // Make actualValue optional but properly typed
+}
+
 const GoalsTracker = ({ activityDurations }: GoalTrackerProps) => {
   // Goals data with target values
-  const goals = [
+  const initialGoals: Goal[] = [
     { 
       title: "Meditate 30 minutes daily", 
       activity: "Morning meditation",
@@ -40,12 +52,12 @@ const GoalsTracker = ({ activityDurations }: GoalTrackerProps) => {
   ];
 
   // State to store the calculated goals with progress
-  const [calculatedGoals, setCalculatedGoals] = useState(goals);
+  const [calculatedGoals, setCalculatedGoals] = useState<Goal[]>(initialGoals);
 
   // Effect to update goals based on activity durations from DailyPlan
   useEffect(() => {
     if (activityDurations) {
-      const updatedGoals = goals.map(goal => {
+      const updatedGoals = initialGoals.map(goal => {
         const duration = activityDurations[goal.activity];
         
         if (duration) {
@@ -59,7 +71,7 @@ const GoalsTracker = ({ activityDurations }: GoalTrackerProps) => {
               ...goal,
               completed: progressValue >= 100,
               progress: progressValue,
-              actualValue: durationValue
+              actualValue: durationValue // Now properly typed
             };
           }
         }
