@@ -9,7 +9,7 @@ import StatusBar from '@/components/home/StatusBar';
 import AppHeader from '@/components/home/AppHeader';
 import GreetingHeader from '@/components/home/GreetingHeader';
 import QuickActionsBar from '@/components/home/QuickActionsBar';
-import ProgressCircle from '@/components/home/ProgressCircle';
+import TodayProgressChart from '@/components/home/TodayProgressChart';
 import AiChat from '@/components/home/AiChat';
 import RecommendationCards from '@/components/home/RecommendationCards';
 import DailyTip from '@/components/home/DailyTip';
@@ -17,6 +17,14 @@ import DailyTip from '@/components/home/DailyTip';
 const Index = () => {
   const [loaded, setLoaded] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
+  // Add state to track activity durations
+  const [activityDurations, setActivityDurations] = useState<Record<string, string>>({
+    "Morning meditation": "20",
+    "Evening workout": "45",
+    "Sleep preparation": "6.5"
+  });
+  // Add state for mental wellness score
+  const [mentalScore, setMentalScore] = useState<number>(0.85); // Default value
 
   useEffect(() => {
     setLoaded(true);
@@ -52,8 +60,7 @@ const Index = () => {
         </AnimatedSection>
 
         <AnimatedSection animation="scale-in" className="mb-10">
-          <h2 className="text-lg font-medium mb-4">Today's Progress</h2>
-          <ProgressCircle />
+          <TodayProgressChart activityDurations={activityDurations} mentalScore={mentalScore} />
         </AnimatedSection>
 
         <AnimatedSection className="mb-10">
