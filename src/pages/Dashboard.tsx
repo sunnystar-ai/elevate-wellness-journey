@@ -19,6 +19,8 @@ const Dashboard = () => {
   const [loaded, setLoaded] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const isMobile = useIsMobile();
+  // Add state to track activity durations
+  const [activityDurations, setActivityDurations] = useState<Record<string, string>>({});
 
   useEffect(() => {
     setLoaded(true);
@@ -45,6 +47,11 @@ const Dashboard = () => {
     minute: '2-digit',
     hour12: true 
   });
+
+  // Handler for activity updates
+  const handleActivityUpdate = (durations: Record<string, string>) => {
+    setActivityDurations(durations);
+  };
 
   return (
     <div className={`page-transition ${loaded ? 'opacity-100' : 'opacity-0'} pb-20`}>
@@ -73,12 +80,12 @@ const Dashboard = () => {
 
         {/* Goals Tracker */}
         <AnimatedSection className="mb-8">
-          <GoalsTracker />
+          <GoalsTracker activityDurations={activityDurations} />
         </AnimatedSection>
 
         {/* Today's Plan */}
         <AnimatedSection className="mb-8">
-          <DailyPlan />
+          <DailyPlan onActivityUpdate={handleActivityUpdate} />
         </AnimatedSection>
 
         {/* Personalized Insights */}

@@ -1,15 +1,75 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Flame, CheckCircle } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 
-const GoalsTracker = () => {
-  // Goals data
+interface GoalTrackerProps {
+  activityDurations?: Record<string, string>;
+}
+
+const GoalsTracker = ({ activityDurations }: GoalTrackerProps) => {
+  // Goals data with target values
   const goals = [
-    { title: "Meditate 30 minutes daily", completed: true, streak: 8, progress: 80 },
-    { title: "Walk 60 minutes", completed: false, streak: 5, progress: 65 },
-    { title: "Sleep 7+ hours", completed: true, streak: 3, progress: 100 }
+    { 
+      title: "Meditate 30 minutes daily", 
+      activity: "Morning meditation",
+      target: 30,
+      unit: "minutes",
+      completed: false, 
+      streak: 8, 
+      progress: 0 
+    },
+    { 
+      title: "Walk 60 minutes", 
+      activity: "Evening workout",
+      target: 60,
+      unit: "minutes",
+      completed: false, 
+      streak: 5, 
+      progress: 0 
+    },
+    { 
+      title: "Sleep 7+ hours", 
+      activity: "Sleep preparation",
+      target: 7,
+      unit: "hours",
+      completed: false, 
+      streak: 3, 
+      progress: 0 
+    }
   ];
+
+  // State to store the calculated goals with progress
+  const [calculatedGoals, setCalculatedGoals] = useState(goals);
+
+  // Effect to update goals based on activity durations from DailyPlan
+  useEffect(() => {
+    if (activityDurations) {
+      const updatedGoals = goals.map(goal => {
+        const duration = activityDurations[goal.activity];
+        
+        if (duration) {
+          const durationValue = parseFloat(duration);
+          
+          if (!isNaN(durationValue)) {
+            // Calculate progress as a percentage of target
+            const progressValue = Math.min(100, Math.round((durationValue / goal.target) * 100));
+            
+            return {
+              ...goal,
+              completed: progressValue >= 100,
+              progress: progressValue,
+              actualValue: durationValue
+            };
+          }
+        }
+        
+        return goal;
+      });
+      
+      setCalculatedGoals(updatedGoals);
+    }
+  }, [activityDurations]);
 
   return (
     <div>
@@ -18,7 +78,7 @@ const GoalsTracker = () => {
       </div>
       
       <div className="space-y-3">
-        {goals.map((goal, index) => (
+        {calculatedGoals.map((goal, index) => (
           <div 
             key={goal.title}
             className="flex items-center p-3 rounded-lg bg-white shadow-sm"
@@ -36,9 +96,16 @@ const GoalsTracker = () => {
             </div>
             <div className="flex-grow mr-2">
               <div className="font-medium">{goal.title}</div>
-              <div className="flex items-center text-xs text-muted-foreground">
-                <Flame className="h-3 w-3 text-harmony-peach mr-1" />
-                <span>{goal.streak}-day streak</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center text-xs text-muted-foreground">
+                  <Flame className="h-3 w-3 text-harmony-peach mr-1" />
+                  <span>{goal.streak}-day streak</span>
+                </div>
+                {goal.actualValue !== undefined && (
+                  <div className="text-xs font-medium">
+                    {goal.actualValue}/{goal.target} {goal.unit}
+                  </div>
+                )}
               </div>
             </div>
             <Progress value={goal.progress} className="w-16 h-1" />

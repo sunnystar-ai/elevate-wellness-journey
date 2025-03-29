@@ -1,11 +1,15 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CalendarCheck, Flame, Brain, Award, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
 
-const DailyPlan = () => {
+interface DailyPlanProps {
+  onActivityUpdate?: (activityDurations: Record<string, string>) => void;
+}
+
+const DailyPlan = ({ onActivityUpdate }: DailyPlanProps) => {
   // Daily plan data - track completed activities and durations
   const [completedActivities, setCompletedActivities] = useState<Record<string, boolean>>({
     "Morning meditation": false,
@@ -25,6 +29,13 @@ const DailyPlan = () => {
     { time: "6:00 PM", activity: "Evening workout", completed: completedActivities["Evening workout"], icon: <Award className="h-4 w-4 text-harmony-mint" />, unit: "minutes" },
     { time: "10:00 PM", activity: "Sleep preparation", completed: completedActivities["Sleep preparation"], icon: <Clock className="h-4 w-4 text-harmony-peach" />, unit: "hours" }
   ];
+
+  // Notify parent component when activity durations change
+  useEffect(() => {
+    if (onActivityUpdate) {
+      onActivityUpdate(activityDurations);
+    }
+  }, [activityDurations, onActivityUpdate]);
 
   // Function to handle duration input changes
   const handleDurationChange = (activity: string, value: string) => {
