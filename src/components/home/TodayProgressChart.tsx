@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from 'recharts';
+import CircularProgressChart from './CircularProgressChart';
 
 interface TodayProgressChartProps {
   activityDurations?: Record<string, string>;
@@ -73,27 +74,35 @@ const TodayProgressChart = ({ activityDurations, mentalScore }: TodayProgressCha
   };
 
   return (
-    <div className="rounded-lg bg-white shadow-sm h-full">
-      <div className="flex justify-between mb-3 px-4 pt-4">
+    <div className="rounded-lg bg-white shadow-sm h-full p-4">
+      <div className="flex justify-between mb-3">
         <div className="text-lg font-bold">Today's Progress</div>
         <div className="text-xl font-bold text-harmony-lavender">{dailyScore}%</div>
       </div>
       
-      <div className="h-48">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis domain={[0, 100]} />
-            <Tooltip content={<CustomTooltip />} />
-            <Bar 
-              dataKey="score" 
-              fill="#8884d8" 
-              radius={[4, 4, 0, 0]}
-              barSize={40}
-            />
-          </BarChart>
-        </ResponsiveContainer>
+      <div className="flex flex-col md:flex-row gap-6">
+        {/* Circular Progress Chart */}
+        <div className="flex items-center justify-center">
+          <CircularProgressChart percentage={dailyScore} title="Daily Wellness Score" />
+        </div>
+        
+        {/* Bar Chart */}
+        <div className="flex-grow h-48">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis domain={[0, 100]} />
+              <Tooltip content={<CustomTooltip />} />
+              <Bar 
+                dataKey="score" 
+                fill="#8884d8" 
+                radius={[4, 4, 0, 0]}
+                barSize={40}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );
