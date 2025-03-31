@@ -10,7 +10,11 @@ interface TraitButtonsGridProps {
 
 const TraitButtonsGrid = ({ emotionData }: TraitButtonsGridProps) => {
   const getTraitIcon = (trait: TraitKey) => {
-    const iconClassName = `h-8 w-8 ${traitDescriptions[trait].color}`;
+    // Make sure traitDescriptions[trait] exists before trying to access its color property
+    const traitInfo = traitDescriptions[trait];
+    if (!traitInfo) return null;
+    
+    const iconClassName = `h-8 w-8 ${traitInfo.color}`;
     
     switch(trait) {
       case 'openness':
@@ -36,7 +40,11 @@ const TraitButtonsGrid = ({ emotionData }: TraitButtonsGridProps) => {
           trait={trait}
           icon={getTraitIcon(trait)}
           value={emotionData[trait]}
-          traitInfo={traitDescriptions[trait]}
+          traitInfo={traitDescriptions[trait] || {
+            title: trait,
+            color: 'text-primary',
+            description: 'Trait information not found'
+          }}
         />
       ))}
     </div>
