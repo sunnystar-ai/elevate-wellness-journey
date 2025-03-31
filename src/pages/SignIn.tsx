@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -8,6 +7,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Mail, Key, LogIn, AlertCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -18,17 +18,14 @@ const SignIn = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Get the return URL from location state or default to dashboard
   const from = location.state?.from?.pathname || "/dashboard";
 
-  // If already authenticated, redirect to intended destination
   useEffect(() => {
     if (isAuthenticated) {
       navigate(from, { replace: true });
     }
   }, [isAuthenticated, navigate, from]);
 
-  // Sync auth context error with local error
   useEffect(() => {
     if (error) {
       setLocalError(error);
@@ -47,7 +44,6 @@ const SignIn = () => {
 
     try {
       await login(email, password);
-      // If login succeeds, useEffect will handle redirect
     } catch (error) {
       // Error is already handled in AuthContext and synced to localError
     }
