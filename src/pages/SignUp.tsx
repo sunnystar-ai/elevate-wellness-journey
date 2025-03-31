@@ -1,58 +1,58 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Mail, Key, User, LogIn } from "lucide-react";
+import { ArrowLeft, Mail, Key, User, LogIn, AlertCircle } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const SignUp = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [localError, setLocalError] = useState<string | null>(null);
+  const { signup, isLoading, isAuthenticated, error, clearError } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  
+  // If already authenticated, redirect to dashboard
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
+  
+  // Sync auth context error with local error
+  useEffect(() => {
+    if (error) {
+      setLocalError(error);
+    }
+  }, [error]);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setLocalError(null);
+    clearError();
 
-    // Simulate registration - replace with real logic when connected to backend
+    if (!name || !email || !password) {
+      setLocalError("Please fill in all fields");
+      return;
+    }
+
+    if (password.length < 8) {
+      setLocalError("Password must be at least 8 characters");
+      return;
+    }
+
     try {
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Mock validation
-      if (!name || !email || !password) {
-        throw new Error("Please fill in all fields");
-      }
-      
-      if (password.length < 8) {
-        throw new Error("Password must be at least 8 characters");
-      }
-      
-      // This would be replaced with actual registration logic
-      // Success
-      toast({
-        title: "Account created successfully",
-        description: "Welcome to Harmony!",
-      });
-      
-      // Store mock auth state
-      localStorage.setItem("isAuthenticated", "true");
-      
-      // Redirect to dashboard
-      navigate("/dashboard");
+      await signup(name, email, password);
+      // If signup succeeds, useEffect will handle redirect
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Sign up failed",
-        description: error instanceof Error ? error.message : "Something went wrong",
-      });
-    } finally {
-      setIsLoading(false);
+      // Error is already handled in AuthContext and synced to localError
     }
   };
 
@@ -79,6 +79,13 @@ const SignUp = () => {
               Enter your details to get started with Harmony
             </p>
           </div>
+
+          {localError && (
+            <Alert variant="destructive" className="animate-in fade-in-50">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{localError}</AlertDescription>
+            </Alert>
+          )}
 
           <form onSubmit={handleSignUp} className="space-y-4">
             <div className="space-y-2">
@@ -163,7 +170,19 @@ const SignUp = () => {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <Button variant="outline" type="button" className="w-full">
+            <Button 
+              variant="outline" 
+              type="button" 
+              className="w-full"
+              onClick={() => {
+                supabase.auth.signInWithOAuth({
+                  provider: 'google',
+                  options: {
+                    redirectTo: `${window.location.origin}/dashboard`
+                  }
+                });
+              }}
+            >
               <svg className="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                 <path fill="currentColor" d="M21.35,11.1H12.18V13.83H18.69C18.36,17.64 15.19,19.27 12.19,19.27C8.36,19.27 5,16.25 5,12C5,7.9 8.2,4.73 12.2,4.73C15.29,4.73 17.1,6.7 17.1,6.7L19,4.72C19,4.72 16.56,2 12.1,2C6.42,2 2.03,6.8 2.03,12C2.03,17.05 6.16,22 12.25,22C17.6,22 21.5,18.33 21.5,12.91C21.5,11.76 21.35,11.1 21.35,11.1V11.1Z"/>
               </svg>

@@ -1,11 +1,8 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { Session, User } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
-
-type User = {
-  name: string;
-  email: string;
-};
+import { supabase } from "@/integrations/supabase/client";
 
 type AuthContextType = {
   isAuthenticated: boolean;
@@ -16,6 +13,7 @@ type AuthContextType = {
   isLoading: boolean;
   error: string | null;
   clearError: () => void;
+  session: Session | null;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,20 +23,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [session, setSession] = useState<Session | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check if user is already authenticated on mount
-    const authStatus = localStorage.getItem("isAuthenticated");
-    const userData = localStorage.getItem("user");
-    
-    if (authStatus === "true" && userData) {
-      setIsAuthenticated(true);
-      setUser(JSON.parse(userData));
-    }
-  }, []);
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        setIsAuthenticated(!!session);
+        
+        if (event === 'SIGNED_IN') {
+          toast({
+            title: "Signed in successfully",
+            description: "Welcome to Harmony!",
+          });
+        } else if (event === 'SIGNED_OUT') {
+          toast({
+            title: "Signed out",
+            description: "You have been signed out successfully",
+          });
+        }
+      }
+    );
+
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setIsAuthenticated(!!session);
+      setIsLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [toast]);
 
   const clearError = () => {
     setError(null);
@@ -49,22 +70,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setError(null);
     
     try {
-      // For demo purposes, we're using hardcoded credentials
-      // In a real app, this would call your API
-      if (email === "demo@example.com" && password === "password") {
-        const userData = { name: "Demo User", email };
-        localStorage.setItem("isAuthenticated", "true");
-        localStorage.setItem("user", JSON.stringify(userData));
-        setUser(userData);
-        setIsAuthenticated(true);
-        toast({
-          title: "Signed in successfully",
-          description: "Welcome back to Harmony!",
-        });
-        return; // Success case
-      } else {
-        throw new Error("Invalid email or password");
-      }
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+      
+      if (error) throw error;
+      
+      // Auth state change listener will update state
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Something went wrong";
       setError(errorMessage);
@@ -73,7 +86,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         title: "Sign in failed",
         description: errorMessage,
       });
-      throw error; // Re-throw to handle in the component
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -84,17 +97,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setError(null);
     
     try {
-      // In a real app, this would call your API to create a user
-      // For demo purposes, we're just setting the authenticated state
-      const userData = { name, email };
-      localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("user", JSON.stringify(userData));
-      setUser(userData);
-      setIsAuthenticated(true);
+      // Create user with Supabase
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            first_name: name.split(' ')[0],
+            last_name: name.split(' ').slice(1).join(' ')
+          }
+        }
+      });
+      
+      if (error) throw error;
+      
       toast({
         title: "Account created",
         description: "Welcome to Harmony!",
       });
+      
+      // Auth state change listener will update state
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Something went wrong";
       setError(errorMessage);
@@ -109,20 +131,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem("isAuthenticated");
-    localStorage.removeItem("user");
-    setUser(null);
-    setIsAuthenticated(false);
-    toast({
-      title: "Signed out",
-      description: "You have been signed out successfully",
-    });
+  const logout = async () => {
+    try {
+      await supabase.auth.signOut();
+      // Auth state change listener will update state
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Something went wrong";
+      toast({
+        variant: "destructive",
+        title: "Sign out failed",
+        description: errorMessage,
+      });
+    }
   };
 
   return (
     <AuthContext.Provider 
-      value={{ isAuthenticated, user, login, signup, logout, isLoading, error, clearError }}
+      value={{ 
+        isAuthenticated, 
+        user, 
+        login, 
+        signup, 
+        logout, 
+        isLoading, 
+        error, 
+        clearError,
+        session 
+      }}
     >
       {children}
     </AuthContext.Provider>

@@ -4,41 +4,46 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Mail } from "lucide-react";
+import { ArrowLeft, Mail, AlertCircle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(null);
 
     try {
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Mock validation
       if (!email) {
         throw new Error("Please enter your email address");
       }
       
-      // This would be replaced with actual password reset logic
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
       
-      // Success
+      if (error) throw error;
+      
       setIsSubmitted(true);
       toast({
         title: "Reset link sent",
         description: "If your email is in our system, you'll receive a reset link shortly.",
       });
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Something went wrong";
+      setError(errorMessage);
       toast({
         variant: "destructive",
         title: "Request failed",
-        description: error instanceof Error ? error.message : "Something went wrong",
+        description: errorMessage,
       });
     } finally {
       setIsLoading(false);
@@ -68,6 +73,13 @@ const ForgotPassword = () => {
               Enter your email to receive a password reset link
             </p>
           </div>
+
+          {error && (
+            <Alert variant="destructive" className="animate-in fade-in-50">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
 
           {isSubmitted ? (
             <div className="bg-muted/50 rounded-lg p-6 text-center space-y-4">

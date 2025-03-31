@@ -53,14 +53,6 @@ const SignIn = () => {
     }
   };
 
-  // To display the correct information for testing
-  const demoCredentials = () => {
-    toast({
-      title: "Demo Credentials",
-      description: "Email: demo@example.com, Password: password",
-    });
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-muted/40">
       <div className="p-4">
@@ -152,16 +144,6 @@ const SignIn = () => {
                 </span>
               )}
             </Button>
-
-            <div className="text-center text-sm">
-              <button 
-                type="button" 
-                className="text-primary hover:underline"
-                onClick={demoCredentials}
-              >
-                Show demo credentials
-              </button>
-            </div>
           </form>
 
           <div className="relative my-6">
@@ -176,7 +158,19 @@ const SignIn = () => {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <Button variant="outline" type="button" className="w-full">
+            <Button 
+              variant="outline" 
+              type="button" 
+              className="w-full" 
+              onClick={() => {
+                supabase.auth.signInWithOAuth({
+                  provider: 'google',
+                  options: {
+                    redirectTo: `${window.location.origin}/dashboard`
+                  }
+                });
+              }}
+            >
               <svg className="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                 <path fill="currentColor" d="M21.35,11.1H12.18V13.83H18.69C18.36,17.64 15.19,19.27 12.19,19.27C8.36,19.27 5,16.25 5,12C5,7.9 8.2,4.73 12.2,4.73C15.29,4.73 17.1,6.7 17.1,6.7L19,4.72C19,4.72 16.56,2 12.1,2C6.42,2 2.03,6.8 2.03,12C2.03,17.05 6.16,22 12.25,22C17.6,22 21.5,18.33 21.5,12.91C21.5,11.76 21.35,11.1 21.35,11.1V11.1Z"/>
               </svg>
