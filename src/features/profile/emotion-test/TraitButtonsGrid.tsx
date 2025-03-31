@@ -43,7 +43,8 @@ const TraitButtonsGrid = ({ emotionData }: TraitButtonsGridProps) => {
           traitInfo={traitDescriptions[trait] || {
             title: trait,
             color: 'text-primary',
-            description: 'Trait information not found'
+            description: 'Trait information not found',
+            bgColor: 'bg-primary/10' // Add the missing bgColor property
           }}
         />
       ))}
