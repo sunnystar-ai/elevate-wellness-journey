@@ -27,21 +27,6 @@ const PersonalInfoSection = () => {
             <p className="text-sm text-muted-foreground">Email Address</p>
             <p className="font-medium">{email}</p>
           </div>
-          <Separator />
-          <div>
-            <p className="text-sm text-muted-foreground">Date of Birth</p>
-            <p className="font-medium">January 15, 1990</p>
-          </div>
-          <Separator />
-          <div>
-            <p className="text-sm text-muted-foreground">Gender</p>
-            <p className="font-medium">Female</p>
-          </div>
-          <Separator />
-          <div>
-            <p className="text-sm text-muted-foreground">Height & Weight</p>
-            <p className="font-medium">5'7" / 140 lbs</p>
-          </div>
         </CardContent>
       </Card>
       <Button className="w-full mt-3">Edit Personal Info</Button>

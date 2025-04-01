@@ -56,26 +56,6 @@ const ProfileHeader = () => {
           <p className="text-sm text-center">Wellness enthusiast committed to daily mindfulness and active living.</p>
         </CardContent>
       </Card>
-      
-      {/* Quick Stats */}
-      <Card className="mx-4 mb-5">
-        <CardContent className="p-4">
-          <div className="grid grid-cols-3 gap-2 text-center">
-            <div className="flex flex-col">
-              <span className="text-2xl font-bold">16</span>
-              <span className="text-xs text-muted-foreground">Day Streak</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-2xl font-bold">1,280</span>
-              <span className="text-xs text-muted-foreground">Total Points</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-2xl font-bold">82%</span>
-              <span className="text-xs text-muted-foreground">Weekly Avg</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </>
   );
 };
