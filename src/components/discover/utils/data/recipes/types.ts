@@ -10,6 +10,7 @@ export interface Recipe extends NutritionContent {
   ingredients: string[];
   instructions: string[];
   servingSuggestions: string[];
+  mealType: 'breakfast' | 'lunch' | 'dinner' | 'snack';
 }
 
 export type RecipeCollection = Recipe[];

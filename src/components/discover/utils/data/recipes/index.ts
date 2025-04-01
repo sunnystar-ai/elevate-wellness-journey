@@ -1,10 +1,18 @@
 
-import { recipes } from './recipeData';
-import { additionalRecipes } from './recipeDataPart2';
+import { breakfastRecipes } from './breakfastRecipes';
+import { lunchRecipes } from './lunchRecipes';
+import { dinnerRecipes } from './dinnerRecipes';
+import { snackRecipes } from './snackRecipes';
 import { NutritionContent } from '../../types';
+import { Recipe } from './types';
 
 // Combine all recipes
-const allRecipes = [...recipes, ...additionalRecipes];
+const allRecipes = [
+  ...breakfastRecipes,
+  ...lunchRecipes,
+  ...dinnerRecipes,
+  ...snackRecipes
+];
 
 // Generate featured nutrition content with meal recipes
 export const generateFeaturedNutrition = (): NutritionContent[] => {
@@ -21,3 +29,10 @@ export const generateFeaturedNutrition = (): NutritionContent[] => {
   
   return result;
 };
+
+// Helper functions to get recipes by meal type
+export const getBreakfastRecipes = (): Recipe[] => breakfastRecipes;
+export const getLunchRecipes = (): Recipe[] => lunchRecipes;
+export const getDinnerRecipes = (): Recipe[] => dinnerRecipes;
+export const getSnackRecipes = (): Recipe[] => snackRecipes;
+export const getAllRecipes = (): Recipe[] => allRecipes;

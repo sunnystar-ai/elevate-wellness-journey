@@ -1,8 +1,7 @@
 
 import { RecipeCollection } from './types';
 
-// Collection of recipe data
-export const recipes: RecipeCollection = [
+export const dinnerRecipes: RecipeCollection = [
   {
     id: 1,
     title: "Spinach and Feta Stuffed Chicken Breast",
@@ -34,46 +33,8 @@ export const recipes: RecipeCollection = [
       "Serve with roasted vegetables or a side salad for a complete meal.",
       "Pair with quinoa or brown rice for additional fiber and nutrients.",
       "For a lighter option, serve with steamed asparagus and cherry tomatoes."
-    ]
-  },
-  {
-    id: 2,
-    title: "Rainbow Vegetable Stir-Fry",
-    prepTime: "20 min",
-    tags: ["Vegan", "Gluten-Free"],
-    image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    ingredients: [
-      "2 tbsp sesame oil",
-      "1 red bell pepper, sliced",
-      "1 yellow bell pepper, sliced",
-      "1 cup broccoli florets",
-      "1 cup snap peas",
-      "1 carrot, julienned",
-      "1 cup mushrooms, sliced",
-      "2 cloves garlic, minced",
-      "1 tbsp fresh ginger, grated",
-      "3 tbsp low-sodium soy sauce or tamari",
-      "1 tbsp maple syrup or honey",
-      "1 tsp cornstarch mixed with 2 tbsp water",
-      "1/4 cup green onions, chopped",
-      "1 tbsp sesame seeds"
     ],
-    instructions: [
-      "Heat sesame oil in a large wok or skillet over high heat.",
-      "Add garlic and ginger, stir-fry for 30 seconds until fragrant.",
-      "Add vegetables in order of cooking time: carrots first, followed by bell peppers, broccoli, and mushrooms.",
-      "Stir-fry for 5-7 minutes until vegetables are crisp-tender.",
-      "In a small bowl, whisk together soy sauce, maple syrup, and cornstarch mixture.",
-      "Pour sauce over vegetables and cook for 1-2 minutes until sauce thickens.",
-      "Toss in snap peas and cook for 1 minute more.",
-      "Garnish with green onions and sesame seeds before serving."
-    ],
-    servingSuggestions: [
-      "Serve over brown rice or quinoa for a complete meal.",
-      "Add tofu, tempeh, or edamame for extra protein.",
-      "Wrap in lettuce leaves for a low-carb option.",
-      "Store leftovers in an airtight container for up to 3 days."
-    ]
+    mealType: "dinner"
   },
   {
     id: 3,
@@ -107,6 +68,43 @@ export const recipes: RecipeCollection = [
       "Serve with a side of roasted new potatoes or steamed green beans.",
       "Pair with a Greek salad for a complete Mediterranean meal.",
       "For a grain option, serve with couscous or orzo pasta tossed with olive oil and herbs."
-    ]
+    ],
+    mealType: "dinner"
+  },
+  {
+    id: 6,
+    title: "One-Pan Herb Roasted Chicken and Vegetables",
+    prepTime: "1 hour",
+    tags: ["Paleo", "One-Pan Meal"],
+    image: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    ingredients: [
+      "4 chicken thighs, bone-in and skin-on",
+      "1 lb baby potatoes, halved",
+      "2 carrots, cut into chunks",
+      "1 red onion, cut into wedges",
+      "1 zucchini, cut into thick slices",
+      "2 tbsp olive oil",
+      "2 tbsp fresh rosemary, chopped",
+      "2 tbsp fresh thyme, chopped",
+      "3 cloves garlic, minced",
+      "1 lemon, zested and juiced",
+      "1 tsp paprika",
+      "Salt and pepper to taste"
+    ],
+    instructions: [
+      "Preheat oven to 425°F (220°C).",
+      "In a small bowl, mix olive oil, herbs, garlic, lemon zest, paprika, salt, and pepper.",
+      "Place chicken and vegetables on a large baking sheet.",
+      "Pour herb mixture over chicken and vegetables, tossing to coat evenly.",
+      "Arrange in a single layer with chicken skin-side up.",
+      "Roast for 35-40 minutes until chicken is golden and cooked through and vegetables are tender.",
+      "Drizzle with fresh lemon juice before serving."
+    ],
+    servingSuggestions: [
+      "Serve with a simple green salad dressed with olive oil and lemon.",
+      "Add a crusty whole grain bread on the side to soak up the flavorful juices.",
+      "For meal prep, divide into individual containers for easy weekday lunches or dinners."
+    ],
+    mealType: "dinner"
   }
 ];
