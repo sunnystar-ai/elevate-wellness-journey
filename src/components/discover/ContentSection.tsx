@@ -25,6 +25,8 @@ interface ContentSectionProps {
 }
 
 const ContentSection = ({ title, items, linkTo, delay = 0 }: ContentSectionProps) => {
+  console.log(`Content section "${title}" items:`, items);
+  
   return (
     <AnimatedSection delay={delay} className="mb-8">
       <div className="flex justify-between items-center mb-4">
@@ -39,25 +41,31 @@ const ContentSection = ({ title, items, linkTo, delay = 0 }: ContentSectionProps
       
       <ScrollArea>
         <div className="flex space-x-4 pb-4">
-          {items.map((item) => (
-            <ContentCard 
-              key={item.id}
-              id={item.id}
-              title={item.title}
-              image={item.image}
-              duration={item.duration || item.prepTime}
-              difficulty={item.difficulty}
-              intensity={item.intensity}
-              equipment={item.equipment}
-              tags={item.tags}
-              recommended={item.recommended}
-              prepTime={item.prepTime}
-              type={item.type}
-              ingredients={item.ingredients}
-              instructions={item.instructions}
-              servingSuggestions={item.servingSuggestions}
-            />
-          ))}
+          {items.length > 0 ? (
+            items.map((item) => (
+              <ContentCard 
+                key={item.id}
+                id={item.id}
+                title={item.title}
+                image={item.image}
+                duration={item.duration || item.prepTime}
+                difficulty={item.difficulty}
+                intensity={item.intensity}
+                equipment={item.equipment}
+                tags={item.tags}
+                recommended={item.recommended}
+                prepTime={item.prepTime}
+                type={item.type}
+                ingredients={item.ingredients}
+                instructions={item.instructions}
+                servingSuggestions={item.servingSuggestions}
+              />
+            ))
+          ) : (
+            <div className="w-full p-4 text-center text-muted-foreground">
+              No content available
+            </div>
+          )}
         </div>
       </ScrollArea>
     </AnimatedSection>

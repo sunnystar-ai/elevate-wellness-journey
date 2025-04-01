@@ -24,7 +24,8 @@ import {
   NutritionContent,
   generateNutritionArticles, 
   generateMentalWellnessArticles,
-  generateFeaturedNutrition
+  generateFeaturedNutrition,
+  getAllRecipes
 } from '@/components/discover/utils/articleGenerator';
 
 const Discover = () => {
@@ -35,9 +36,15 @@ const Discover = () => {
 
   useEffect(() => {
     // In a real implementation, this would be an API call to generate content
-    setNutritionArticles(generateNutritionArticles());
-    setMentalWellnessArticles(generateMentalWellnessArticles());
-    setFeaturedNutritionContent(generateFeaturedNutrition());
+    const nutritionArticles = generateNutritionArticles();
+    const mentalWellnessArticles = generateMentalWellnessArticles();
+    const featuredNutrition = generateFeaturedNutrition();
+    
+    console.log("Featured nutrition content:", featuredNutrition);
+    
+    setNutritionArticles(nutritionArticles);
+    setMentalWellnessArticles(mentalWellnessArticles);
+    setFeaturedNutritionContent(featuredNutrition);
   }, []);
 
   return (

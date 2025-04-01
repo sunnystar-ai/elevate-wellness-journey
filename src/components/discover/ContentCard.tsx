@@ -57,8 +57,11 @@ const ContentCard = ({
     tags,
     ingredients,
     instructions,
-    servingSuggestions
+    servingSuggestions,
+    type
   } : null;
+
+  console.log("Card data for:", title, "type:", type, "recipeData:", recipeData);
 
   return (
     <Link 

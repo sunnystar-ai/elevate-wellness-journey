@@ -21,6 +21,10 @@ const ContentDetail = () => {
   // Extract recipe data from location state if available (for recipes from featured nutrition)
   const recipeData = location.state?.recipeData;
   
+  console.log("Content detail page - params:", { contentType, contentId });
+  console.log("Location state recipe data:", recipeData);
+  console.log("Fetched content:", content);
+  
   // Combine data from location state and fetched content, prioritizing location state
   const displayContent = recipeData || content;
   

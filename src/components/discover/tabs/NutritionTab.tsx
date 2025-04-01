@@ -20,6 +20,8 @@ interface NutritionTabProps {
 }
 
 const NutritionTab = ({ articles, nutritionContent }: NutritionTabProps) => {
+  console.log("Nutrition content in tab:", nutritionContent);
+  
   return (
     <>
       {articles.map((article, index) => (
@@ -30,6 +32,8 @@ const NutritionTab = ({ articles, nutritionContent }: NutritionTabProps) => {
         items={nutritionContent.map(recipe => ({
           ...recipe,
           ingredients: recipe.ingredients || [],
+          instructions: recipe.instructions || [],
+          servingSuggestions: recipe.servingSuggestions || [],
           type: 'recipe'
         }))} 
       />
