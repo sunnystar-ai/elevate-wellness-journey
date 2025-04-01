@@ -4,7 +4,11 @@ import AnimatedSection from '@/components/ui/AnimatedSection';
 import { ContentItem } from '@/hooks/useContentDetail';
 
 interface RecipeSpecificContentProps {
-  displayContent: ContentItem;
+  displayContent: ContentItem & {
+    ingredients?: string[];
+    instructions?: string[];
+    servingSuggestions?: string[];
+  };
 }
 
 const RecipeSpecificContent = ({ displayContent }: RecipeSpecificContentProps) => {
@@ -24,12 +28,12 @@ const RecipeSpecificContent = ({ displayContent }: RecipeSpecificContentProps) =
           </div>
         </AnimatedSection>
       )}
-
+      
       {displayContent.instructions && displayContent.instructions.length > 0 && (
         <AnimatedSection delay={300}>
           <div className="mb-8">
             <h2 className="mb-4 text-xl font-semibold">Instructions</h2>
-            <ol className="list-inside list-decimal space-y-4">
+            <ol className="list-inside list-decimal space-y-3">
               {displayContent.instructions.map((instruction, index) => (
                 <li key={index} className="text-muted-foreground">
                   {instruction}
@@ -39,7 +43,7 @@ const RecipeSpecificContent = ({ displayContent }: RecipeSpecificContentProps) =
           </div>
         </AnimatedSection>
       )}
-
+      
       {displayContent.servingSuggestions && displayContent.servingSuggestions.length > 0 && (
         <AnimatedSection delay={400}>
           <div className="mb-8">

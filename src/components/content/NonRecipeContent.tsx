@@ -4,13 +4,16 @@ import AnimatedSection from '@/components/ui/AnimatedSection';
 import { ContentItem } from '@/hooks/useContentDetail';
 
 interface NonRecipeContentProps {
-  displayContent: ContentItem;
+  displayContent: ContentItem & {
+    ingredients?: string[];
+    benefits?: string[];
+  };
 }
 
 const NonRecipeContent = ({ displayContent }: NonRecipeContentProps) => {
   return (
     <>
-      {displayContent.benefits && !displayContent.ingredients && (
+      {displayContent.benefits && (!displayContent.ingredients || displayContent.ingredients.length === 0) && (
         <AnimatedSection delay={200}>
           <div className="mb-8">
             <h2 className="mb-4 text-xl font-semibold">Benefits</h2>
