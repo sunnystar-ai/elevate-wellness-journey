@@ -84,42 +84,8 @@ const SignInForm = ({ onSuccess }: SignInFormProps) => {
       console.log("Sign in successful:", data.session ? "Session exists" : "No session");
       
       if (data.session) {
-        // Verify the user's profile data exists
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', data.user.id)
-          .single();
-          
-        if (profileError) {
-          console.error("Error fetching profile:", profileError);
-          
-          // If profile doesn't exist, create it
-          if (profileError.message.includes('No rows found')) {
-            console.log("No profile found, creating one...");
-            
-            // Extract name parts from metadata if available
-            const firstName = data.user.user_metadata?.first_name || '';
-            const lastName = data.user.user_metadata?.last_name || '';
-            
-            // Create a basic profile for the user
-            const { error: createProfileError } = await supabase
-              .from('profiles')
-              .insert({
-                id: data.user.id,
-                first_name: firstName,
-                last_name: lastName
-              });
-              
-            if (createProfileError) {
-              console.error("Error creating profile:", createProfileError);
-            } else {
-              console.log("Profile created successfully");
-            }
-          }
-        } else {
-          console.log("User profile retrieved:", profileData ? "Profile exists" : "No profile found");
-        }
+        // Ensure profile exists for the signed-in user
+        await ensureProfileExists(data.user.id, data.user);
         
         toast({
           title: "Signed in successfully",
@@ -139,6 +105,57 @@ const SignInForm = ({ onSuccess }: SignInFormProps) => {
       setError("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Helper function to ensure profile exists
+  const ensureProfileExists = async (userId: string, user: any) => {
+    try {
+      // First check if profile exists
+      const { data: existingProfile, error: profileError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', userId)
+        .maybeSingle();
+      
+      // If no profile OR error is "no rows found", create profile
+      if (!existingProfile || (profileError && profileError.message.includes('No rows found'))) {
+        console.log("No profile found, creating one...");
+        
+        // Extract name parts from metadata if available
+        const firstName = user.user_metadata?.first_name || '';
+        const lastName = user.user_metadata?.last_name || '';
+        
+        // Retry logic for creating profile (attempt 3 times)
+        let profileCreated = false;
+        let attempts = 0;
+        
+        while (!profileCreated && attempts < 3) {
+          attempts++;
+          console.log(`Creating profile attempt ${attempts}`);
+          
+          const { error: createError } = await supabase
+            .from('profiles')
+            .insert({
+              id: userId,
+              first_name: firstName,
+              last_name: lastName
+            });
+          
+          if (!createError) {
+            console.log("Profile created successfully");
+            profileCreated = true;
+          } else {
+            console.error(`Error creating profile (attempt ${attempts}):`, createError);
+            // Wait a brief moment before retrying
+            await new Promise(resolve => setTimeout(resolve, 500));
+          }
+        }
+      } else {
+        console.log("Profile already exists:", existingProfile);
+      }
+    } catch (error) {
+      console.error("Error in ensureProfileExists:", error);
     }
   };
 
