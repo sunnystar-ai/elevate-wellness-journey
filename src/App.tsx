@@ -40,61 +40,23 @@ const App = () => (
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             
+            {/* Make dashboard accessible without authentication for testing */}
+            <Route path="/dashboard" element={<Dashboard />} />
+            
             {/* Main navigation routes - accessible without authentication */}
-            <Route path="/discover" element={
-              <ProtectedRoute requireAuth={false}>
-                <Discover />
-              </ProtectedRoute>
-            } />
-            <Route path="/my-journey" element={
-              <ProtectedRoute requireAuth={false}>
-                <MyJourney />
-              </ProtectedRoute>
-            } />
-            <Route path="/community" element={
-              <ProtectedRoute requireAuth={false}>
-                <Community />
-              </ProtectedRoute>
-            } />
-            <Route path="/profile" element={
-              <ProtectedRoute requireAuth={false}>
-                <Profile />
-              </ProtectedRoute>
-            } />
+            <Route path="/discover" element={<Discover />} />
+            <Route path="/my-journey" element={<MyJourney />} />
+            <Route path="/community" element={<Community />} />
+            <Route path="/profile" element={<Profile />} />
             
             {/* Content detail page */}
-            <Route path="/content/:contentType/:contentId" element={
-              <ProtectedRoute requireAuth={false}>
-                <ContentDetail />
-              </ProtectedRoute>
-            } />
+            <Route path="/content/:contentType/:contentId" element={<ContentDetail />} />
             
             {/* Protected feature routes */}
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/journal-prompt" element={
-              <ProtectedRoute requireAuth={false}>
-                <JournalPrompt />
-              </ProtectedRoute>
-            } />
-            <Route path="/meditation" element={
-              <ProtectedRoute requireAuth={false}>
-                <Meditation />
-              </ProtectedRoute>
-            } />
-            <Route path="/workouts" element={
-              <ProtectedRoute requireAuth={false}>
-                <Workouts />
-              </ProtectedRoute>
-            } />
-            <Route path="/nutrition" element={
-              <ProtectedRoute requireAuth={false}>
-                <Nutrition />
-              </ProtectedRoute>
-            } />
+            <Route path="/journal-prompt" element={<JournalPrompt />} />
+            <Route path="/meditation" element={<Meditation />} />
+            <Route path="/workouts" element={<Workouts />} />
+            <Route path="/nutrition" element={<Nutrition />} />
             
             {/* Catch-all route */}
             <Route path="*" element={<NotFound />} />
