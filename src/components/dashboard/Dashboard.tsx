@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -18,6 +19,10 @@ const Dashboard = () => {
   const [loaded, setLoaded] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const isMobile = useIsMobile();
+  // Add state to track activity durations
+  const [activityDurations, setActivityDurations] = useState<Record<string, string>>({});
+  // Add state for mental wellness score
+  const [mentalScore, setMentalScore] = useState<number>(0.85); // Default value
 
   useEffect(() => {
     setLoaded(true);
@@ -45,6 +50,11 @@ const Dashboard = () => {
     hour12: true 
   });
 
+  // Handler for activity updates
+  const handleActivityUpdate = (durations: Record<string, string>) => {
+    setActivityDurations(durations);
+  };
+
   return (
     <div className={`page-transition ${loaded ? 'opacity-100' : 'opacity-0'} pb-20`}>
       {/* Status Bar */}
@@ -62,7 +72,7 @@ const Dashboard = () => {
         {/* Daily Overview Card */}
         <AnimatedSection animation="scale-in" className="mb-8">
           <h2 className="text-lg font-medium mb-4">Today's Progress</h2>
-          <DailyOverview />
+          <DailyOverview activityDurations={activityDurations} mentalScore={mentalScore} />
         </AnimatedSection>
 
         {/* Quick Stats Summary */}
@@ -72,12 +82,12 @@ const Dashboard = () => {
 
         {/* Goals Tracker */}
         <AnimatedSection className="mb-8">
-          <GoalsTracker />
+          <GoalsTracker activityDurations={activityDurations} />
         </AnimatedSection>
 
         {/* Today's Plan */}
         <AnimatedSection className="mb-8">
-          <DailyPlan />
+          <DailyPlan onActivityUpdate={handleActivityUpdate} />
         </AnimatedSection>
 
         {/* Personalized Insights */}
@@ -85,7 +95,7 @@ const Dashboard = () => {
           <WellnessInsights />
         </AnimatedSection>
 
-        {/* Mental Well-being (formerly Recommended Next Steps) */}
+        {/* Recommended Next Steps and Trends (now combined) */}
         <AnimatedSection className="mb-8">
           <RecommendedNextSteps />
         </AnimatedSection>

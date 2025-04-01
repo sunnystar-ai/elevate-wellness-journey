@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from 'lucide-react';
@@ -14,7 +13,7 @@ import ContentSection from '@/components/discover/ContentSection';
 import BooksSection from '@/components/discover/BooksSection';
 import CommunitySection from '@/components/discover/CommunitySection';
 
-// Import data - fixed imports
+// Import data
 import {
   categories,
   featuredProgram,
@@ -26,12 +25,45 @@ import {
   communityPicks
 } from '@/components/discover/data';
 
-// Create trending data from content data
-const trendingData = [
-  ...mentalWellnessContent.slice(0, 1).map(item => ({ ...item, category: 'mental' })),
-  ...physicalWellnessContent.slice(0, 1).map(item => ({ ...item, category: 'physical' })),
-  ...nutritionContent.slice(0, 1).map(item => ({ ...item, category: 'nutrition' })),
-  ...sleepContent.slice(0, 1).map(item => ({ ...item, category: 'sleep' }))
+// Define the TrendingItem interface
+interface TrendingItem {
+  id: number;
+  title: string;
+  category: string;
+  image: string;
+  duration: string;
+  views: number; // Required property for TrendingItem
+  // Other optional properties
+  difficulty?: string;
+  type?: string;
+  intensity?: string;
+  equipment?: string;
+  ingredient?: string;
+  benefits?: string;
+}
+
+// Create trending data with views property
+const trendingData: TrendingItem[] = [
+  ...mentalWellnessContent.slice(0, 1).map(item => ({ 
+    ...item, 
+    category: 'mental',
+    views: 1200 + Math.floor(Math.random() * 800) // Add random views
+  })),
+  ...physicalWellnessContent.slice(0, 1).map(item => ({ 
+    ...item, 
+    category: 'physical',
+    views: 1200 + Math.floor(Math.random() * 800)
+  })),
+  ...nutritionContent.slice(0, 1).map(item => ({ 
+    ...item, 
+    category: 'nutrition',
+    views: 1200 + Math.floor(Math.random() * 800)
+  })),
+  ...sleepContent.slice(0, 1).map(item => ({ 
+    ...item, 
+    category: 'sleep',
+    views: 1200 + Math.floor(Math.random() * 800)
+  }))
 ];
 
 const Discover = () => {
@@ -39,11 +71,11 @@ const Discover = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
 
-  // Filter data for each tab
-  const mentalWellnessData = trendingData.filter(item => item.category === 'mental');
-  const physicalWellnessData = trendingData.filter(item => item.category === 'physical');
-  const nutritionData = trendingData.filter(item => item.category === 'nutrition');
-  const sleepData = trendingData.filter(item => item.category === 'sleep');
+  // Filter data for each tab and ensure they have the views property
+  const mentalWellnessData: TrendingItem[] = trendingData.filter(item => item.category === 'mental');
+  const physicalWellnessData: TrendingItem[] = trendingData.filter(item => item.category === 'physical');
+  const nutritionData: TrendingItem[] = trendingData.filter(item => item.category === 'nutrition');
+  const sleepData: TrendingItem[] = trendingData.filter(item => item.category === 'sleep');
 
   return (
     <div className="pb-24">
@@ -74,23 +106,28 @@ const Discover = () => {
             <TabsTrigger value="sleep">Sleep</TabsTrigger>
             <TabsTrigger value="community">Community</TabsTrigger>
           </TabsList>
+          
           <TabsContent value="mental">
             <TrendingSection title="Trending Mental Wellness" items={mentalWellnessData} />
             <ContentSection title="Featured Mental Wellness" items={mentalWellnessContent} />
           </TabsContent>
+          
           <TabsContent value="physical">
             <TrendingSection title="Trending Physical Wellness" items={physicalWellnessData} />
             <ContentSection title="Featured Physical Wellness" items={physicalWellnessContent} />
           </TabsContent>
+          
           <TabsContent value="nutrition">
             <TrendingSection title="Trending Nutrition" items={nutritionData} />
             <ContentSection title="Featured Nutrition" items={nutritionContent} />
             <BooksSection title="Nutrition Books" books={personalGrowthBooks} />
           </TabsContent>
+          
           <TabsContent value="sleep">
             <TrendingSection title="Trending Sleep" items={sleepData} />
             <ContentSection title="Featured Sleep" items={sleepContent} />
           </TabsContent>
+          
           <TabsContent value="community">
             <CommunitySection title="Community Picks" picks={communityPicks} />
           </TabsContent>
