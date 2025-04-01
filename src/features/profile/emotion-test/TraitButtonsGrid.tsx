@@ -9,10 +9,20 @@ interface TraitButtonsGridProps {
 }
 
 const TraitButtonsGrid = ({ emotionData }: TraitButtonsGridProps) => {
+  // Ensure we have valid emotionData, or use a default empty object
+  const safeEmotionData = emotionData || {};
+  
+  // Check if we have valid data with properties
+  const hasData = safeEmotionData && Object.keys(safeEmotionData).length > 0;
+  
+  console.log("Rendering TraitButtonsGrid with data:", safeEmotionData);
+  console.log("Has data:", hasData);
+
   const getTraitIcon = (trait: TraitKey) => {
-    // Make sure traitDescriptions[trait] exists before trying to access its color property
-    const traitInfo = traitDescriptions[trait];
-    if (!traitInfo) return null;
+    // Get the trait description or use a fallback
+    const traitInfo = traitDescriptions[trait] || {
+      color: 'text-primary'
+    };
     
     const iconClassName = `h-8 w-8 ${traitInfo.color}`;
     
@@ -28,41 +38,45 @@ const TraitButtonsGrid = ({ emotionData }: TraitButtonsGridProps) => {
       case 'neuroticism':
         return <AlertTriangle className={iconClassName} />;
       default:
-        return null;
+        return <Sparkle className={iconClassName} />;
     }
   };
 
-  // Check if emotionData exists and has properties
-  const hasData = emotionData && Object.keys(emotionData).length > 0;
+  if (!hasData) {
+    return (
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-5">
+        <div className="col-span-full text-center text-muted-foreground p-6">
+          No personality data available. Take the assessment to see your results.
+        </div>
+      </div>
+    );
+  }
 
-  console.log("Emotion data in grid:", emotionData);
-  console.log("Has data:", hasData);
+  // Explicitly define the traits we want to display, in the order we want
+  const traits: TraitKey[] = ['openness', 'conscientiousness', 'extraversion', 'agreeableness', 'neuroticism'];
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-5">
-      {hasData ? (
-        (Object.keys(emotionData) as TraitKey[]).map(trait => {
-          console.log("Rendering trait:", trait);
-          return (
-            <TraitButton
-              key={trait}
-              trait={trait}
-              icon={getTraitIcon(trait)}
-              value={emotionData[trait]}
-              traitInfo={traitDescriptions[trait] || {
-                title: trait,
-                color: 'text-primary',
-                description: 'Trait information not found',
-                bgColor: 'bg-primary/10'
-              }}
-            />
-          );
-        })
-      ) : (
-        <div className="col-span-full text-center text-muted-foreground">
-          No personality data available. Take the assessment to see your results.
-        </div>
-      )}
+      {traits.map(trait => {
+        // Get the value or default to 50
+        const value = safeEmotionData[trait] !== undefined ? safeEmotionData[trait] : 50;
+        console.log(`Rendering trait ${trait} with value ${value}`);
+        
+        return (
+          <TraitButton
+            key={trait}
+            trait={trait}
+            icon={getTraitIcon(trait)}
+            value={value}
+            traitInfo={traitDescriptions[trait] || {
+              title: trait.charAt(0).toUpperCase() + trait.slice(1),
+              color: 'text-primary',
+              description: 'Trait information not found',
+              bgColor: 'bg-primary/10'
+            }}
+          />
+        );
+      })}
     </div>
   );
 };

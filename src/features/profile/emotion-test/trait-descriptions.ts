@@ -17,14 +17,14 @@ export const traitDescriptions: Record<string, TraitDescription> = {
   extraversion: {
     title: "Extraversion",
     description: "Sociable, assertive, and tendency to experience positive emotions. Outgoing, energetic, excitement-seeking.",
-    color: "text-primary",
-    bgColor: "bg-primary/10"
+    color: "text-blue-500",
+    bgColor: "bg-blue-500/10"
   },
   agreeableness: {
     title: "Empathy/Agreeableness",
     description: "Empathetic, compassionate, and trusting of others. Cooperative, kind, conflict-averse.",
-    color: "text-primary",
-    bgColor: "bg-primary/10"
+    color: "text-pink-500",
+    bgColor: "bg-pink-500/10"
   },
   neuroticism: {
     title: "Neuroticism",
