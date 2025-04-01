@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import AnimatedSection from '@/components/ui/AnimatedSection';
-import BottomNav from '@/components/my-journey/BottomNav';
+import BottomNavigation from '@/components/layout/BottomNavigation';
 import { getGreeting, getFormattedDate, getFormattedTime, getDailyQuote } from '@/util/dateUtils';
 
 // Import components
@@ -82,7 +82,7 @@ const Index = () => {
         </AnimatedSection>
       </div>
 
-      <BottomNav />
+      <BottomNavigation />
     </div>
   );
 };

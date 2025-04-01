@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 import { useIsMobile } from '@/hooks/use-mobile';
-import BottomNav from '@/components/my-journey/BottomNav';
+import BottomNavigation from '@/components/layout/BottomNavigation';
 
 // Import the extracted components
 import StatusBar from '@/components/dashboard/StatusBar';
@@ -71,6 +71,7 @@ const Dashboard = () => {
 
         {/* Daily Overview Card */}
         <AnimatedSection animation="scale-in" className="mb-8">
+          <h2 className="text-lg font-medium mb-4">Today's Progress</h2>
           <DailyOverview activityDurations={activityDurations} mentalScore={mentalScore} />
         </AnimatedSection>
 
@@ -101,7 +102,7 @@ const Dashboard = () => {
       </div>
 
       {/* Bottom Navigation */}
-      <BottomNav />
+      <BottomNavigation />
     </div>
   );
 };

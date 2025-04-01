@@ -16,6 +16,7 @@ export type Database = {
           first_name: string | null
           id: string
           last_name: string | null
+          password: string | null
           updated_at: string
           wellness_score: number | null
         }
@@ -25,6 +26,7 @@ export type Database = {
           first_name?: string | null
           id: string
           last_name?: string | null
+          password?: string | null
           updated_at?: string
           wellness_score?: number | null
         }
@@ -34,6 +36,7 @@ export type Database = {
           first_name?: string | null
           id?: string
           last_name?: string | null
+          password?: string | null
           updated_at?: string
           wellness_score?: number | null
         }

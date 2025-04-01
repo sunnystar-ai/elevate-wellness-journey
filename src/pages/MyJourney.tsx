@@ -8,7 +8,7 @@ import PhotoTimeline from '@/components/my-journey/PhotoTimeline';
 import ActivityHistory from '@/components/my-journey/ActivityHistory';
 import InsightsPanel from '@/components/my-journey/InsightsPanel';
 import GoalsProgress from '@/components/my-journey/GoalsProgress';
-import BottomNav from '@/components/my-journey/BottomNav';
+import BottomNavigation from '@/components/layout/BottomNavigation';
 
 const MyJourney = () => {
   return (
@@ -33,7 +33,7 @@ const MyJourney = () => {
         <GoalsProgress />
       </div>
 
-      <BottomNav />
+      <BottomNavigation />
     </div>
   );
 };
