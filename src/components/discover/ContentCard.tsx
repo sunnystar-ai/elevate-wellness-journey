@@ -1,147 +1,139 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, Bookmark, Heart, Utensils, Dumbbell as DumbbellIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Clock, Calendar, Activity, DumbBell, Tag, Check } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 interface ContentCardProps {
   id: number;
   title: string;
   image: string;
-  duration: string;
+  duration?: string;
+  prepTime?: string;
   difficulty?: string;
   intensity?: string;
   equipment?: string;
   tags?: string[];
   recommended?: string;
-  prepTime?: string;
   type?: string;
   ingredients?: string[];
   instructions?: string[];
   servingSuggestions?: string[];
 }
 
-const ContentCard = ({ 
+const ContentCard = ({
   id,
-  title, 
-  image, 
-  duration, 
-  difficulty, 
-  intensity, 
+  title,
+  image,
+  duration,
+  prepTime,
+  difficulty,
+  intensity,
   equipment,
   tags,
   recommended,
-  prepTime,
+  type,
   ingredients,
-  type = 'content'
+  instructions,
+  servingSuggestions
 }: ContentCardProps) => {
-  const displayDuration = prepTime || duration;
-  const isRecipe = type === 'recipe' && ingredients && ingredients.length > 0;
-  
+  // Create a unique content path based on type
+  let contentPath = "content";
+  if (type === "recipe") {
+    contentPath = "nutrition/recipe";
+  } else if (type === "workout") {
+    contentPath = "workout";
+  } else if (type === "meditation") {
+    contentPath = "meditation";
+  }
+
+  // Forward all recipe data through state params
+  const recipeData = type === "recipe" ? {
+    id,
+    title,
+    image,
+    prepTime,
+    tags,
+    ingredients,
+    instructions,
+    servingSuggestions
+  } : null;
+
   return (
     <Link 
-      to={`/content/${type}/${id}`} 
-      className="min-w-[240px] rounded-xl overflow-hidden bg-card shadow-sm flex flex-col hover:shadow-md transition-shadow"
+      to={`/${contentPath}/${id}`} 
+      state={{ recipeData }}
+      className="block min-w-[240px] max-w-[240px] overflow-hidden rounded-lg bg-white shadow-md hover:shadow-lg transition-shadow duration-300"
     >
-      <div className="relative h-32">
+      <div className="relative h-36 overflow-hidden">
         <img 
           src={image} 
           alt={title} 
-          className="w-full h-full object-cover"
+          className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
         />
-        <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full flex items-center">
-          <Clock className="h-3 w-3 mr-1" />
-          {displayDuration}
-        </div>
-        {isRecipe && (
-          <div className="absolute bottom-2 right-2 bg-primary/80 text-white text-xs px-2 py-1 rounded-full flex items-center">
-            <Utensils className="h-3 w-3 mr-1" />
-            Recipe
+        {prepTime && (
+          <div className="absolute bottom-2 right-2 rounded-full bg-black/70 px-2 py-1 text-xs text-white">
+            <span className="flex items-center">
+              <Clock className="mr-1 h-3 w-3" />
+              {prepTime}
+            </span>
           </div>
         )}
-        <Button 
-          size="icon" 
-          variant="ghost"
-          className="absolute top-2 right-2 h-7 w-7 rounded-full bg-black/30 hover:bg-black/50 text-white"
-          onClick={(e) => {
-            e.preventDefault(); // Prevent navigation
-            // Bookmark logic would go here
-          }}
-        >
-          <Bookmark className="h-3 w-3" />
-        </Button>
+        {duration && !prepTime && (
+          <div className="absolute bottom-2 right-2 rounded-full bg-black/70 px-2 py-1 text-xs text-white">
+            <span className="flex items-center">
+              <Clock className="mr-1 h-3 w-3" />
+              {duration}
+            </span>
+          </div>
+        )}
+        {recommended && (
+          <div className="absolute left-2 top-2">
+            <Badge variant="secondary" className="bg-primary text-primary-foreground">
+              <Check className="mr-1 h-3 w-3" />
+              {recommended}
+            </Badge>
+          </div>
+        )}
       </div>
       <div className="p-3">
-        <h3 className="font-medium text-base mb-1">{title}</h3>
-        
-        {difficulty && (
-          <div className="flex justify-between items-center">
-            <Badge variant="outline" className="text-xs bg-muted/50">
-              {difficulty}
-            </Badge>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-7 w-7 p-0"
-              onClick={(e) => {
-                e.preventDefault(); // Prevent navigation
-                // Like logic would go here
-              }}
-            >
-              <Heart className="h-4 w-4" />
-            </Button>
-          </div>
-        )}
-        
-        {intensity && (
-          <div className="flex justify-between items-center">
-            <div className="flex items-center">
-              <Badge variant="outline" className="text-xs bg-muted/50 mr-2">
-                {intensity}
-              </Badge>
-              {equipment && equipment !== "None" && (
-                <span className="text-xs text-muted-foreground flex items-center">
-                  <DumbbellIcon className="h-3 w-3 mr-1" />
-                  {equipment}
-                </span>
-              )}
-            </div>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-7 w-7 p-0"
-              onClick={(e) => {
-                e.preventDefault(); // Prevent navigation
-                // Like logic would go here
-              }}
-            >
-              <Heart className="h-4 w-4" />
-            </Button>
-          </div>
-        )}
+        <h3 className="mb-2 text-sm font-medium line-clamp-2">{title}</h3>
         
         {tags && tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-2">
-            {tags.map((tag, i) => (
-              <Badge key={i} variant="secondary" className="text-xs">
+          <div className="flex flex-wrap gap-1">
+            {tags.slice(0, 2).map((tag, index) => (
+              <span key={index} className="inline-block rounded-full bg-muted px-2 py-0.5 text-xs">
                 {tag}
-              </Badge>
+              </span>
             ))}
+            {tags.length > 2 && (
+              <span className="inline-block rounded-full bg-muted px-2 py-0.5 text-xs">
+                +{tags.length - 2} more
+              </span>
+            )}
           </div>
         )}
         
-        {recommended && (
-          <div className="text-xs text-muted-foreground mt-1">
-            Recommended: {recommended}
-          </div>
-        )}
-        
-        {isRecipe && (
-          <div className="text-xs text-primary-foreground mt-1 bg-primary/10 p-1 rounded">
-            {ingredients.length} ingredients • Full recipe inside
-          </div>
-        )}
+        <div className="mt-2 flex gap-3 text-xs text-muted-foreground">
+          {difficulty && (
+            <div className="flex items-center">
+              <Activity className="mr-1 h-3 w-3" />
+              {difficulty}
+            </div>
+          )}
+          {intensity && (
+            <div className="flex items-center">
+              <DumbBell className="mr-1 h-3 w-3" />
+              {intensity}
+            </div>
+          )}
+          {equipment && (
+            <div className="flex items-center">
+              <Tag className="mr-1 h-3 w-3" />
+              {equipment}
+            </div>
+          )}
+        </div>
       </div>
     </Link>
   );
