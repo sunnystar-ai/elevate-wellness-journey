@@ -11,6 +11,7 @@ import FeaturedProgram from '@/components/discover/FeaturedProgram';
 import TrendingSection from '@/components/discover/TrendingSection';
 import ContentSection from '@/components/discover/ContentSection';
 import BooksSection from '@/components/discover/BooksSection';
+import HorizontalBooksList from '@/components/discover/HorizontalBooksList';
 import CommunitySection from '@/components/discover/CommunitySection';
 
 // Import data
@@ -111,11 +112,21 @@ const Discover = () => {
           <TabsContent value="mental">
             <TrendingSection title="Trending Mental Wellness" items={mentalWellnessData} />
             <ContentSection title="Featured Mental Wellness" items={mentalWellnessContent} />
+            <HorizontalBooksList 
+              title="Mental Wellness Books" 
+              books={personalGrowthBooks.slice(0, 6)} 
+              delay={0.2}
+            />
           </TabsContent>
           
           <TabsContent value="physical">
             <TrendingSection title="Trending Physical Wellness" items={physicalWellnessData} />
             <ContentSection title="Featured Physical Wellness" items={physicalWellnessContent} />
+            <HorizontalBooksList 
+              title="Physical Wellness Books" 
+              books={personalGrowthBooks.slice(2, 8)} 
+              delay={0.2}
+            />
           </TabsContent>
           
           <TabsContent value="nutrition">
@@ -127,10 +138,20 @@ const Discover = () => {
           <TabsContent value="sleep">
             <TrendingSection title="Trending Sleep" items={sleepData} />
             <ContentSection title="Featured Sleep" items={sleepContent} />
+            <HorizontalBooksList 
+              title="Sleep & Relaxation Books" 
+              books={personalGrowthBooks.slice(3, 9)} 
+              delay={0.2}
+            />
           </TabsContent>
           
           <TabsContent value="community">
             <CommunitySection title="Community Picks" picks={communityPicks} />
+            <HorizontalBooksList 
+              title="Community Recommended Books" 
+              books={personalGrowthBooks.slice(1, 7)} 
+              delay={0.2}
+            />
           </TabsContent>
         </Tabs>
       </div>
