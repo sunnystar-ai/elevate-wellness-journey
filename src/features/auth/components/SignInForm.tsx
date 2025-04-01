@@ -18,12 +18,14 @@ const SignInForm = ({ onSuccess }: SignInFormProps) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [verificationPending, setVerificationPending] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   // Clear errors when inputs change
   useEffect(() => {
     if (error) setError(null);
+    if (verificationPending) setVerificationPending(false);
   }, [email, password]);
 
   const validateForm = () => {
@@ -72,7 +74,10 @@ const SignInForm = ({ onSuccess }: SignInFormProps) => {
         console.error("Supabase sign in error:", signInError);
         
         // Handle specific error cases
-        if (signInError.message.includes("Invalid login")) {
+        if (signInError.message.includes("Email not confirmed")) {
+          setVerificationPending(true);
+          setError("Your email has not been verified yet. Please check your inbox for the verification link.");
+        } else if (signInError.message.includes("Invalid login")) {
           setError("Invalid email or password. Please try again.");
         } else {
           setError(signInError.message);
@@ -138,6 +143,37 @@ const SignInForm = ({ onSuccess }: SignInFormProps) => {
     }
   };
 
+  const handleResendVerification = async () => {
+    if (!email) {
+      setError("Please enter your email address");
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    try {
+      const cleanEmail = email.trim().toLowerCase();
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: cleanEmail,
+      });
+      
+      if (error) {
+        setError(`Failed to resend verification email: ${error.message}`);
+      } else {
+        toast({
+          title: "Verification email sent",
+          description: "Please check your inbox for the verification link",
+        });
+      }
+    } catch (err) {
+      console.error("Error resending verification:", err);
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
       {error && (
@@ -157,6 +193,18 @@ const SignInForm = ({ onSuccess }: SignInFormProps) => {
           password={password}
           onChange={setPassword}
         />
+
+        {verificationPending && (
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full mt-2"
+            onClick={handleResendVerification}
+            disabled={isLoading}
+          >
+            Resend verification email
+          </Button>
+        )}
 
         <Button 
           type="submit" 

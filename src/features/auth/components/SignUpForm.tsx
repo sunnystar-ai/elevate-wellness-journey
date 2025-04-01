@@ -21,6 +21,7 @@ const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -99,26 +100,25 @@ const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
         }
       }
       
-      toast({
-        title: "Account created",
-        description: "Welcome to Harmony!",
-      });
-      
+      // Check if we have a session (auto-confirmation enabled)
       if (data.session) {
+        toast({
+          title: "Account created",
+          description: "Welcome to Harmony!",
+        });
+        
         if (onSuccess) {
           onSuccess();
         } else {
           navigate("/profile", { replace: true });
         }
       } else {
-        // Some Supabase configurations might not return a session immediately
+        // Email confirmation required
+        setVerificationSent(true);
         toast({
-          title: "Verification required",
+          title: "Account created",
           description: "Please check your email to verify your account",
         });
-        
-        // Still navigate to profile as the auth listener will handle redirects if needed
-        setTimeout(() => navigate("/profile", { replace: true }), 1000);
       }
     } catch (err) {
       console.error("Unexpected error during sign up:", err);
@@ -126,6 +126,15 @@ const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // If verification email was supposedly sent but user hasn't received it
+  const handleManualLogin = () => {
+    toast({
+      title: "Try signing in",
+      description: "You can try to sign in with your credentials directly",
+    });
+    navigate("/sign-in", { replace: true });
   };
 
   return (
@@ -137,41 +146,64 @@ const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
         </Alert>
       )}
 
-      <form onSubmit={handleSignUp} className="space-y-4">
-        <NameInput 
-          name={name}
-          onChange={setName}
-        />
+      {verificationSent ? (
+        <div className="space-y-4">
+          <Alert className="animate-in fade-in-50 mb-4">
+            <AlertDescription>
+              We've sent you a verification email. Please check your inbox and 
+              follow the link to verify your account.
+            </AlertDescription>
+          </Alert>
+          <p className="text-sm text-muted-foreground text-center">
+            If you don't receive the email within a few minutes, check your spam 
+            folder or try signing in directly.
+          </p>
+          <Button 
+            type="button" 
+            className="w-full mt-4" 
+            variant="outline"
+            onClick={handleManualLogin}
+          >
+            Try signing in now
+          </Button>
+        </div>
+      ) : (
+        <form onSubmit={handleSignUp} className="space-y-4">
+          <NameInput 
+            name={name}
+            onChange={setName}
+          />
 
-        <EmailInput 
-          email={email}
-          onChange={setEmail}
-        />
+          <EmailInput 
+            email={email}
+            onChange={setEmail}
+          />
 
-        <PasswordInput 
-          password={password}
-          onChange={setPassword}
-          hasMinLength={hasMinLength}
-        />
+          <PasswordInput 
+            password={password}
+            onChange={setPassword}
+            hasMinLength={hasMinLength}
+          />
 
-        <Button 
-          type="submit" 
-          className="w-full" 
-          disabled={isLoading || (password.length > 0 && !hasMinLength)}
-        >
-          {isLoading ? (
-            <span className="flex items-center gap-2">
-              <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-              Creating account...
-            </span>
-          ) : (
-            <span className="flex items-center gap-2">
-              <LogIn className="h-4 w-4" />
-              Create account
-            </span>
-          )}
-        </Button>
-      </form>
+          <Button 
+            type="submit" 
+            className="w-full" 
+            disabled={isLoading || (password.length > 0 && !hasMinLength)}
+          >
+            {isLoading ? (
+              <span className="flex items-center gap-2">
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                Creating account...
+              </span>
+            ) : (
+              <span className="flex items-center gap-2">
+                <LogIn className="h-4 w-4" />
+                Create account
+              </span>
+            )}
+          </Button>
+        </form>
+      )}
     </>
   );
 };
