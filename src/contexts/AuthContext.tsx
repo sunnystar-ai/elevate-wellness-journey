@@ -75,14 +75,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     
     try {
       console.log("Attempting login for:", email);
-      const { error } = await supabase.auth.signInWithPassword({
+      
+      // Check that email and password are provided
+      if (!email || !password) {
+        throw new Error("Email and password are required");
+      }
+      
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
       });
       
       if (error) throw error;
-      console.log("Login successful for:", email);
-      // Auth state change listener will update state
+      
+      console.log("Login successful for:", email, data);
+      
+      // Manually setting session data instead of relying solely on the listener
+      if (data.session) {
+        setSession(data.session);
+        setUser(data.user);
+        setIsAuthenticated(true);
+      }
+      
+      // Auth state change listener will also update state
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Something went wrong";
       console.error("Login error:", errorMessage);
@@ -105,7 +120,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       console.log("Attempting signup for:", email);
       // Create user with Supabase
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -118,13 +133,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       
       if (error) throw error;
       
-      console.log("Signup successful for:", email);
+      console.log("Signup successful for:", email, data);
+      
+      // Display success toast
       toast({
         title: "Account created",
         description: "Welcome to Harmony!",
       });
       
-      // Auth state change listener will update state
+      // Manually setting session data if available
+      if (data.session) {
+        setSession(data.session);
+        setUser(data.user);
+        setIsAuthenticated(true);
+      }
+      
+      // Auth state change listener will also update state
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Something went wrong";
       console.error("Signup error:", errorMessage);

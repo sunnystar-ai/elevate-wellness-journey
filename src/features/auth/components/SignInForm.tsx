@@ -16,8 +16,16 @@ const SignInForm = ({ onSuccess }: SignInFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [localError, setLocalError] = useState<string | null>(null);
-  const { login, isLoading, error, clearError } = useAuth();
+  const { login, isLoading, error, clearError, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  // Watch for authentication status changes
+  useEffect(() => {
+    if (isAuthenticated) {
+      console.log("User is authenticated, navigating to profile");
+      navigate("/profile", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   // Sync auth context error with local error
   useEffect(() => {
@@ -26,26 +34,46 @@ const SignInForm = ({ onSuccess }: SignInFormProps) => {
     }
   }, [error]);
 
+  const validateForm = () => {
+    clearError();
+    setLocalError(null);
+
+    if (!email.trim()) {
+      setLocalError("Email is required");
+      return false;
+    }
+
+    if (!password) {
+      setLocalError("Password is required");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLocalError(null);
-    clearError();
-
-    if (!email || !password) {
-      setLocalError("Please fill in all fields");
+    
+    if (!validateForm()) {
       return;
     }
 
     try {
-      await login(email, password);
+      console.log("Submitting login form with email:", email);
+      await login(email.trim(), password);
+      
+      // Login successful - onSuccess callback or navigation
+      console.log("Login successful, handling navigation");
       if (onSuccess) {
         onSuccess();
       } else {
         // Explicitly navigate to profile page on successful login
+        // Note: We now also have the useEffect for isAuthenticated that will handle this
         navigate("/profile", { replace: true });
       }
     } catch (error) {
       // Error is already handled in AuthContext and synced to localError
+      console.error("Sign in form caught error:", error);
     }
   };
 
