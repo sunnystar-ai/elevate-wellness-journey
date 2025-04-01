@@ -41,7 +41,7 @@ const generateNutritionArticles = (): Article[] => {
         "Finish with a drizzle of extra virgin olive oil, a heart-healthy fat rich in monounsaturated fatty acids and antioxidants. Season with fresh herbs like mint and parsley for additional flavor and antioxidants.",
         "This balanced meal provides sustained energy, supports digestive health, and contributes to overall well-being."
       ],
-      image: "/placeholder.svg",
+      image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
       date: new Date().toLocaleDateString()
     },
     {
@@ -53,7 +53,7 @@ const generateNutritionArticles = (): Article[] => {
         "Top with fresh berries, granola, and a drizzle of almond butter for healthy fats and additional protein. This combination provides a balanced meal with carbohydrates, protein, and healthy fats.",
         "Regular consumption of antioxidant-rich foods like berries may help reduce the risk of chronic diseases and support cognitive function and skin health."
       ],
-      image: "/placeholder.svg",
+      image: "https://images.unsplash.com/photo-1502741224143-90386d7f8c82?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
       date: new Date().toLocaleDateString()
     }
   ];
@@ -78,7 +78,7 @@ const generateMentalWellnessArticles = (): Article[] => {
         "The Stoic view of emotions emphasizes that our distress stems not from events themselves but from our judgments about them. By examining our interpretations, we can transform our emotional responses.",
         "Incorporating these principles into daily life might involve morning reflection, mindful responses to triggering situations, and evening reviews of our adherence to our values—creating a framework for psychological resilience."
       ],
-      image: "/placeholder.svg",
+      image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
       date: new Date().toLocaleDateString()
     },
     {
@@ -90,7 +90,7 @@ const generateMentalWellnessArticles = (): Article[] => {
         "Buddhist philosophy suggests that emotional suffering arises from attachment to impermanent phenomena. By observing the transient nature of emotions through vipassanā (insight meditation), we develop a more balanced relationship with our emotional experiences.",
         "Integrating even brief periods of these practices into daily routines can significantly improve emotional regulation, reduce stress reactivity, and enhance overall psychological well-being."
       ],
-      image: "/placeholder.svg",
+      image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
       date: new Date().toLocaleDateString()
     }
   ];
