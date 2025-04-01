@@ -62,7 +62,7 @@ export const personalGrowthBooks = [
     author: "Daisy Buchanan",
     rating: 4.6,
     reviewCount: 3580,
-    image: "/lovable-uploads/876fedf9-24bb-4723-b615-1b8c3572f407.png", // Updated with the uploaded image
+    image: "/lovable-uploads/76c7e21f-ab01-44ba-ad2a-6b6d56d39501.png",
     audioSample: "https://samples.audible.com/bk/hcuk/005396/bk_hcuk_005396_sample.mp3"
   },
   {
