@@ -14,20 +14,32 @@ import ContentSection from '@/components/discover/ContentSection';
 import BooksSection from '@/components/discover/BooksSection';
 import CommunitySection from '@/components/discover/CommunitySection';
 
-// Import data
+// Import data - fixed imports
 import {
-  categoriesData,
-  featuredProgramData,
-  trendingData,
-  communityData
+  categories,
+  featuredProgram,
+  mentalWellnessContent,
+  physicalWellnessContent,
+  nutritionContent,
+  sleepContent,
+  personalGrowthBooks,
+  communityPicks
 } from '@/components/discover/data';
+
+// Create trending data from content data
+const trendingData = [
+  ...mentalWellnessContent.slice(0, 1).map(item => ({ ...item, category: 'mental' })),
+  ...physicalWellnessContent.slice(0, 1).map(item => ({ ...item, category: 'physical' })),
+  ...nutritionContent.slice(0, 1).map(item => ({ ...item, category: 'nutrition' })),
+  ...sleepContent.slice(0, 1).map(item => ({ ...item, category: 'sleep' }))
+];
 
 const Discover = () => {
   const [activeTab, setActiveTab] = useState('mental');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
 
-  // Mock data for each tab
+  // Filter data for each tab
   const mentalWellnessData = trendingData.filter(item => item.category === 'mental');
   const physicalWellnessData = trendingData.filter(item => item.category === 'physical');
   const nutritionData = trendingData.filter(item => item.category === 'nutrition');
@@ -41,14 +53,15 @@ const Discover = () => {
           setSearchQuery={setSearchQuery} 
         />
         <CategoryFilter 
-          categories={categoriesData} 
+          categories={categories} 
           activeCategory={activeCategory} 
           setActiveCategory={setActiveCategory} 
         />
         <FilterBar />
         <FeaturedProgram 
-          title={featuredProgramData.title}
-          image={featuredProgramData.image}
+          title={featuredProgram.title}
+          image={featuredProgram.image}
+          isNew={featuredProgram.isNew}
         />
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -63,23 +76,23 @@ const Discover = () => {
           </TabsList>
           <TabsContent value="mental">
             <TrendingSection title="Trending Mental Wellness" items={mentalWellnessData} />
-            <ContentSection title="Featured Mental Wellness" items={mentalWellnessData} />
+            <ContentSection title="Featured Mental Wellness" items={mentalWellnessContent} />
           </TabsContent>
           <TabsContent value="physical">
             <TrendingSection title="Trending Physical Wellness" items={physicalWellnessData} />
-            <ContentSection title="Featured Physical Wellness" items={physicalWellnessData} />
+            <ContentSection title="Featured Physical Wellness" items={physicalWellnessContent} />
           </TabsContent>
           <TabsContent value="nutrition">
             <TrendingSection title="Trending Nutrition" items={nutritionData} />
-            <ContentSection title="Featured Nutrition" items={nutritionData} />
-            <BooksSection title="Nutrition Books" items={nutritionData} />
+            <ContentSection title="Featured Nutrition" items={nutritionContent} />
+            <BooksSection title="Nutrition Books" books={personalGrowthBooks} />
           </TabsContent>
           <TabsContent value="sleep">
             <TrendingSection title="Trending Sleep" items={sleepData} />
-            <ContentSection title="Featured Sleep" items={sleepData} />
+            <ContentSection title="Featured Sleep" items={sleepContent} />
           </TabsContent>
           <TabsContent value="community">
-            <CommunitySection title="Community Picks" picks={communityData} />
+            <CommunitySection title="Community Picks" picks={communityPicks} />
           </TabsContent>
         </Tabs>
       </div>

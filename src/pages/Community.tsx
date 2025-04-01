@@ -21,6 +21,7 @@ import BottomNavigation from '@/components/layout/BottomNavigation';
 const Community = () => {
   const [activeTab, setActiveTab] = useState('feed');
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     // Simulating data loading
@@ -47,7 +48,10 @@ const Community = () => {
       
       {/* Search Bar */}
       <div className="px-4 mb-4">
-        <CommunitySearch />
+        <CommunitySearch 
+          value={searchQuery}
+          onChange={setSearchQuery}
+        />
       </div>
       
       {/* Content Tabs */}
@@ -77,15 +81,15 @@ const Community = () => {
         </TabsList>
         
         <TabsContent value="feed">
-          <CommunityFeed isLoading={isLoading} />
+          <CommunityFeed />
         </TabsContent>
         
         <TabsContent value="forums">
-          <ForumsSection isLoading={isLoading} />
+          <ForumsSection />
         </TabsContent>
         
         <TabsContent value="events">
-          <EventsCalendar isLoading={isLoading} />
+          <EventsCalendar />
         </TabsContent>
         
         <TabsContent value="more">

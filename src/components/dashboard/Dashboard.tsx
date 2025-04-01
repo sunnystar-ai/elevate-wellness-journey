@@ -1,8 +1,7 @@
-
 import { useState, useEffect } from 'react';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 import { useIsMobile } from '@/hooks/use-mobile';
-import BottomNav from '@/components/my-journey/BottomNav';
+import BottomNavigation from '@/components/layout/BottomNavigation';
 
 // Import the extracted components
 import StatusBar from '@/components/dashboard/StatusBar';
@@ -93,7 +92,7 @@ const Dashboard = () => {
       </div>
 
       {/* Bottom Navigation */}
-      <BottomNav />
+      <BottomNavigation />
     </div>
   );
 };
