@@ -19,10 +19,6 @@ interface NutritionTabProps {
 }
 
 const NutritionTab = ({ articles }: NutritionTabProps) => {
-  // Get recipe data for our meal sections
-  const breakfastRecipes = getBreakfastRecipes();
-  const lunchRecipes = getLunchRecipes();
-  
   // Create a complete recipe article that shows all content directly
   const fullRecipeArticle: Article = {
     title: "Protein-Packed Mediterranean Bowl",
@@ -71,22 +67,6 @@ const NutritionTab = ({ articles }: NutritionTabProps) => {
       
       {/* Add the full recipe article directly in the page */}
       <ArticleCard article={fullRecipeArticle} />
-      
-      <ContentSection 
-        title="Breakfast Recipes" 
-        items={breakfastRecipes.map(recipe => ({
-          ...recipe,
-          type: 'recipe'
-        }))}
-      />
-      
-      <ContentSection 
-        title="Lunch & Dinner Ideas" 
-        items={lunchRecipes.map(recipe => ({
-          ...recipe,
-          type: 'recipe'
-        }))}
-      />
     </>
   );
 };
