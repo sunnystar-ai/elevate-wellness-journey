@@ -8,7 +8,7 @@ export const personalGrowthBooks = [
     author: "Jen Smith & Jill Sirianni",
     rating: 4.8,
     reviewCount: 4250,
-    image: "/lovable-uploads/7067a251-b72f-4cc3-a930-25ec4d2f0506.png",
+    image: "/lovable-uploads/3ec84124-2ff0-430f-b456-f5c36d481954.png",
     audioSample: "https://samples.audible.com/bk/rand/006385/bk_rand_006385_sample.mp3"
   },
   {
@@ -17,7 +17,7 @@ export const personalGrowthBooks = [
     author: "Ian K. Smith, M.D.",
     rating: 4.7,
     reviewCount: 3420,
-    image: "/lovable-uploads/19c1ce9d-43a8-4645-90c9-33a2a60587da.png",
+    image: "/lovable-uploads/56134600-5a8f-43e5-b19f-cc27782e1009.png",
     audioSample: "https://samples.audible.com/bk/gdan/002459/bk_gdan_002459_sample.mp3"
   },
   {
@@ -26,7 +26,7 @@ export const personalGrowthBooks = [
     author: "Courtney Carver",
     rating: 4.7,
     reviewCount: 5762,
-    image: "/lovable-uploads/fdd15395-3420-471f-9a1c-473c2b0579f1.png",
+    image: "/lovable-uploads/d4b38a89-92a2-4183-9bf7-7cfb6545ca6b.png",
     audioSample: "https://samples.audible.com/bk/haza/000086/bk_haza_000086_sample.mp3"
   },
   {
@@ -35,7 +35,7 @@ export const personalGrowthBooks = [
     author: "Ellen Hendriksen, Ph.D.",
     rating: 4.6,
     reviewCount: 3890,
-    image: "/lovable-uploads/d15787f7-1d02-4230-ba72-4a47f473c1e9.png",
+    image: "/lovable-uploads/18209848-1dfe-4ec2-b8d8-9c6e261ced3d.png",
     audioSample: "https://samples.audible.com/bk/ascl/002382/bk_ascl_002382_sample.mp3"
   },
   {
@@ -44,7 +44,7 @@ export const personalGrowthBooks = [
     author: "Shigehiro Oishi, PhD",
     rating: 4.5,
     reviewCount: 3250,
-    image: "/lovable-uploads/b049be57-18f5-4e8b-ac1c-19df50e9824d.png",
+    image: "/lovable-uploads/a0d9118b-25fe-4f12-b842-adbe902954d6.png",
     audioSample: "https://samples.audible.com/bk/prha/312201/bk_prha_312201_sample.mp3"
   },
   {
@@ -53,7 +53,7 @@ export const personalGrowthBooks = [
     author: "Martha Beck",
     rating: 4.7,
     reviewCount: 4120,
-    image: "/lovable-uploads/47ad71b5-4996-4104-9630-bdbcbbeba999.png",
+    image: "/lovable-uploads/3fccdbb2-c174-4644-b319-30e5c759d938.png",
     audioSample: "https://samples.audible.com/bk/hcuk/005396/bk_hcuk_005396_sample.mp3"
   },
   {
@@ -62,7 +62,7 @@ export const personalGrowthBooks = [
     author: "Daisy Buchanan",
     rating: 4.6,
     reviewCount: 3580,
-    image: "/lovable-uploads/876fedf9-24bb-4723-b615-1b8c3572f407.png",
+    image: "/lovable-uploads/f17ad823-cf68-4f78-9beb-0183a2c8ab5d.png",
     audioSample: "https://samples.audible.com/bk/hcuk/005396/bk_hcuk_005396_sample.mp3"
   },
   {
@@ -71,7 +71,7 @@ export const personalGrowthBooks = [
     author: "Brené Brown",
     rating: 4.8,
     reviewCount: 6250,
-    image: "/lovable-uploads/6656f2b0-967b-41d5-b52a-656b9cbdc5d2.png",
+    image: "/lovable-uploads/076262c8-034d-4a9a-acec-b4b83b84a130.png",
     audioSample: "https://samples.audible.com/bk/haza/000086/bk_haza_000086_sample.mp3"
   },
   {
@@ -80,7 +80,7 @@ export const personalGrowthBooks = [
     author: "Rachel Hollis",
     rating: 4.7,
     reviewCount: 4930,
-    image: "/lovable-uploads/19eb2903-e0fd-4f66-80a5-0f17b3b41b16.png",
+    image: "/lovable-uploads/74f38fa1-6680-49c2-b4eb-98c992d52ff8.png",
     audioSample: "https://samples.audible.com/bk/hcuk/005396/bk_hcuk_005396_sample.mp3"
   }
 ];
