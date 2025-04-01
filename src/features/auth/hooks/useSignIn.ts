@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { validateSignInForm } from "../utils/form-validation";
 
 export const useSignIn = (onSuccess?: () => void) => {
   const [email, setEmail] = useState("");
@@ -17,31 +18,12 @@ export const useSignIn = (onSuccess?: () => void) => {
     if (error) setError(null);
   }, [email, password]);
 
-  const validateForm = () => {
-    setError(null);
-
-    if (!email.trim()) {
-      setError("Email is required");
-      return false;
-    }
-
-    if (!password) {
-      setError("Password is required");
-      return false;
-    }
-
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters");
-      return false;
-    }
-
-    return true;
-  };
-
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateForm()) {
+    const validationError = validateSignInForm(email, password);
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
