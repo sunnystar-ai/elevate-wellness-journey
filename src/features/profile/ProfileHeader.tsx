@@ -9,16 +9,21 @@ import { useAuth } from '@/contexts/AuthContext';
 const ProfileHeader = () => {
   const { user } = useAuth();
   
-  // Get user data from Supabase user metadata without adding fallback last names
-  const firstName = user?.user_metadata?.first_name || user?.user_metadata?.name?.split(' ')[0] || '';
+  // Extract user information from email if metadata is not available
+  const email = user?.email || '';
+  const username = email ? email.split('@')[0] : '';
+  
+  // Get name from metadata if available, otherwise use username from email
+  const firstName = user?.user_metadata?.first_name || '';
   const lastName = user?.user_metadata?.last_name || '';
-  const displayName = firstName && lastName ? `${firstName} ${lastName}` : firstName;
   
-  // Generate avatar initial based on actual name (or empty if no name available)
-  const initial = displayName ? displayName[0].toUpperCase() : '';
+  // Use full name if both parts exist, otherwise fallback to username from email
+  const displayName = (firstName || lastName) 
+    ? `${firstName} ${lastName}`.trim() 
+    : username;
   
-  // Generate username from email without fallbacks
-  const username = user?.email?.split('@')[0] || '';
+  // Generate avatar initial based on actual name or email
+  const initial = displayName ? displayName[0].toUpperCase() : (email ? email[0].toUpperCase() : '');
   
   // Calculate membership date
   const memberSince = user?.created_at 
@@ -44,7 +49,7 @@ const ProfileHeader = () => {
           </Avatar>
           
           <h2 className="text-xl font-semibold">{displayName || 'User'}</h2>
-          {username && <p className="text-sm text-muted-foreground mb-1">@{username}</p>}
+          {email && <p className="text-sm text-muted-foreground mb-1">@{username}</p>}
           {memberSince && <p className="text-xs text-muted-foreground mb-3">Member since {memberSince}</p>}
           
           <div className="w-full mb-2">

@@ -7,11 +7,17 @@ import { useAuth } from '@/contexts/AuthContext';
 const PersonalInfoSection = () => {
   const { user } = useAuth();
   
-  // Get user data without adding fallback last names
-  const firstName = user?.user_metadata?.first_name || user?.user_metadata?.name?.split(' ')[0] || '';
-  const lastName = user?.user_metadata?.last_name || '';
-  const fullName = firstName && lastName ? `${firstName} ${lastName}` : firstName;
+  // Extract user information properly
   const email = user?.email || '';
+  
+  // Get name from metadata if available
+  const firstName = user?.user_metadata?.first_name || '';
+  const lastName = user?.user_metadata?.last_name || '';
+  
+  // Use full name if both parts exist, otherwise show individual parts
+  const fullName = (firstName || lastName) 
+    ? `${firstName} ${lastName}`.trim() 
+    : '';
 
   return (
     <section>
@@ -20,7 +26,7 @@ const PersonalInfoSection = () => {
         <CardContent className="p-4 space-y-3">
           <div>
             <p className="text-sm text-muted-foreground">Full Name</p>
-            <p className="font-medium">{fullName}</p>
+            <p className="font-medium">{fullName || 'Not provided'}</p>
           </div>
           <Separator />
           <div>
