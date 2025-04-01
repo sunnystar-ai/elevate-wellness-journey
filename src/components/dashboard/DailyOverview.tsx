@@ -1,6 +1,8 @@
 
 import { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from 'recharts';
+import { saveWellnessScore } from '@/services/supabaseService';
+import { toast } from '@/hooks/use-toast';
 
 interface DailyOverviewProps {
   activityDurations?: Record<string, string>;
@@ -15,6 +17,17 @@ const DailyOverview = ({ activityDurations, mentalScore }: DailyOverviewProps) =
     { name: 'Meditation', score: 0.6 },
     { name: 'Mental', score: 0.7 }
   ]);
+  const [savedToday, setSavedToday] = useState(false);
+
+  useEffect(() => {
+    // Check if we already saved today's score
+    const lastSavedDate = localStorage.getItem('lastWellnessScoreSaveDate');
+    const today = new Date().toISOString().split('T')[0];
+    
+    if (lastSavedDate === today) {
+      setSavedToday(true);
+    }
+  }, []);
 
   useEffect(() => {
     if (activityDurations) {
@@ -51,8 +64,39 @@ const DailyOverview = ({ activityDurations, mentalScore }: DailyOverviewProps) =
         { name: 'Meditation', score: meditationScore },
         { name: 'Mental', score: mentalScoreValue }
       ]);
+
+      // If we have activity data and haven't saved today's score yet, save it
+      if (!savedToday && (walkDuration > 0 || sleepDuration > 0 || meditationDuration > 0)) {
+        saveScoresToSupabase(percentageScore, walkScore, sleepScore, meditationScore, mentalScoreValue);
+      }
     }
-  }, [activityDurations, mentalScore]);
+  }, [activityDurations, mentalScore, savedToday]);
+
+  const saveScoresToSupabase = async (
+    overallScore: number, 
+    physicalScore: number, 
+    sleepScore: number, 
+    meditationScore: number, 
+    mentalScore: number
+  ) => {
+    try {
+      await saveWellnessScore({
+        mental_score: Math.round(mentalScore * 100),
+        physical_score: Math.round(physicalScore * 100),
+        sleep_score: Math.round(sleepScore * 100),
+        nutrition_score: Math.round(meditationScore * 100) // Using meditation as a proxy for nutrition
+      });
+      
+      // Mark as saved today
+      const today = new Date().toISOString().split('T')[0];
+      localStorage.setItem('lastWellnessScoreSaveDate', today);
+      setSavedToday(true);
+      
+      console.log('Wellness scores saved to Supabase');
+    } catch (error) {
+      console.error('Error saving wellness scores:', error);
+    }
+  };
 
   // Chart data
   const chartData = scoreBreakdown.map(item => ({

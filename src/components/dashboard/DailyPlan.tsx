@@ -4,6 +4,7 @@ import { CalendarCheck, Flame, Brain, Award, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
+import { saveDailyActivity } from '@/services/supabaseService';
 
 interface DailyPlanProps {
   onActivityUpdate?: (activityDurations: Record<string, string>) => void;
@@ -23,6 +24,12 @@ const DailyPlan = ({ onActivityUpdate }: DailyPlanProps) => {
     "Evening workout": "",
     "Sleep preparation": ""
   });
+  
+  const [submitting, setSubmitting] = useState<Record<string, boolean>>({
+    "Morning meditation": false,
+    "Evening workout": false,
+    "Sleep preparation": false
+  });
 
   const dailyPlan = [
     { time: "7:00 AM", activity: "Morning meditation", completed: completedActivities["Morning meditation"], icon: <Flame className="h-4 w-4 text-harmony-lavender" />, unit: "minutes" },
@@ -30,12 +37,42 @@ const DailyPlan = ({ onActivityUpdate }: DailyPlanProps) => {
     { time: "10:00 PM", activity: "Sleep preparation", completed: completedActivities["Sleep preparation"], icon: <Clock className="h-4 w-4 text-harmony-peach" />, unit: "hours" }
   ];
 
+  // Load completed activities from localStorage on mount
+  useEffect(() => {
+    const savedActivities = localStorage.getItem('completedActivities');
+    const savedDurations = localStorage.getItem('activityDurations');
+    
+    if (savedActivities) {
+      try {
+        setCompletedActivities(JSON.parse(savedActivities));
+      } catch (e) {
+        console.error('Error parsing saved activities:', e);
+      }
+    }
+    
+    if (savedDurations) {
+      try {
+        setActivityDurations(JSON.parse(savedDurations));
+      } catch (e) {
+        console.error('Error parsing saved durations:', e);
+      }
+    }
+  }, []);
+
   // Notify parent component when activity durations change
   useEffect(() => {
     if (onActivityUpdate) {
       onActivityUpdate(activityDurations);
     }
+    
+    // Save to localStorage
+    localStorage.setItem('activityDurations', JSON.stringify(activityDurations));
   }, [activityDurations, onActivityUpdate]);
+
+  // Save completed activities to localStorage when they change
+  useEffect(() => {
+    localStorage.setItem('completedActivities', JSON.stringify(completedActivities));
+  }, [completedActivities]);
 
   // Function to handle duration input changes
   const handleDurationChange = (activity: string, value: string) => {
@@ -46,7 +83,7 @@ const DailyPlan = ({ onActivityUpdate }: DailyPlanProps) => {
   };
 
   // Function to handle submitting activity duration
-  const handleSubmitDuration = (activity: string) => {
+  const handleSubmitDuration = async (activity: string) => {
     if (!activityDurations[activity]) {
       toast({
         title: "Duration required",
@@ -56,16 +93,48 @@ const DailyPlan = ({ onActivityUpdate }: DailyPlanProps) => {
       return;
     }
 
-    setCompletedActivities(prev => ({
-      ...prev,
-      [activity]: true
-    }));
+    const duration = parseFloat(activityDurations[activity]);
+    if (isNaN(duration) || duration <= 0) {
+      toast({
+        title: "Invalid duration",
+        description: "Please enter a valid positive number.",
+        variant: "destructive"
+      });
+      return;
+    }
 
-    toast({
-      title: "Activity logged",
-      description: `You completed ${activity} for ${activityDurations[activity]} ${activity === "Sleep preparation" ? "hours" : "minutes"}.`,
-      variant: "default"
-    });
+    try {
+      setSubmitting(prev => ({ ...prev, [activity]: true }));
+      
+      // Save to Supabase
+      await saveDailyActivity({
+        activity_name: activity,
+        duration: duration,
+        duration_unit: activity === "Sleep preparation" ? "hours" : "minutes",
+        completed: true
+      });
+
+      setCompletedActivities(prev => ({
+        ...prev,
+        [activity]: true
+      }));
+
+      toast({
+        title: "Activity logged",
+        description: `You completed ${activity} for ${activityDurations[activity]} ${activity === "Sleep preparation" ? "hours" : "minutes"}.`,
+        variant: "default"
+      });
+    } catch (error) {
+      console.error('Error saving activity:', error);
+      
+      toast({
+        title: "Save Failed",
+        description: "There was an error saving your activity. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setSubmitting(prev => ({ ...prev, [activity]: false }));
+    }
   };
 
   return (
@@ -114,8 +183,9 @@ const DailyPlan = ({ onActivityUpdate }: DailyPlanProps) => {
                 <Button 
                   size="sm" 
                   onClick={() => handleSubmitDuration(item.activity)}
+                  disabled={submitting[item.activity]}
                 >
-                  Submit
+                  {submitting[item.activity] ? 'Saving...' : 'Submit'}
                 </Button>
               </div>
             )}

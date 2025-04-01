@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,7 @@ import { Heart, Brain, Star, Send } from 'lucide-react';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import { useToast } from '@/hooks/use-toast';
 import { JournalEntry } from '@/components/dashboard/mental-health-report/types';
+import { saveJournalEntry } from '@/services/supabaseService';
 
 const JournalPrompt = () => {
   const navigate = useNavigate();
@@ -15,19 +17,7 @@ const JournalPrompt = () => {
     thoughtProcess: '',
     gratitude: ''
   });
-  const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
-
-  useEffect(() => {
-    const savedEntries = localStorage.getItem('journalEntries');
-    if (savedEntries) {
-      try {
-        const parsedEntries = JSON.parse(savedEntries);
-        setJournalEntries(parsedEntries);
-      } catch (error) {
-        console.error('Error parsing saved journal entries:', error);
-      }
-    }
-  }, []);
+  const [submitting, setSubmitting] = useState(false);
 
   const handleInputChange = (section: 'feelings' | 'thoughtProcess' | 'gratitude', value: string) => {
     setJournalEntry(prev => ({
@@ -36,7 +26,8 @@ const JournalPrompt = () => {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    // Check if all fields have content
     if (!journalEntry.feelings || !journalEntry.thoughtProcess || !journalEntry.gratitude) {
       toast({
         title: "Incomplete Entry",
@@ -46,24 +37,30 @@ const JournalPrompt = () => {
       return;
     }
 
-    const newEntry = {
-      ...journalEntry,
-      date: new Date().toISOString(),
-    };
+    try {
+      setSubmitting(true);
 
-    const updatedEntries = [...journalEntries, newEntry];
-
-    localStorage.setItem('journalEntries', JSON.stringify(updatedEntries));
-    
-    console.log('Journal entry submitted:', newEntry);
-    
-    toast({
-      title: "Journal Entry Saved",
-      description: "Your journal entry has been saved successfully and your report has been updated.",
-      variant: "default"
-    });
-    
-    navigate('/dashboard');
+      // Save to Supabase
+      await saveJournalEntry(journalEntry);
+      
+      toast({
+        title: "Journal Entry Saved",
+        description: "Your journal entry has been saved successfully and your report has been updated.",
+        variant: "default"
+      });
+      
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Error saving journal entry:', error);
+      
+      toast({
+        title: "Save Failed",
+        description: "There was an error saving your journal entry. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -128,9 +125,10 @@ const JournalPrompt = () => {
           <Button 
             onClick={handleSubmit}
             className="w-full md:w-auto"
+            disabled={submitting}
           >
             <Send className="h-4 w-4 mr-2" />
-            Submit Journal Entry
+            {submitting ? 'Saving...' : 'Submit Journal Entry'}
           </Button>
         </div>
       </div>

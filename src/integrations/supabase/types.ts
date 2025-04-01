@@ -9,6 +9,72 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      daily_activities: {
+        Row: {
+          activity_date: string
+          activity_name: string
+          completed: boolean | null
+          created_at: string
+          duration: number
+          duration_unit: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          activity_date?: string
+          activity_name: string
+          completed?: boolean | null
+          created_at?: string
+          duration: number
+          duration_unit: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          activity_date?: string
+          activity_name?: string
+          completed?: boolean | null
+          created_at?: string
+          duration?: number
+          duration_unit?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      journal_entries: {
+        Row: {
+          created_at: string
+          feelings: string
+          gratitude: string
+          id: string
+          thought_process: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          feelings: string
+          gratitude: string
+          id?: string
+          thought_process: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          feelings?: string
+          gratitude?: string
+          id?: string
+          thought_process?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -39,6 +105,69 @@ export type Database = {
           password?: string | null
           updated_at?: string
           wellness_score?: number | null
+        }
+        Relationships: []
+      }
+      wellness_insights: {
+        Row: {
+          analysis_period: string
+          created_at: string
+          end_date: string
+          id: string
+          insight_text: string
+          start_date: string
+          user_id: string
+        }
+        Insert: {
+          analysis_period: string
+          created_at?: string
+          end_date: string
+          id?: string
+          insight_text: string
+          start_date: string
+          user_id: string
+        }
+        Update: {
+          analysis_period?: string
+          created_at?: string
+          end_date?: string
+          id?: string
+          insight_text?: string
+          start_date?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wellness_scores: {
+        Row: {
+          created_at: string
+          id: string
+          mental_score: number
+          nutrition_score: number | null
+          physical_score: number | null
+          score_date: string
+          sleep_score: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mental_score: number
+          nutrition_score?: number | null
+          physical_score?: number | null
+          score_date?: string
+          sleep_score?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mental_score?: number
+          nutrition_score?: number | null
+          physical_score?: number | null
+          score_date?: string
+          sleep_score?: number | null
+          user_id?: string
         }
         Relationships: []
       }
