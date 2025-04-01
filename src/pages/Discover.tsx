@@ -20,31 +20,23 @@ import {
 
 // Import article generator
 import { 
-  Article, 
-  NutritionContent,
+  Article,
   generateNutritionArticles, 
   generateMentalWellnessArticles,
-  generateFeaturedNutrition,
-  getAllRecipes
 } from '@/components/discover/utils/articleGenerator';
 
 const Discover = () => {
   const [activeTab, setActiveTab] = useState('mental');
   const [nutritionArticles, setNutritionArticles] = useState<Article[]>([]);
   const [mentalWellnessArticles, setMentalWellnessArticles] = useState<Article[]>([]);
-  const [featuredNutritionContent, setFeaturedNutritionContent] = useState<NutritionContent[]>([]);
 
   useEffect(() => {
     // In a real implementation, this would be an API call to generate content
     const nutritionArticles = generateNutritionArticles();
     const mentalWellnessArticles = generateMentalWellnessArticles();
-    const featuredNutrition = generateFeaturedNutrition();
-    
-    console.log("Featured nutrition content:", featuredNutrition);
     
     setNutritionArticles(nutritionArticles);
     setMentalWellnessArticles(mentalWellnessArticles);
-    setFeaturedNutritionContent(featuredNutrition);
   }, []);
 
   return (
@@ -74,7 +66,6 @@ const Discover = () => {
           <TabsContent value="nutrition">
             <NutritionTab 
               articles={nutritionArticles}
-              nutritionContent={featuredNutritionContent}
             />
           </TabsContent>
           
