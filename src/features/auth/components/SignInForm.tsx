@@ -1,13 +1,13 @@
 
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Mail, Key, LogIn } from "lucide-react";
+import { AlertCircle, LogIn } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import EmailInput from "./form-inputs/EmailInput";
+import PasswordSignInInput from "./form-inputs/PasswordSignInInput";
 
 interface SignInFormProps {
   onSuccess?: () => void;
@@ -115,51 +115,15 @@ const SignInForm = ({ onSuccess }: SignInFormProps) => {
       )}
 
       <form onSubmit={handleSignIn} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <div className="relative">
-            <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="pl-10"
-              required
-              aria-describedby="email-error"
-            />
-          </div>
-        </div>
+        <EmailInput 
+          email={email}
+          onChange={setEmail}
+        />
 
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <Label htmlFor="password">Password</Label>
-            <Link 
-              to="/forgot-password" 
-              className="text-xs text-primary hover:underline"
-            >
-              Forgot password?
-            </Link>
-          </div>
-          <div className="relative">
-            <Key className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="pl-10"
-              required
-              aria-describedby="password-error"
-              minLength={8}
-            />
-          </div>
-          <p className="text-xs text-muted-foreground">
-            Must be at least 8 characters
-          </p>
-        </div>
+        <PasswordSignInInput 
+          password={password}
+          onChange={setPassword}
+        />
 
         <Button 
           type="submit" 
