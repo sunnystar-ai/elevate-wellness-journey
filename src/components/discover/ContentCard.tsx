@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, Bookmark, Heart, Dumbbell } from 'lucide-react';
+import { Clock, Bookmark, Heart, Dumbbell, Utensils } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
@@ -17,6 +17,9 @@ interface ContentCardProps {
   recommended?: string;
   prepTime?: string;
   type?: string;
+  ingredients?: string[];
+  instructions?: string[];
+  servingSuggestions?: string[];
 }
 
 const ContentCard = ({ 
@@ -30,9 +33,11 @@ const ContentCard = ({
   tags,
   recommended,
   prepTime,
+  ingredients,
   type = 'content'
 }: ContentCardProps) => {
   const displayDuration = prepTime || duration;
+  const isRecipe = ingredients && ingredients.length > 0;
   
   return (
     <Link 
@@ -49,6 +54,12 @@ const ContentCard = ({
           <Clock className="h-3 w-3 mr-1" />
           {displayDuration}
         </div>
+        {isRecipe && (
+          <div className="absolute bottom-2 right-2 bg-primary/80 text-white text-xs px-2 py-1 rounded-full flex items-center">
+            <Utensils className="h-3 w-3 mr-1" />
+            Recipe
+          </div>
+        )}
         <Button 
           size="icon" 
           variant="ghost"
@@ -111,7 +122,7 @@ const ContentCard = ({
         )}
         
         {tags && (
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1 mt-2">
             {tags.map((tag, i) => (
               <Badge key={i} variant="secondary" className="text-xs">
                 {tag}
@@ -121,8 +132,14 @@ const ContentCard = ({
         )}
         
         {recommended && (
-          <div className="text-xs text-muted-foreground">
+          <div className="text-xs text-muted-foreground mt-1">
             Recommended: {recommended}
+          </div>
+        )}
+        
+        {isRecipe && (
+          <div className="text-xs text-primary-foreground mt-1 bg-primary/10 p-1 rounded">
+            {ingredients.length} ingredients • Full recipe inside
           </div>
         )}
       </div>

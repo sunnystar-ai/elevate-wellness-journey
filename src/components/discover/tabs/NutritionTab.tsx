@@ -2,6 +2,7 @@
 import React from 'react';
 import ArticleCard from '../articles/ArticleCard';
 import ContentSection from '../ContentSection';
+import { NutritionContent } from '../utils/articleGenerator';
 
 interface Article {
   title: string;
@@ -15,7 +16,7 @@ interface Article {
 
 interface NutritionTabProps {
   articles: Article[];
-  nutritionContent: any[];
+  nutritionContent: NutritionContent[];
 }
 
 const NutritionTab = ({ articles, nutritionContent }: NutritionTabProps) => {

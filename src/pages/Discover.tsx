@@ -13,7 +13,6 @@ import CommunityTab from '@/components/discover/tabs/CommunityTab';
 // Import data
 import {
   featuredProgram,
-  nutritionContent,
   sleepContent,
   personalGrowthBooks,
   communityPicks
@@ -22,19 +21,23 @@ import {
 // Import article generator
 import { 
   Article, 
+  NutritionContent,
   generateNutritionArticles, 
-  generateMentalWellnessArticles 
+  generateMentalWellnessArticles,
+  generateFeaturedNutrition
 } from '@/components/discover/utils/articleGenerator';
 
 const Discover = () => {
   const [activeTab, setActiveTab] = useState('mental');
   const [nutritionArticles, setNutritionArticles] = useState<Article[]>([]);
   const [mentalWellnessArticles, setMentalWellnessArticles] = useState<Article[]>([]);
+  const [featuredNutritionContent, setFeaturedNutritionContent] = useState<NutritionContent[]>([]);
 
   useEffect(() => {
     // In a real implementation, this would be an API call to generate content
     setNutritionArticles(generateNutritionArticles());
     setMentalWellnessArticles(generateMentalWellnessArticles());
+    setFeaturedNutritionContent(generateFeaturedNutrition());
   }, []);
 
   return (
@@ -64,7 +67,7 @@ const Discover = () => {
           <TabsContent value="nutrition">
             <NutritionTab 
               articles={nutritionArticles}
-              nutritionContent={nutritionContent}
+              nutritionContent={featuredNutritionContent}
             />
           </TabsContent>
           
