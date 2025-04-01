@@ -5,7 +5,6 @@ import BottomNavigation from '@/components/layout/BottomNavigation';
 
 // Import discover components
 import CategoryFilter from '@/components/discover/CategoryFilter';
-import SearchBar from '@/components/discover/SearchBar';
 import FilterBar from '@/components/discover/FilterBar';
 import FeaturedProgram from '@/components/discover/FeaturedProgram';
 import TrendingSection from '@/components/discover/TrendingSection';
@@ -70,7 +69,6 @@ const trendingData: TrendingItem[] = [
 
 const Discover = () => {
   const [activeTab, setActiveTab] = useState('mental');
-  const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
 
   // Filter data for each tab and ensure they have the views property
@@ -85,10 +83,6 @@ const Discover = () => {
   return (
     <div className="pb-24">
       <div className="container mx-auto px-4">
-        <SearchBar 
-          searchQuery={searchQuery} 
-          setSearchQuery={setSearchQuery} 
-        />
         <CategoryFilter 
           categories={categories} 
           activeCategory={activeCategory} 
