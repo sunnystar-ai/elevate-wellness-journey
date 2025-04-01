@@ -32,6 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        console.log("Auth state changed:", event, session?.user?.email);
         setSession(session);
         setUser(session?.user ?? null);
         setIsAuthenticated(!!session);
@@ -46,12 +47,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             title: "Signed out",
             description: "You have been signed out successfully",
           });
+        } else if (event === 'SIGNED_UP') {
+          toast({
+            title: "Account created successfully",
+            description: "Welcome to Harmony!",
+          });
         }
       }
     );
 
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("Initial session check:", session?.user?.email);
       setSession(session);
       setUser(session?.user ?? null);
       setIsAuthenticated(!!session);
@@ -70,16 +77,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setError(null);
     
     try {
+      console.log("Attempting login for:", email);
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password
       });
       
       if (error) throw error;
-      
+      console.log("Login successful for:", email);
       // Auth state change listener will update state
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Something went wrong";
+      console.error("Login error:", errorMessage);
       setError(errorMessage);
       toast({
         variant: "destructive",
@@ -97,6 +106,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setError(null);
     
     try {
+      console.log("Attempting signup for:", email);
       // Create user with Supabase
       const { error } = await supabase.auth.signUp({
         email,
@@ -111,6 +121,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       
       if (error) throw error;
       
+      console.log("Signup successful for:", email);
       toast({
         title: "Account created",
         description: "Welcome to Harmony!",
@@ -119,6 +130,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       // Auth state change listener will update state
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Something went wrong";
+      console.error("Signup error:", errorMessage);
       setError(errorMessage);
       toast({
         variant: "destructive",

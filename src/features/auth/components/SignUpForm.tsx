@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +18,7 @@ const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
   const [password, setPassword] = useState("");
   const [localError, setLocalError] = useState<string | null>(null);
   const { signup, isLoading, error, clearError } = useAuth();
+  const navigate = useNavigate();
 
   // Sync auth context error with local error
   useEffect(() => {
@@ -42,7 +44,12 @@ const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
 
     try {
       await signup(name, email, password);
-      if (onSuccess) onSuccess();
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        // Explicitly navigate to profile page on successful signup
+        navigate("/profile", { replace: true });
+      }
     } catch (error) {
       // Error is already handled in AuthContext and synced to localError
     }

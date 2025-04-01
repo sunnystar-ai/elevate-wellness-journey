@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +17,7 @@ const SignInForm = ({ onSuccess }: SignInFormProps) => {
   const [password, setPassword] = useState("");
   const [localError, setLocalError] = useState<string | null>(null);
   const { login, isLoading, error, clearError } = useAuth();
+  const navigate = useNavigate();
 
   // Sync auth context error with local error
   useEffect(() => {
@@ -37,7 +38,12 @@ const SignInForm = ({ onSuccess }: SignInFormProps) => {
 
     try {
       await login(email, password);
-      if (onSuccess) onSuccess();
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        // Explicitly navigate to profile page on successful login
+        navigate("/profile", { replace: true });
+      }
     } catch (error) {
       // Error is already handled in AuthContext and synced to localError
     }
