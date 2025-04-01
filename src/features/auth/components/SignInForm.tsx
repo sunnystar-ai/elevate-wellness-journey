@@ -71,7 +71,7 @@ const SignInForm = ({ onSuccess }: SignInFormProps) => {
       if (signInError) {
         console.error("Supabase sign in error:", signInError);
         
-        // Handle specific error cases (but ignore email confirmation errors)
+        // Handle specific error cases
         if (signInError.message.includes("Invalid login")) {
           setError("Invalid email or password. Please try again.");
         } else {
@@ -98,13 +98,17 @@ const SignInForm = ({ onSuccess }: SignInFormProps) => {
           if (profileError.message.includes('No rows found')) {
             console.log("No profile found, creating one...");
             
+            // Extract name parts from metadata if available
+            const firstName = data.user.user_metadata?.first_name || '';
+            const lastName = data.user.user_metadata?.last_name || '';
+            
             // Create a basic profile for the user
             const { error: createProfileError } = await supabase
               .from('profiles')
               .insert({
                 id: data.user.id,
-                first_name: data.user.user_metadata.first_name || '',
-                last_name: data.user.user_metadata.last_name || ''
+                first_name: firstName,
+                last_name: lastName
               });
               
             if (createProfileError) {

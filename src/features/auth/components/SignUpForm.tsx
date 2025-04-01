@@ -96,6 +96,31 @@ const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
           
           // Use the session from sign in
           if (signInData.session) {
+            // Manually create the profile if it doesn't exist
+            const { data: existingProfile, error: profileError } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', data.user.id)
+              .single();
+              
+            if (profileError && profileError.message.includes('No rows found')) {
+              console.log("No profile found, creating one manually...");
+              
+              const { error: createProfileError } = await supabase
+                .from('profiles')
+                .insert({
+                  id: data.user.id,
+                  first_name: firstName,
+                  last_name: lastName
+                });
+                
+              if (createProfileError) {
+                console.error("Error creating profile:", createProfileError);
+              } else {
+                console.log("Profile created successfully");
+              }
+            }
+            
             toast({
               title: "Account created",
               description: "Welcome to Harmony!",
@@ -109,7 +134,31 @@ const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
             return;
           }
         } else {
-          // We have a session from signup
+          // We have a session from signup, but still verify/create the profile
+          const { data: existingProfile, error: profileError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', data.user.id)
+            .single();
+            
+          if (profileError && profileError.message.includes('No rows found')) {
+            console.log("No profile found, creating one manually...");
+            
+            const { error: createProfileError } = await supabase
+              .from('profiles')
+              .insert({
+                id: data.user.id,
+                first_name: firstName,
+                last_name: lastName
+              });
+              
+            if (createProfileError) {
+              console.error("Error creating profile:", createProfileError);
+            } else {
+              console.log("Profile created successfully");
+            }
+          }
+          
           toast({
             title: "Account created",
             description: "Welcome to Harmony!",
