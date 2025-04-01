@@ -9,7 +9,7 @@ type AuthContextType = {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   isLoading: boolean;
   error: string | null;
   clearError: () => void;
@@ -133,7 +133,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const logout = async () => {
     try {
-      await supabase.auth.signOut();
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
       // Auth state change listener will update state
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Something went wrong";
@@ -142,6 +143,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         title: "Sign out failed",
         description: errorMessage,
       });
+      throw error;
     }
   };
 

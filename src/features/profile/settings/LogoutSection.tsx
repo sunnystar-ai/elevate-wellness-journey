@@ -3,14 +3,28 @@ import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { toast } from '@/hooks/use-toast';
 
 const LogoutSection = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
   
-  const handleLogout = () => {
-    logout();
-    navigate('/');
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast({
+        title: "Logged out successfully",
+        description: "You have been signed out of your account"
+      });
+      navigate('/');
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast({
+        variant: "destructive",
+        title: "Logout failed",
+        description: "There was a problem signing you out. Please try again."
+      });
+    }
   };
   
   return (
