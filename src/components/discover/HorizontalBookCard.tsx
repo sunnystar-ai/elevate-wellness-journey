@@ -98,6 +98,7 @@ const HorizontalBookCard = ({ id, title, author, rating, image }: HorizontalBook
           <div className="h-52 w-full relative">
             {imageError ? (
               <div className="w-full h-full flex items-center justify-center bg-muted text-muted-foreground p-2 text-center">
+                <BookOpen className="h-8 w-8 mb-1" />
                 <p className="text-xs">{title}</p>
               </div>
             ) : (
