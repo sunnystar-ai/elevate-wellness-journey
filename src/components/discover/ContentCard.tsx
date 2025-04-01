@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, Calendar, Activity, DumbBell, Tag, Check } from 'lucide-react';
+import { Clock, Calendar, Activity, Dumbbell, Tag, Check } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 interface ContentCardProps {
@@ -123,7 +122,7 @@ const ContentCard = ({
           )}
           {intensity && (
             <div className="flex items-center">
-              <DumbBell className="mr-1 h-3 w-3" />
+              <Dumbbell className="mr-1 h-3 w-3" />
               {intensity}
             </div>
           )}

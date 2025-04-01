@@ -1,6 +1,6 @@
 
 import { useParams, useLocation } from 'react-router-dom';
-import { ArrowLeft, Clock, User, BookOpen, Tag, DumbBell, Award } from 'lucide-react';
+import { ArrowLeft, Clock, User, BookOpen, Tag, Dumbbell, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useContentDetail, ContentItem } from '@/hooks/useContentDetail';
