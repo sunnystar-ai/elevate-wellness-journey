@@ -2,7 +2,7 @@
 import React from 'react';
 import ArticleCard from '../articles/ArticleCard';
 import ContentSection from '../ContentSection';
-import { NutritionContent } from '../utils/articleGenerator';
+import { NutritionContent } from '../utils/types';
 
 interface Article {
   title: string;
