@@ -7,11 +7,11 @@ import { useAuth } from '@/contexts/AuthContext';
 const PersonalInfoSection = () => {
   const { user } = useAuth();
   
-  // Get user data with fallbacks
-  const firstName = user?.user_metadata?.first_name || user?.user_metadata?.name?.split(' ')[0] || 'Jane';
-  const lastName = user?.user_metadata?.last_name || 'Doe';
-  const fullName = firstName && lastName ? `${firstName} ${lastName}` : firstName || 'Jane Doe';
-  const email = user?.email || 'jane.doe@example.com';
+  // Get user data without adding fallback last names
+  const firstName = user?.user_metadata?.first_name || user?.user_metadata?.name?.split(' ')[0] || '';
+  const lastName = user?.user_metadata?.last_name || '';
+  const fullName = firstName && lastName ? `${firstName} ${lastName}` : firstName;
+  const email = user?.email || '';
 
   return (
     <section>
