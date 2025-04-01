@@ -48,8 +48,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             description: "You have been signed out successfully",
           });
         }
-        
-        // We'll handle the signup success toast in the signup function instead
       }
     );
 
@@ -76,30 +74,53 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       console.log("Attempting login for:", email);
       
-      // Check that email and password are provided
-      if (!email || !password) {
-        throw new Error("Email and password are required");
+      // Validate inputs
+      if (!email.trim()) {
+        throw new Error("Email is required");
       }
       
+      if (!password) {
+        throw new Error("Password is required");
+      }
+      
+      // Ensure email has no whitespace
+      const cleanEmail = email.trim().toLowerCase();
+      
+      console.log("Sending login request with email:", cleanEmail);
+      
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
+        email: cleanEmail,
         password
       });
       
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase login error:", error);
+        throw error;
+      }
       
-      console.log("Login successful for:", email, data);
+      console.log("Login successful for:", cleanEmail, "Session:", !!data.session);
       
-      // Manually setting session data instead of relying solely on the listener
+      // Important: Immediately update state with the session data
       if (data.session) {
         setSession(data.session);
         setUser(data.user);
         setIsAuthenticated(true);
+        
+        // Show success toast
+        setTimeout(() => {
+          toast({
+            title: "Signed in successfully",
+            description: "Welcome back to Harmony!",
+          });
+        }, 0);
+      } else {
+        throw new Error("Authentication successful but no session returned");
       }
-      
-      // Auth state change listener will also update state
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Something went wrong";
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : "Invalid login credentials. Please check your email and password.";
+      
       console.error("Login error:", errorMessage);
       setError(errorMessage);
       toast({
@@ -118,10 +139,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setError(null);
     
     try {
-      console.log("Attempting signup for:", email);
+      // Validate inputs
+      if (!name.trim()) {
+        throw new Error("Name is required");
+      }
+      
+      if (!email.trim()) {
+        throw new Error("Email is required");
+      }
+      
+      if (!password) {
+        throw new Error("Password is required");
+      }
+      
+      if (password.length < 8) {
+        throw new Error("Password must be at least 8 characters");
+      }
+      
+      // Ensure email has no whitespace
+      const cleanEmail = email.trim().toLowerCase();
+      
+      console.log("Attempting signup for:", cleanEmail);
+      
       // Create user with Supabase
       const { data, error } = await supabase.auth.signUp({
-        email,
+        email: cleanEmail,
         password,
         options: {
           data: {
@@ -131,9 +173,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       });
       
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase signup error:", error);
+        throw error;
+      }
       
-      console.log("Signup successful for:", email, data);
+      console.log("Signup successful for:", cleanEmail, "Session:", !!data.session);
       
       // Display success toast
       toast({
@@ -141,14 +186,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         description: "Welcome to Harmony!",
       });
       
-      // Manually setting session data if available
+      // Important: Immediately update state with the session data
       if (data.session) {
         setSession(data.session);
         setUser(data.user);
         setIsAuthenticated(true);
+      } else {
+        // Note: some Supabase configurations might not return a session immediately after signup
+        console.log("No session returned after signup - user may need to verify email");
       }
-      
-      // Auth state change listener will also update state
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Something went wrong";
       console.error("Signup error:", errorMessage);
@@ -165,10 +211,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const logout = async () => {
+    setIsLoading(true);
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      // Auth state change listener will update state
+      
+      // Reset state immediately instead of waiting for auth listener
+      setSession(null);
+      setUser(null);
+      setIsAuthenticated(false);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Something went wrong";
       toast({
@@ -177,6 +228,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         description: errorMessage,
       });
       throw error;
+    } finally {
+      setIsLoading(false);
     }
   };
 

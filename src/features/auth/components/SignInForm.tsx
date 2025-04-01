@@ -60,17 +60,11 @@ const SignInForm = ({ onSuccess }: SignInFormProps) => {
 
     try {
       console.log("Submitting login form with email:", email);
-      await login(email.trim(), password);
+      await login(email, password);
       
-      // Login successful - onSuccess callback or navigation
-      console.log("Login successful, handling navigation");
-      if (onSuccess) {
-        onSuccess();
-      } else {
-        // Explicitly navigate to profile page on successful login
-        // Note: We now also have the useEffect for isAuthenticated that will handle this
-        navigate("/profile", { replace: true });
-      }
+      // If we get here, login was successful
+      // We handle navigation in the useEffect watching isAuthenticated
+      console.log("Login successful in form component");
     } catch (error) {
       // Error is already handled in AuthContext and synced to localError
       console.error("Sign in form caught error:", error);
@@ -80,7 +74,7 @@ const SignInForm = ({ onSuccess }: SignInFormProps) => {
   return (
     <>
       {localError && (
-        <Alert variant="destructive" className="animate-in fade-in-50">
+        <Alert variant="destructive" className="animate-in fade-in-50 mb-4">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>{localError}</AlertDescription>
         </Alert>
@@ -125,8 +119,12 @@ const SignInForm = ({ onSuccess }: SignInFormProps) => {
               className="pl-10"
               required
               aria-describedby="password-error"
+              minLength={8}
             />
           </div>
+          <p className="text-xs text-muted-foreground">
+            Must be at least 8 characters
+          </p>
         </div>
 
         <Button 
