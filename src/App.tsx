@@ -11,7 +11,7 @@ import Index from "./pages/Index";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import ForgotPassword from "./pages/ForgotPassword";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./components/dashboard/Dashboard"; // Import Dashboard from components
 import Discover from "./pages/Discover";
 import MyJourney from "./pages/MyJourney";
 import Community from "./pages/Community";
@@ -22,7 +22,7 @@ import Workouts from "./pages/Workouts";
 import Nutrition from "./pages/Nutrition";
 import JournalPrompt from "./pages/JournalPrompt";
 import PersonalityTest from "./pages/PersonalityTest";
-import ContentDetail from "./pages/ContentDetail"; // Add import for new page
+import ContentDetail from "./pages/ContentDetail";
 
 const queryClient = new QueryClient();
 
