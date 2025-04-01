@@ -46,10 +46,6 @@ const EmotionTendenciesSection = () => {
         <h3 className="text-lg font-semibold">Big Five Personality Traits</h3>
       </div>
       
-      <div className="flex justify-center mb-4">
-        <h4 className="text-base font-medium">Big Five Personality Traits</h4>
-      </div>
-      
       <TraitButtonsGrid emotionData={emotionData} />
 
       <TestButton onClick={() => setIsTestOpen(true)} />

@@ -1,5 +1,5 @@
 
-import { Brain, Heart, Users, Sparkle, AlertTriangle } from 'lucide-react';
+import { Brain, Heart, Users, Sparkle, AlertTriangle, Smile, Award, Star, BadgeCheck, Zap } from 'lucide-react';
 import TraitButton from './TraitButton';
 import { traitDescriptions } from './trait-descriptions';
 import { EmotionData, TraitKey } from './emotion-tendencies-types';
@@ -33,7 +33,7 @@ const TraitButtonsGrid = ({ emotionData }: TraitButtonsGridProps) => {
   };
 
   return (
-    <div className="grid grid-cols-3 gap-4 mb-5">
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-5">
       {(Object.keys(emotionData) as TraitKey[]).map(trait => (
         <TraitButton
           key={trait}
@@ -44,7 +44,7 @@ const TraitButtonsGrid = ({ emotionData }: TraitButtonsGridProps) => {
             title: trait,
             color: 'text-primary',
             description: 'Trait information not found',
-            bgColor: 'bg-primary/10' // Add the missing bgColor property
+            bgColor: 'bg-primary/10'
           }}
         />
       ))}
