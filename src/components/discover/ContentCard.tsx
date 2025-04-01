@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, Bookmark, Heart, Dumbbell, Utensils } from 'lucide-react';
+import { Clock, Bookmark, Heart, Utensils } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
@@ -37,7 +37,7 @@ const ContentCard = ({
   type = 'content'
 }: ContentCardProps) => {
   const displayDuration = prepTime || duration;
-  const isRecipe = ingredients && ingredients.length > 0;
+  const isRecipe = type === 'recipe' && ingredients && ingredients.length > 0;
   
   return (
     <Link 
@@ -121,7 +121,7 @@ const ContentCard = ({
           </div>
         )}
         
-        {tags && (
+        {tags && tags.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-2">
             {tags.map((tag, i) => (
               <Badge key={i} variant="secondary" className="text-xs">

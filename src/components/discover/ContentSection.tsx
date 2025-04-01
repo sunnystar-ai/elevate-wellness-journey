@@ -10,6 +10,10 @@ interface ContentItem {
   id: number;
   title: string;
   image: string;
+  type?: string;
+  ingredients?: string[];
+  instructions?: string[];
+  servingSuggestions?: string[];
   [key: string]: any;
 }
 
@@ -47,6 +51,11 @@ const ContentSection = ({ title, items, linkTo, delay = 0 }: ContentSectionProps
               equipment={item.equipment}
               tags={item.tags}
               recommended={item.recommended}
+              prepTime={item.prepTime}
+              type={item.type}
+              ingredients={item.ingredients}
+              instructions={item.instructions}
+              servingSuggestions={item.servingSuggestions}
             />
           ))}
         </div>

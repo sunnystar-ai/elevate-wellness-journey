@@ -1,3 +1,4 @@
+
 // Interface for the generated articles
 export interface Article {
   title: string;
@@ -137,9 +138,9 @@ export interface NutritionContent {
   prepTime: string;
   tags: string[];
   image: string;
-  ingredients?: string[];
-  instructions?: string[];
-  servingSuggestions?: string[];
+  ingredients: string[];
+  instructions: string[];
+  servingSuggestions: string[];
 }
 
 // Generate featured nutrition content with recipes
@@ -169,7 +170,8 @@ export const generateFeaturedNutrition = (): NutritionContent[] => {
       ],
       servingSuggestions: [
         "Serve warm for a comforting breakfast or prepare overnight and enjoy cold.",
-        "Add a sprinkle of granola for extra crunch."
+        "Add a sprinkle of granola for extra crunch.",
+        "For extra protein, mix in a scoop of your favorite protein powder while cooking."
       ]
     },
     {
@@ -194,7 +196,8 @@ export const generateFeaturedNutrition = (): NutritionContent[] => {
       ],
       servingSuggestions: [
         "Keep a reusable water bottle filled with this infused water for on-the-go hydration.",
-        "Refill the pitcher once during the day, reusing the same ingredients."
+        "Refill the pitcher once during the day, reusing the same ingredients.",
+        "For variety, try different combinations like strawberry-basil or orange-rosemary."
       ]
     },
     {
@@ -223,7 +226,8 @@ export const generateFeaturedNutrition = (): NutritionContent[] => {
       ],
       servingSuggestions: [
         "For meal prep, keep dressing separate until ready to eat.",
-        "Add grilled chicken or tofu for extra protein."
+        "Add grilled chicken or tofu for extra protein.",
+        "Pack in a mason jar with dressing at the bottom, hearty vegetables next, and greens on top for a portable lunch."
       ]
     },
     {
@@ -236,16 +240,19 @@ export const generateFeaturedNutrition = (): NutritionContent[] => {
         "1 apple, sliced",
         "2 tbsp almond butter",
         "1 tbsp hemp seeds",
-        "1/2 tsp cinnamon"
+        "1/2 tsp cinnamon",
+        "1 tbsp honey (optional)"
       ],
       instructions: [
         "Arrange apple slices on a plate.",
         "Spread almond butter over each slice.",
-        "Sprinkle with hemp seeds and cinnamon."
+        "Sprinkle with hemp seeds and cinnamon.",
+        "Drizzle with honey if desired."
       ],
       servingSuggestions: [
         "Perfect for afternoon energy slumps or post-workout recovery.",
-        "Substitute with pear or banana if preferred."
+        "Substitute with pear or banana if preferred.",
+        "Pack in a small container with a squeeze of lemon juice to prevent browning for an on-the-go snack."
       ]
     },
     {
@@ -275,7 +282,8 @@ export const generateFeaturedNutrition = (): NutritionContent[] => {
       ],
       servingSuggestions: [
         "Serve over brown rice or cauliflower rice.",
-        "Garnish with sliced green onions and sesame seeds."
+        "Garnish with sliced green onions and sesame seeds.",
+        "Store leftovers in an airtight container for up to 3 days for easy meal prep."
       ]
     }
   ];
