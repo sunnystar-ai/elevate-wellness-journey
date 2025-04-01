@@ -34,7 +34,7 @@ const HorizontalBooksList = ({ title, books, linkTo, delay = 0 }: HorizontalBook
     return null;
   }
 
-  // Calculate books for each row
+  // Calculate books for each row - fixed number of books per row
   const firstRowBooks = books.slice(0, 5);
   const secondRowBooks = books.slice(5);
 
@@ -54,11 +54,10 @@ const HorizontalBooksList = ({ title, books, linkTo, delay = 0 }: HorizontalBook
       </div>
       
       <div className="space-y-4">
-        {/* First Row */}
+        {/* First Row - Always show exactly 5 books */}
         <Carousel
           opts={{
             align: "start",
-            loop: true,
           }}
           className="w-full"
         >
@@ -86,7 +85,6 @@ const HorizontalBooksList = ({ title, books, linkTo, delay = 0 }: HorizontalBook
           <Carousel
             opts={{
               align: "start",
-              loop: true,
             }}
             className="w-full"
           >
