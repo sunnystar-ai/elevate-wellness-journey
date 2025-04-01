@@ -35,23 +35,29 @@ const TraitButtonsGrid = ({ emotionData }: TraitButtonsGridProps) => {
   // Check if emotionData exists and has properties
   const hasData = emotionData && Object.keys(emotionData).length > 0;
 
+  console.log("Emotion data in grid:", emotionData);
+  console.log("Has data:", hasData);
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-5">
       {hasData ? (
-        (Object.keys(emotionData) as TraitKey[]).map(trait => (
-          <TraitButton
-            key={trait}
-            trait={trait}
-            icon={getTraitIcon(trait)}
-            value={emotionData[trait]}
-            traitInfo={traitDescriptions[trait] || {
-              title: trait,
-              color: 'text-primary',
-              description: 'Trait information not found',
-              bgColor: 'bg-primary/10'
-            }}
-          />
-        ))
+        (Object.keys(emotionData) as TraitKey[]).map(trait => {
+          console.log("Rendering trait:", trait);
+          return (
+            <TraitButton
+              key={trait}
+              trait={trait}
+              icon={getTraitIcon(trait)}
+              value={emotionData[trait]}
+              traitInfo={traitDescriptions[trait] || {
+                title: trait,
+                color: 'text-primary',
+                description: 'Trait information not found',
+                bgColor: 'bg-primary/10'
+              }}
+            />
+          );
+        })
       ) : (
         <div className="col-span-full text-center text-muted-foreground">
           No personality data available. Take the assessment to see your results.

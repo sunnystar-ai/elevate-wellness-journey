@@ -31,6 +31,7 @@ const EmotionTendenciesSection = () => {
         // If there's an error parsing, we'll use the default data
       }
     }
+    console.log("Initial emotion data:", emotionData);
   }, []);
 
   const handleTestComplete = (results: Record<string, number>) => {
@@ -48,6 +49,7 @@ const EmotionTendenciesSection = () => {
     
     // Update state
     setEmotionData(typedResults);
+    console.log("Updated emotion data:", typedResults);
     
     // Show success toast
     toast({
