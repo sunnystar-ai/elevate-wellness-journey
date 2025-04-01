@@ -31,18 +31,18 @@ interface TrendingItem {
   title: string;
   category: string;
   image: string;
-  duration: string;
-  views: number; // Required property for TrendingItem
+  duration: string; // Required property for TrendingItem
+  views: number;
   // Other optional properties
   difficulty?: string;
   type?: string;
   intensity?: string;
   equipment?: string;
-  ingredient?: string;
-  benefits?: string;
+  tags?: string[];
+  prepTime?: string;
 }
 
-// Create trending data with views property
+// Create trending data with views property and ensuring all items have duration
 const trendingData: TrendingItem[] = [
   ...mentalWellnessContent.slice(0, 1).map(item => ({ 
     ...item, 
@@ -57,7 +57,8 @@ const trendingData: TrendingItem[] = [
   ...nutritionContent.slice(0, 1).map(item => ({ 
     ...item, 
     category: 'nutrition',
-    views: 1200 + Math.floor(Math.random() * 800)
+    views: 1200 + Math.floor(Math.random() * 800),
+    duration: item.prepTime // Ensure nutrition items have duration property
   })),
   ...sleepContent.slice(0, 1).map(item => ({ 
     ...item, 
