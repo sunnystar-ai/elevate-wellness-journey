@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 
 interface FeaturedProgramProps {
   title: string;
@@ -22,7 +21,6 @@ const FeaturedProgram = ({ title, image, isNew }: FeaturedProgramProps) => {
           <Badge className="mb-2 self-start bg-primary">NEW</Badge>
         )}
         <h2 className="text-white text-xl font-medium mb-2">{title}</h2>
-        <Button size="sm" className="self-start">Start Program</Button>
       </div>
     </div>
   );
