@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, Mail, Key, User, LogIn } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface SignUpFormProps {
   onSuccess?: () => void;
@@ -16,51 +17,112 @@ const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [localError, setLocalError] = useState<string | null>(null);
-  const { signup, isLoading, error, clearError } = useAuth();
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
-  // Sync auth context error with local error
+  // Clear errors when inputs change
   useEffect(() => {
-    if (error) {
-      setLocalError(error);
+    if (error) setError(null);
+  }, [name, email, password]);
+
+  const validateForm = () => {
+    setError(null);
+
+    if (!name.trim()) {
+      setError("Name is required");
+      return false;
     }
-  }, [error]);
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLocalError(null);
-    clearError();
+    if (!email.trim()) {
+      setError("Email is required");
+      return false;
+    }
 
-    if (!name || !email || !password) {
-      setLocalError("Please fill in all fields");
-      return;
+    if (!password) {
+      setError("Password is required");
+      return false;
     }
 
     if (password.length < 8) {
-      setLocalError("Password must be at least 8 characters");
+      setError("Password must be at least 8 characters");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
       return;
     }
 
+    setIsLoading(true);
+    
     try {
-      await signup(name, email, password);
-      if (onSuccess) {
-        onSuccess();
-      } else {
-        // Explicitly navigate to profile page on successful signup
-        navigate("/profile", { replace: true });
+      // Clean email (trim and lowercase)
+      const cleanEmail = email.trim().toLowerCase();
+      
+      console.log("Attempting to sign up with email:", cleanEmail);
+      
+      // Direct Supabase call - bypassing context
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email: cleanEmail,
+        password,
+        options: {
+          data: {
+            first_name: name.split(' ')[0],
+            last_name: name.split(' ').slice(1).join(' ')
+          }
+        }
+      });
+      
+      if (signUpError) {
+        console.error("Supabase sign up error:", signUpError);
+        setError(signUpError.message);
+        return;
       }
-    } catch (error) {
-      // Error is already handled in AuthContext and synced to localError
+      
+      console.log("Sign up successful:", data.session ? "Session exists" : "No session");
+      
+      toast({
+        title: "Account created",
+        description: "Welcome to Harmony!",
+      });
+      
+      if (data.session) {
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          navigate("/profile", { replace: true });
+        }
+      } else {
+        // Some Supabase configurations might not return a session immediately
+        toast({
+          title: "Verification required",
+          description: "Please check your email to verify your account",
+        });
+        
+        // Still navigate to profile as the auth listener will handle redirects if needed
+        setTimeout(() => navigate("/profile", { replace: true }), 1000);
+      }
+    } catch (err) {
+      console.error("Unexpected error during sign up:", err);
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <>
-      {localError && (
-        <Alert variant="destructive" className="animate-in fade-in-50">
+      {error && (
+        <Alert variant="destructive" className="animate-in fade-in-50 mb-4">
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{localError}</AlertDescription>
+          <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
@@ -109,6 +171,7 @@ const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
               onChange={(e) => setPassword(e.target.value)}
               className="pl-10"
               required
+              minLength={8}
             />
           </div>
           <p className="text-xs text-muted-foreground">

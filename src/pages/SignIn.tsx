@@ -1,23 +1,62 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import AuthLayout from "@/features/auth/components/AuthLayout";
 import SignInForm from "@/features/auth/components/SignInForm";
 import SocialLoginButtons from "@/features/auth/components/SocialLoginButtons";
 
 const SignIn = () => {
-  const { isAuthenticated } = useAuth();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const from = (location.state as any)?.from?.pathname || "/profile";
   
-  // If already authenticated, redirect to profile
+  // Check authentication status on load
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate(from, { replace: true });
-    }
-  }, [isAuthenticated, navigate, from]);
+    const checkAuth = async () => {
+      try {
+        const { data } = await supabase.auth.getSession();
+        setIsAuthenticated(!!data.session);
+      } catch (error) {
+        console.error("Error checking authentication:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    checkAuth();
+    
+    // Set up auth listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setIsAuthenticated(!!session);
+        
+        if (event === 'SIGNED_IN') {
+          // Use timeout to avoid navigation race conditions
+          setTimeout(() => navigate(from, { replace: true }), 100);
+        }
+      }
+    );
+    
+    return () => subscription.unsubscribe();
+  }, [navigate, from]);
+  
+  // If loading, show minimal UI
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
+  }
+  
+  // If already authenticated, redirect to profile
+  if (isAuthenticated) {
+    navigate(from, { replace: true });
+    return null;
+  }
 
   return (
     <AuthLayout

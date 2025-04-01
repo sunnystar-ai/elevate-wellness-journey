@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, Mail, Key, LogIn } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface SignInFormProps {
   onSuccess?: () => void;
@@ -15,36 +16,31 @@ interface SignInFormProps {
 const SignInForm = ({ onSuccess }: SignInFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [localError, setLocalError] = useState<string | null>(null);
-  const { login, isLoading, error, clearError, isAuthenticated } = useAuth();
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
-  // Watch for authentication status changes
+  // Clear errors when inputs change
   useEffect(() => {
-    if (isAuthenticated) {
-      console.log("User is authenticated, navigating to profile");
-      navigate("/profile", { replace: true });
-    }
-  }, [isAuthenticated, navigate]);
-
-  // Sync auth context error with local error
-  useEffect(() => {
-    if (error) {
-      setLocalError(error);
-    }
-  }, [error]);
+    if (error) setError(null);
+  }, [email, password]);
 
   const validateForm = () => {
-    clearError();
-    setLocalError(null);
+    setError(null);
 
     if (!email.trim()) {
-      setLocalError("Email is required");
+      setError("Email is required");
       return false;
     }
 
     if (!password) {
-      setLocalError("Password is required");
+      setError("Password is required");
+      return false;
+    }
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters");
       return false;
     }
 
@@ -58,25 +54,63 @@ const SignInForm = ({ onSuccess }: SignInFormProps) => {
       return;
     }
 
+    setIsLoading(true);
+    
     try {
-      console.log("Submitting login form with email:", email);
-      await login(email, password);
+      // Clean email (trim and lowercase)
+      const cleanEmail = email.trim().toLowerCase();
       
-      // If we get here, login was successful
-      // We handle navigation in the useEffect watching isAuthenticated
-      console.log("Login successful in form component");
-    } catch (error) {
-      // Error is already handled in AuthContext and synced to localError
-      console.error("Sign in form caught error:", error);
+      console.log("Attempting to sign in with email:", cleanEmail);
+      
+      // Direct Supabase call - bypassing context
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email: cleanEmail,
+        password
+      });
+      
+      if (signInError) {
+        console.error("Supabase sign in error:", signInError);
+        
+        // Handle specific error cases
+        if (signInError.message.includes("Invalid login")) {
+          setError("Invalid email or password. Please try again.");
+        } else {
+          setError(signInError.message);
+        }
+        
+        return;
+      }
+      
+      console.log("Sign in successful:", data.session ? "Session exists" : "No session");
+      
+      if (data.session) {
+        toast({
+          title: "Signed in successfully",
+          description: "Welcome back to Harmony!",
+        });
+        
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          navigate("/profile", { replace: true });
+        }
+      } else {
+        setError("Successfully authenticated but no session was created. Please try again.");
+      }
+    } catch (err) {
+      console.error("Unexpected error during sign in:", err);
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <>
-      {localError && (
+      {error && (
         <Alert variant="destructive" className="animate-in fade-in-50 mb-4">
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{localError}</AlertDescription>
+          <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
