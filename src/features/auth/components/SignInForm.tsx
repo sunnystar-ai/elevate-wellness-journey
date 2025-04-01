@@ -84,18 +84,38 @@ const SignInForm = ({ onSuccess }: SignInFormProps) => {
       console.log("Sign in successful:", data.session ? "Session exists" : "No session");
       
       if (data.session) {
-        // Fetch the user's profile data to confirm it exists
+        // Verify the user's profile data exists
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', data.user.id)
           .single();
           
-        if (profileError && !profileError.message.includes('No rows found')) {
+        if (profileError) {
           console.error("Error fetching profile:", profileError);
+          
+          // If profile doesn't exist, create it
+          if (profileError.message.includes('No rows found')) {
+            console.log("No profile found, creating one...");
+            
+            // Create a basic profile for the user
+            const { error: createProfileError } = await supabase
+              .from('profiles')
+              .insert({
+                id: data.user.id,
+                first_name: data.user.user_metadata.first_name || '',
+                last_name: data.user.user_metadata.last_name || ''
+              });
+              
+            if (createProfileError) {
+              console.error("Error creating profile:", createProfileError);
+            } else {
+              console.log("Profile created successfully");
+            }
+          }
+        } else {
+          console.log("User profile retrieved:", profileData ? "Profile exists" : "No profile found");
         }
-        
-        console.log("User profile retrieved:", profileData ? "Profile exists" : "No profile found");
         
         toast({
           title: "Signed in successfully",

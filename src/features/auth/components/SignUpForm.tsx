@@ -49,10 +49,12 @@ const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
       
       console.log("Attempting to sign up with email:", cleanEmail);
       
-      // Extract first and last name
+      // Process name properly
       const nameParts = name.trim().split(' ');
       const firstName = nameParts[0];
       const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+      
+      console.log(`Processing name: First name: "${firstName}", Last name: "${lastName}"`);
       
       // Direct Supabase call
       const { data, error: signUpError } = await supabase.auth.signUp({
@@ -74,6 +76,28 @@ const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
       }
       
       console.log("Sign up successful:", data.session ? "Session exists" : "No session");
+      
+      // Verify profile creation
+      if (data.user) {
+        try {
+          // Wait a moment for the database trigger to create the profile
+          setTimeout(async () => {
+            const { data: profileData, error: profileError } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', data.user!.id)
+              .single();
+            
+            if (profileError) {
+              console.log("Profile check error:", profileError.message);
+            } else {
+              console.log("Profile created successfully:", profileData);
+            }
+          }, 1000);
+        } catch (profileCheckError) {
+          console.error("Error checking profile:", profileCheckError);
+        }
+      }
       
       toast({
         title: "Account created",
