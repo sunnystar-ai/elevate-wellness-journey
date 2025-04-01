@@ -1,10 +1,9 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Heart, Brain, Star, Send } from 'lucide-react';
-import BottomNav from '@/components/my-journey/BottomNav';
+import BottomNavigation from '@/components/layout/BottomNavigation';
 import { useToast } from '@/hooks/use-toast';
 import { JournalEntry } from '@/components/dashboard/mental-health-report/types';
 
@@ -18,7 +17,6 @@ const JournalPrompt = () => {
   });
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
 
-  // Load saved journal entries from localStorage on component mount
   useEffect(() => {
     const savedEntries = localStorage.getItem('journalEntries');
     if (savedEntries) {
@@ -39,7 +37,6 @@ const JournalPrompt = () => {
   };
 
   const handleSubmit = () => {
-    // Check if all fields have content
     if (!journalEntry.feelings || !journalEntry.thoughtProcess || !journalEntry.gratitude) {
       toast({
         title: "Incomplete Entry",
@@ -49,35 +46,28 @@ const JournalPrompt = () => {
       return;
     }
 
-    // Create new journal entry with current date
     const newEntry = {
       ...journalEntry,
       date: new Date().toISOString(),
     };
 
-    // Add the new entry to the existing entries
     const updatedEntries = [...journalEntries, newEntry];
 
-    // Save to localStorage (in a real app, would save to backend)
     localStorage.setItem('journalEntries', JSON.stringify(updatedEntries));
     
-    // Here you would typically save the journal entry to your backend
     console.log('Journal entry submitted:', newEntry);
     
-    // Show success message
     toast({
       title: "Journal Entry Saved",
       description: "Your journal entry has been saved successfully and your report has been updated.",
       variant: "default"
     });
     
-    // Navigate back to the dashboard or journal list
     navigate('/dashboard');
   };
 
   return (
     <div className="page-transition pb-20">
-      {/* Status Bar */}
       <div className="fixed top-0 left-0 right-0 z-50 p-2 bg-background/80 backdrop-blur-sm border-b border-border flex justify-between items-center text-xs">
         <span>{new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}</span>
         <div className="flex items-center gap-2">
@@ -95,7 +85,6 @@ const JournalPrompt = () => {
       </div>
 
       <div className="container px-4 mx-auto relative pt-2 space-y-6">
-        {/* Feelings Section */}
         <div className="space-y-2">
           <div className="flex items-center space-x-2">
             <Heart className="h-5 w-5 text-harmony-peach" />
@@ -109,7 +98,6 @@ const JournalPrompt = () => {
           />
         </div>
 
-        {/* Thought Process Section */}
         <div className="space-y-2">
           <div className="flex items-center space-x-2">
             <Brain className="h-5 w-5 text-harmony-lavender" />
@@ -123,7 +111,6 @@ const JournalPrompt = () => {
           />
         </div>
 
-        {/* Gratitude Section */}
         <div className="space-y-2">
           <div className="flex items-center space-x-2">
             <Star className="h-5 w-5 text-harmony-mint" />
@@ -137,7 +124,6 @@ const JournalPrompt = () => {
           />
         </div>
 
-        {/* Submit Button */}
         <div className="flex justify-end pt-4">
           <Button 
             onClick={handleSubmit}
@@ -149,7 +135,7 @@ const JournalPrompt = () => {
         </div>
       </div>
 
-      <BottomNav />
+      <BottomNavigation />
     </div>
   );
 };

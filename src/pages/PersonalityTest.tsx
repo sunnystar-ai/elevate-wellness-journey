@@ -1,11 +1,10 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import StatusBar from '@/components/community/StatusBar';
-import BottomNav from '@/components/my-journey/BottomNav';
+import BottomNavigation from '@/components/layout/BottomNavigation';
 
 // Import our refactored components
 import TestHeader from '@/features/personality-test/TestHeader';
@@ -92,7 +91,7 @@ const PersonalityTest = () => {
         )}
       </div>
       
-      <BottomNav />
+      <BottomNavigation />
     </div>
   );
 };

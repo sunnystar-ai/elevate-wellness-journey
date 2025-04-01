@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { User, Settings, Activity } from 'lucide-react';
 import StatusBar from '@/components/community/StatusBar';
-import BottomNav from '@/components/my-journey/BottomNav';
+import BottomNavigation from '@/components/layout/BottomNavigation';
 import ProfileHeader from '@/features/profile/ProfileHeader';
 import ProfileTab from '@/features/profile/tabs/ProfileTab';
 import ActivityTab from '@/features/profile/tabs/ActivityTab';
@@ -70,7 +70,7 @@ const Profile = () => {
       </Tabs>
       
       {/* Bottom Navigation */}
-      <BottomNav />
+      <BottomNavigation />
     </div>
   );
 };
