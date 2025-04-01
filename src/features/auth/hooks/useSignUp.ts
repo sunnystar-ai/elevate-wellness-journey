@@ -68,19 +68,16 @@ export const useSignUp = (onSuccess?: () => void) => {
       console.log("Sign up successful:", data.session ? "Session exists" : "No session");
       
       if (data.user) {
-        // Try to ensure profile exists using service role
+        // Create profile directly (with retry logic)
         try {
-          // First check if profile exists
-          const { data: existingProfile, error: profileError } = await supabase
-            .from('profiles')
-            .select('id')
-            .eq('id', data.user.id)
-            .maybeSingle();
+          let profileCreated = false;
+          let retryCount = 0;
+          const maxRetries = 3;
           
-          // If no profile exists, create one
-          if (!existingProfile && (!profileError || profileError.message.includes('No rows found'))) {
-            console.log("No profile found, creating one...");
-            const { error: insertError } = await supabase
+          while (!profileCreated && retryCount < maxRetries) {
+            console.log(`Attempt ${retryCount + 1} to create profile for user ${data.user.id}`);
+            
+            const { error: profileError } = await supabase
               .from('profiles')
               .insert({
                 id: data.user.id,
@@ -88,14 +85,24 @@ export const useSignUp = (onSuccess?: () => void) => {
                 last_name: lastName
               });
             
-            if (insertError) {
-              console.error("Error creating profile:", insertError);
+            if (profileError) {
+              console.error(`Error creating profile (attempt ${retryCount + 1}):`, profileError);
+              retryCount++;
+              if (retryCount < maxRetries) {
+                // Wait before retrying (exponential backoff)
+                await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+              }
             } else {
               console.log("Profile created successfully");
+              profileCreated = true;
             }
           }
+          
+          if (!profileCreated) {
+            console.warn("Could not create profile after maximum retries");
+          }
         } catch (profileErr) {
-          console.error("Error checking/creating profile:", profileErr);
+          console.error("Unexpected error creating profile:", profileErr);
         }
         
         // If we don't immediately have a session, manually sign in

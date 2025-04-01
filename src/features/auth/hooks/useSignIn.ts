@@ -66,7 +66,7 @@ export const useSignIn = (onSuccess?: () => void) => {
             .eq('id', data.user.id)
             .maybeSingle();
           
-          // If no profile exists, create one
+          // If no profile exists, create one with retry logic
           if (!existingProfile && (!profileError || profileError.message.includes('No rows found'))) {
             console.log("No profile found for signed-in user, creating one...");
             
@@ -74,18 +74,36 @@ export const useSignIn = (onSuccess?: () => void) => {
             const firstName = data.user.user_metadata?.first_name || '';
             const lastName = data.user.user_metadata?.last_name || '';
             
-            const { error: insertError } = await supabase
-              .from('profiles')
-              .insert({
-                id: data.user.id,
-                first_name: firstName,
-                last_name: lastName
-              });
+            let profileCreated = false;
+            let retryCount = 0;
+            const maxRetries = 3;
             
-            if (insertError) {
-              console.error("Error creating profile during sign-in:", insertError);
-            } else {
-              console.log("Profile created successfully during sign-in");
+            while (!profileCreated && retryCount < maxRetries) {
+              console.log(`Attempt ${retryCount + 1} to create profile for user ${data.user.id}`);
+              
+              const { error: insertError } = await supabase
+                .from('profiles')
+                .insert({
+                  id: data.user.id,
+                  first_name: firstName,
+                  last_name: lastName
+                });
+              
+              if (insertError) {
+                console.error(`Error creating profile during sign-in (attempt ${retryCount + 1}):`, insertError);
+                retryCount++;
+                if (retryCount < maxRetries) {
+                  // Wait before retrying (exponential backoff)
+                  await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+                }
+              } else {
+                console.log("Profile created successfully during sign-in");
+                profileCreated = true;
+              }
+            }
+            
+            if (!profileCreated) {
+              console.warn("Could not create profile after maximum retries during sign-in");
             }
           } else {
             console.log("Profile already exists for user");
