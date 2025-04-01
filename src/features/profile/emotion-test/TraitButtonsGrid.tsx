@@ -1,5 +1,5 @@
 
-import { Brain, Heart, Users, Sparkle, AlertTriangle, Smile, Award, Star, BadgeCheck, Zap } from 'lucide-react';
+import { Brain, Heart, Users, Sparkle, AlertTriangle } from 'lucide-react';
 import TraitButton from './TraitButton';
 import { traitDescriptions } from './trait-descriptions';
 import { EmotionData, TraitKey } from './emotion-tendencies-types';
@@ -32,9 +32,12 @@ const TraitButtonsGrid = ({ emotionData }: TraitButtonsGridProps) => {
     }
   };
 
+  // Check if emotionData exists and has properties
+  const hasData = emotionData && Object.keys(emotionData).length > 0;
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-5">
-      {Object.keys(emotionData).length > 0 ? (
+      {hasData ? (
         (Object.keys(emotionData) as TraitKey[]).map(trait => (
           <TraitButton
             key={trait}

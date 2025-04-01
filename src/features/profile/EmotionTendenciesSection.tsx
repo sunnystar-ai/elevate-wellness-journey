@@ -22,7 +22,10 @@ const EmotionTendenciesSection = () => {
     if (savedData) {
       try {
         const parsedData = JSON.parse(savedData);
-        setEmotionData(parsedData);
+        if (parsedData && typeof parsedData === 'object') {
+          // Validate that we have the expected data structure
+          setEmotionData(parsedData);
+        }
       } catch (error) {
         console.error('Error parsing emotion tendencies data from localStorage:', error);
         // If there's an error parsing, we'll use the default data

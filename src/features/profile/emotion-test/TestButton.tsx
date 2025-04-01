@@ -7,7 +7,7 @@ interface TestButtonProps {
 
 const TestButton = ({ onClick }: TestButtonProps) => {
   return (
-    <Button className="w-full" onClick={onClick}>
+    <Button className="w-full font-medium" onClick={onClick}>
       Take Big Five Assessment
     </Button>
   );
