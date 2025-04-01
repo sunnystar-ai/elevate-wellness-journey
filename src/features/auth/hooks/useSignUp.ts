@@ -68,10 +68,36 @@ export const useSignUp = (onSuccess?: () => void) => {
       
       console.log("Sign up successful:", data.session ? "Session exists" : "No session");
       
-      // Auto-login the user after signup (no email verification required)
       if (data.user) {
-        // Ensure profile exists immediately
-        await ensureProfileExists(data.user.id, data.user);
+        // Try to ensure profile exists using service role
+        try {
+          // First check if profile exists
+          const { data: existingProfile, error: profileError } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('id', data.user.id)
+            .maybeSingle();
+          
+          // If no profile exists, create one
+          if (!existingProfile && (!profileError || profileError.message.includes('No rows found'))) {
+            console.log("No profile found, creating one...");
+            const { error: insertError } = await supabase
+              .from('profiles')
+              .insert({
+                id: data.user.id,
+                first_name: firstName,
+                last_name: lastName
+              });
+            
+            if (insertError) {
+              console.error("Error creating profile:", insertError);
+            } else {
+              console.log("Profile created successfully");
+            }
+          }
+        } catch (profileErr) {
+          console.error("Error checking/creating profile:", profileErr);
+        }
         
         // If we don't immediately have a session, manually sign in
         if (!data.session) {
@@ -90,9 +116,6 @@ export const useSignUp = (onSuccess?: () => void) => {
           
           // Use the session from sign in
           if (signInData.session) {
-            // Check again that the profile exists
-            await ensureProfileExists(data.user.id, data.user);
-            
             toast({
               title: "Account created",
               description: "Welcome to Harmony!",
@@ -106,9 +129,6 @@ export const useSignUp = (onSuccess?: () => void) => {
             return;
           }
         } else {
-          // We have a session from signup, ensure profile exists
-          await ensureProfileExists(data.user.id, data.user);
-          
           toast({
             title: "Account created",
             description: "Welcome to Harmony!",
