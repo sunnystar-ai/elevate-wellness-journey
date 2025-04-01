@@ -11,7 +11,7 @@ import Index from "./pages/Index";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import ForgotPassword from "./pages/ForgotPassword";
-import Dashboard from "./components/dashboard/Dashboard"; // Import Dashboard from components
+import Dashboard from "./components/dashboard/Dashboard"; 
 import Discover from "./pages/Discover";
 import MyJourney from "./pages/MyJourney";
 import Community from "./pages/Community";
@@ -40,27 +40,40 @@ const App = () => (
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             
-            {/* Make dashboard accessible without authentication for testing */}
-            <Route path="/dashboard" element={<Dashboard />} />
+            {/* Protected routes that require authentication */}
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
             
-            {/* Main navigation routes - accessible without authentication */}
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            } />
+            
+            {/* Main navigation routes - accessible without authentication for demo purposes */}
             <Route path="/discover" element={<Discover />} />
             <Route path="/my-journey" element={<MyJourney />} />
             <Route path="/community" element={<Community />} />
-            <Route path="/profile" element={<Profile />} />
             
             {/* Content detail page */}
             <Route path="/content/:contentType/:contentId" element={<ContentDetail />} />
             
             {/* Protected feature routes */}
-            <Route path="/journal-prompt" element={<JournalPrompt />} />
+            <Route path="/journal-prompt" element={
+              <ProtectedRoute>
+                <JournalPrompt />
+              </ProtectedRoute>
+            } />
             <Route path="/meditation" element={<Meditation />} />
             <Route path="/workouts" element={<Workouts />} />
             <Route path="/nutrition" element={<Nutrition />} />
+            <Route path="/personality-test" element={<PersonalityTest />} />
             
             {/* Catch-all route */}
             <Route path="*" element={<NotFound />} />
-            <Route path="/personality-test" element={<PersonalityTest />} />
           </Routes>
         </TooltipProvider>
       </BrowserRouter>

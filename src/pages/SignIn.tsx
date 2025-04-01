@@ -17,15 +17,14 @@ const SignIn = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
+  const from = (location.state as any)?.from?.pathname || "/profile";
   
-  const from = location.state?.from?.pathname || "/dashboard";
-
   useEffect(() => {
     if (isAuthenticated) {
       navigate(from, { replace: true });
     }
   }, [isAuthenticated, navigate, from]);
-
+  
   useEffect(() => {
     if (error) {
       setLocalError(error);
@@ -45,7 +44,6 @@ const SignIn = () => {
     try {
       await login(email, password);
     } catch (error) {
-      // Error is already handled in AuthContext and synced to localError
     }
   };
 

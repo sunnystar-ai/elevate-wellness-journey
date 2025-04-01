@@ -19,10 +19,10 @@ const SignUp = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   
-  // If already authenticated, redirect to dashboard
+  // If already authenticated, redirect to profile
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/dashboard", { replace: true });
+      navigate("/profile", { replace: true });
     }
   }, [isAuthenticated, navigate]);
   
@@ -50,7 +50,7 @@ const SignUp = () => {
 
     try {
       await signup(name, email, password);
-      // If signup succeeds, useEffect will handle redirect
+      // If signup succeeds, useEffect will handle redirect to profile page
     } catch (error) {
       // Error is already handled in AuthContext and synced to localError
     }
