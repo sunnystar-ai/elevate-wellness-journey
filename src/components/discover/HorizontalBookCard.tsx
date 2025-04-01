@@ -26,6 +26,7 @@ const HorizontalBookCard = ({ id, title, author, rating, image }: HorizontalBook
   const [summary, setSummary] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const { apiKey } = useApiKey();
   const { toast } = useToast();
 
@@ -86,16 +87,27 @@ const HorizontalBookCard = ({ id, title, author, rating, image }: HorizontalBook
     }
   };
 
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
   return (
     <>
       <div className="flex-shrink-0 w-36 mr-4">
         <div className="rounded-lg overflow-hidden bg-card shadow-sm h-full flex flex-col">
           <div className="h-52 w-full relative">
-            <img 
-              src={image} 
-              alt={title} 
-              className="w-full h-full object-cover"
-            />
+            {imageError ? (
+              <div className="w-full h-full flex items-center justify-center bg-muted text-muted-foreground p-2 text-center">
+                <p className="text-xs">{title}</p>
+              </div>
+            ) : (
+              <img 
+                src={image} 
+                alt={title} 
+                className="w-full h-full object-cover"
+                onError={handleImageError}
+              />
+            )}
           </div>
           <div className="p-3 flex-1 flex flex-col">
             <h3 className="font-medium line-clamp-1 text-sm">{title}</h3>
@@ -147,4 +159,3 @@ const HorizontalBookCard = ({ id, title, author, rating, image }: HorizontalBook
 };
 
 export default HorizontalBookCard;
-

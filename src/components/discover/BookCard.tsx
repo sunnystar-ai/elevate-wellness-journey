@@ -16,16 +16,28 @@ interface BookCardProps {
 
 const BookCard = ({ title, author, rating, reviewCount, image, audioSample }: BookCardProps) => {
   const [audioOpen, setAudioOpen] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  const handleImageError = () => {
+    setImageError(true);
+  };
 
   return (
     <>
       <div className="rounded-xl overflow-hidden bg-card shadow-sm flex">
         <div className="w-1/3 h-24">
-          <img 
-            src={image} 
-            alt={title} 
-            className="w-full h-full object-cover"
-          />
+          {imageError ? (
+            <div className="w-full h-full flex items-center justify-center bg-muted text-muted-foreground">
+              <BookOpen className="h-8 w-8" />
+            </div>
+          ) : (
+            <img 
+              src={image} 
+              alt={title} 
+              className="w-full h-full object-cover"
+              onError={handleImageError}
+            />
+          )}
         </div>
         <div className="p-3 flex-1 flex flex-col justify-between">
           <div>
