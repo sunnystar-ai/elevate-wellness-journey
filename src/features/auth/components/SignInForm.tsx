@@ -62,7 +62,7 @@ const SignInForm = ({ onSuccess }: SignInFormProps) => {
       
       console.log("Attempting to sign in with email:", cleanEmail);
       
-      // Direct Supabase call - bypassing context
+      // Direct Supabase call
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email: cleanEmail,
         password
@@ -84,6 +84,19 @@ const SignInForm = ({ onSuccess }: SignInFormProps) => {
       console.log("Sign in successful:", data.session ? "Session exists" : "No session");
       
       if (data.session) {
+        // Fetch the user's profile data to confirm it exists
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', data.user.id)
+          .single();
+          
+        if (profileError && !profileError.message.includes('No rows found')) {
+          console.error("Error fetching profile:", profileError);
+        }
+        
+        console.log("User profile retrieved:", profileData ? "Profile exists" : "No profile found");
+        
         toast({
           title: "Signed in successfully",
           description: "Welcome back to Harmony!",

@@ -49,14 +49,20 @@ const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
       
       console.log("Attempting to sign up with email:", cleanEmail);
       
+      // Extract first and last name
+      const nameParts = name.trim().split(' ');
+      const firstName = nameParts[0];
+      const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+      
       // Direct Supabase call
       const { data, error: signUpError } = await supabase.auth.signUp({
         email: cleanEmail,
         password,
         options: {
           data: {
-            first_name: name.split(' ')[0],
-            last_name: name.split(' ').slice(1).join(' ')
+            first_name: firstName,
+            last_name: lastName,
+            full_name: name.trim()
           }
         }
       });
