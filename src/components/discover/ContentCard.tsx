@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, Bookmark, Heart, Utensils } from 'lucide-react';
+import { Clock, Bookmark, Heart, Utensils, Dumbbell as DumbbellIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
@@ -102,7 +102,7 @@ const ContentCard = ({
               </Badge>
               {equipment && equipment !== "None" && (
                 <span className="text-xs text-muted-foreground flex items-center">
-                  <Dumbbell className="h-3 w-3 mr-1" />
+                  <DumbbellIcon className="h-3 w-3 mr-1" />
                   {equipment}
                 </span>
               )}
