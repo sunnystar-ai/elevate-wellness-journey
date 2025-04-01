@@ -16,7 +16,7 @@ const LogoutSection = () => {
         title: "Logged out successfully",
         description: "You have been signed out of your account"
       });
-      navigate('/');
+      navigate('/sign-in');
     } catch (error) {
       console.error("Logout error:", error);
       toast({
