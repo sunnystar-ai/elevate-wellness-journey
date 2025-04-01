@@ -4,13 +4,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 
 // Import discover components
-import FeaturedProgram from '@/components/discover/FeaturedProgram';
 import MentalWellnessTab from '@/components/discover/tabs/MentalWellnessTab';
 import NutritionTab from '@/components/discover/tabs/NutritionTab';
 
 // Import data
 import {
-  featuredProgram,
   personalGrowthBooks,
 } from '@/components/discover/data';
 
@@ -38,14 +36,8 @@ const Discover = () => {
   return (
     <div className="pb-24">
       <div className="container mx-auto px-4">
-        <FeaturedProgram 
-          title={featuredProgram.title}
-          image={featuredProgram.image}
-          isNew={featuredProgram.isNew}
-        />
-
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mt-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
+          <TabsList>
             <TabsTrigger value="mental">Mental Wellness</TabsTrigger>
             <TabsTrigger value="nutrition">Nutrition</TabsTrigger>
           </TabsList>
