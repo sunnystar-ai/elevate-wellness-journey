@@ -79,6 +79,9 @@ const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
       
       // Auto-login the user after signup (no email verification required)
       if (data.user) {
+        // Ensure profile exists immediately
+        await ensureProfileExists(data.user.id, firstName, lastName);
+        
         // If we don't immediately have a session, manually sign in
         if (!data.session) {
           console.log("No session after signup, attempting to sign in");
@@ -96,7 +99,7 @@ const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
           
           // Use the session from sign in
           if (signInData.session) {
-            // Ensure profile exists - critical step
+            // Check again that the profile exists
             await ensureProfileExists(data.user.id, firstName, lastName);
             
             toast({
