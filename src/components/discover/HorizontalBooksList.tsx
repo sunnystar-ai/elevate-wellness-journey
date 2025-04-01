@@ -34,9 +34,16 @@ const HorizontalBooksList = ({ title, books, linkTo, delay = 0 }: HorizontalBook
     return null;
   }
 
-  // Calculate books for each row - fixed number of books per row
-  const firstRowBooks = books.slice(0, 5);
-  const secondRowBooks = books.slice(5);
+  // Ensure we're working with all books that are passed in
+  const allBooks = [...books];
+  
+  // Fixed division of books between rows
+  const firstRowBooks = allBooks.slice(0, 5);
+  const secondRowBooks = allBooks.slice(5);
+
+  console.log('First row books:', firstRowBooks.length);
+  console.log('Second row books:', secondRowBooks.length);
+  console.log('Total books:', allBooks.length);
 
   return (
     <AnimatedSection delay={delay} className="mb-8">
@@ -55,36 +62,40 @@ const HorizontalBooksList = ({ title, books, linkTo, delay = 0 }: HorizontalBook
       
       <div className="space-y-4">
         {/* First Row - Always show exactly 5 books */}
-        <Carousel
-          opts={{
-            align: "start",
-          }}
-          className="w-full"
-        >
-          <CarouselContent className="-ml-2 md:-ml-4">
-            {firstRowBooks.map((book) => (
-              <CarouselItem key={book.id} className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5">
-                <HorizontalBookCard
-                  id={book.id}
-                  title={book.title}
-                  author={book.author}
-                  rating={book.rating}
-                  reviewCount={book.reviewCount}
-                  image={book.image}
-                  audioSample={book.audioSample}
-                />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className="hidden md:flex -left-4" />
-          <CarouselNext className="hidden md:flex -right-4" />
-        </Carousel>
+        {firstRowBooks.length > 0 && (
+          <Carousel
+            opts={{
+              align: "start",
+              containScroll: "trimSnaps",
+            }}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-2 md:-ml-4">
+              {firstRowBooks.map((book) => (
+                <CarouselItem key={book.id} className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5">
+                  <HorizontalBookCard
+                    id={book.id}
+                    title={book.title}
+                    author={book.author}
+                    rating={book.rating}
+                    reviewCount={book.reviewCount}
+                    image={book.image}
+                    audioSample={book.audioSample}
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden md:flex -left-4" />
+            <CarouselNext className="hidden md:flex -right-4" />
+          </Carousel>
+        )}
 
         {/* Second Row - Only show if there are books for it */}
         {secondRowBooks.length > 0 && (
           <Carousel
             opts={{
               align: "start",
+              containScroll: "trimSnaps",
             }}
             className="w-full"
           >

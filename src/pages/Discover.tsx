@@ -79,6 +79,9 @@ const Discover = () => {
   const nutritionData: TrendingItem[] = trendingData.filter(item => item.category === 'nutrition');
   const sleepData: TrendingItem[] = trendingData.filter(item => item.category === 'sleep');
 
+  // Make sure we're using all 9 books from personalGrowthBooks
+  console.log('Total books available:', personalGrowthBooks.length);
+
   return (
     <div className="pb-24">
       <div className="container mx-auto px-4">
@@ -114,7 +117,7 @@ const Discover = () => {
             <ContentSection title="Featured Mental Wellness" items={mentalWellnessContent} />
             <HorizontalBooksList 
               title="Mental Wellness Books" 
-              books={personalGrowthBooks.slice(0, 6)} 
+              books={personalGrowthBooks} 
               delay={0.2}
             />
           </TabsContent>
@@ -124,7 +127,7 @@ const Discover = () => {
             <ContentSection title="Featured Physical Wellness" items={physicalWellnessContent} />
             <HorizontalBooksList 
               title="Physical Wellness Books" 
-              books={personalGrowthBooks.slice(2, 8)} 
+              books={personalGrowthBooks} 
               delay={0.2}
             />
           </TabsContent>
@@ -140,7 +143,7 @@ const Discover = () => {
             <ContentSection title="Featured Sleep" items={sleepContent} />
             <HorizontalBooksList 
               title="Sleep & Relaxation Books" 
-              books={personalGrowthBooks.slice(3, 9)} 
+              books={personalGrowthBooks} 
               delay={0.2}
             />
           </TabsContent>
@@ -149,7 +152,7 @@ const Discover = () => {
             <CommunitySection title="Community Picks" picks={communityPicks} />
             <HorizontalBooksList 
               title="Community Recommended Books" 
-              books={personalGrowthBooks.slice(1, 7)} 
+              books={personalGrowthBooks} 
               delay={0.2}
             />
           </TabsContent>
