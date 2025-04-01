@@ -47,12 +47,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             title: "Signed out",
             description: "You have been signed out successfully",
           });
-        } else if (event === 'SIGNED_UP') {
-          toast({
-            title: "Account created successfully",
-            description: "Welcome to Harmony!",
-          });
         }
+        
+        // We'll handle the signup success toast in the signup function instead
       }
     );
 
