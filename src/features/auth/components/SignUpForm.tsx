@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Mail, Key, User, LogIn } from "lucide-react";
+import { AlertCircle, Mail, Key, User, LogIn, Check, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -19,8 +19,12 @@ const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Password validation
+  const hasMinLength = password.length >= 8;
 
   // Clear errors when inputs change
   useEffect(() => {
@@ -45,7 +49,7 @@ const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
       return false;
     }
 
-    if (password.length < 8) {
+    if (!hasMinLength) {
       setError("Password must be at least 8 characters");
       return false;
     }
@@ -169,20 +173,34 @@ const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="pl-10"
+              onFocus={() => setPasswordFocused(true)}
+              onBlur={() => setPasswordFocused(false)}
+              className={`pl-10 ${!hasMinLength && password && 'border-red-500 focus-visible:ring-red-500'}`}
               required
               minLength={8}
+              aria-invalid={!hasMinLength && password.length > 0}
+              aria-describedby="password-requirements"
             />
           </div>
-          <p className="text-xs text-muted-foreground">
-            Must be at least 8 characters
-          </p>
+          
+          <div id="password-requirements" className="space-y-1 text-sm">
+            <div className="flex items-center gap-1.5">
+              {hasMinLength ? (
+                <Check className="h-3.5 w-3.5 text-green-500" />
+              ) : (
+                <X className="h-3.5 w-3.5 text-muted-foreground" />
+              )}
+              <span className={`${hasMinLength ? 'text-green-500' : password.length > 0 ? 'text-red-500' : 'text-muted-foreground'}`}>
+                Must be at least 8 characters
+              </span>
+            </div>
+          </div>
         </div>
 
         <Button 
           type="submit" 
           className="w-full" 
-          disabled={isLoading}
+          disabled={isLoading || (password.length > 0 && !hasMinLength)}
         >
           {isLoading ? (
             <span className="flex items-center gap-2">
