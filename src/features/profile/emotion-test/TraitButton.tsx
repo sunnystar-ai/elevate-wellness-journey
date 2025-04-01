@@ -20,7 +20,7 @@ const TraitButton = ({ trait, icon, value, traitInfo }: TraitButtonProps) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <div className="flex flex-col items-center cursor-pointer">
+        <div className="flex flex-col items-center cursor-pointer hover:scale-105 transition-transform">
           <div className={`h-16 w-16 rounded-full ${traitInfo.bgColor} flex items-center justify-center mb-1`}>
             {icon}
           </div>

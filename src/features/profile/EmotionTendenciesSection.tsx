@@ -4,6 +4,7 @@ import EmotionTendenciesTest from './emotion-test/EmotionTendenciesTest';
 import TraitButtonsGrid from './emotion-test/TraitButtonsGrid';
 import TestButton from './emotion-test/TestButton';
 import { EmotionData } from './emotion-test/emotion-tendencies-types';
+import { toast } from '@/hooks/use-toast';
 
 const EmotionTendenciesSection = () => {
   const [isTestOpen, setIsTestOpen] = useState(false);
@@ -19,7 +20,13 @@ const EmotionTendenciesSection = () => {
     // Load saved emotion tendencies data from local storage
     const savedData = localStorage.getItem('emotionTendencies');
     if (savedData) {
-      setEmotionData(JSON.parse(savedData));
+      try {
+        const parsedData = JSON.parse(savedData);
+        setEmotionData(parsedData);
+      } catch (error) {
+        console.error('Error parsing emotion tendencies data from localStorage:', error);
+        // If there's an error parsing, we'll use the default data
+      }
     }
   }, []);
 
@@ -38,6 +45,12 @@ const EmotionTendenciesSection = () => {
     
     // Update state
     setEmotionData(typedResults);
+    
+    // Show success toast
+    toast({
+      title: "Personality Assessment Complete",
+      description: "Your Big Five personality traits have been updated.",
+    });
   };
 
   return (
