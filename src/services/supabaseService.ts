@@ -287,7 +287,7 @@ export const generateAndSaveWellnessInsight = async (period: 'week' | 'month' | 
     throw error;
   }
 
-  return data[0];
+  return data?.[0];
 };
 
 export const getLatestWellnessInsight = async (period: 'week' | 'month' | 'year' = 'month') => {
@@ -311,5 +311,5 @@ export const getLatestWellnessInsight = async (period: 'week' | 'month' | 'year'
     throw error;
   }
 
-  return data[0] || null;
+  return data?.[0] || null;
 };
