@@ -8,24 +8,47 @@ import ProfileHeader from '@/features/profile/ProfileHeader';
 import ProfileTab from '@/features/profile/tabs/ProfileTab';
 import ActivityTab from '@/features/profile/tabs/ActivityTab';
 import SettingsTab from '@/features/profile/tabs/SettingsTab';
+import { loadMbtiResults } from '@/services/personalityService';
+import { mbtiDescriptions } from '@/features/personality-test/mbti-data';
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("profile");
   const [mbtiType, setMbtiType] = useState<string | null>(null);
   const [mbtiDescription, setMbtiDescription] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Get MBTI results from local storage if available
-    const storedType = localStorage.getItem('mbtiType');
-    const storedDescription = localStorage.getItem('mbtiDescription');
-    
-    if (storedType) {
-      setMbtiType(storedType);
+    // Load MBTI results from Supabase or localStorage as fallback
+    async function loadData() {
+      try {
+        setIsLoading(true);
+        
+        const result = await loadMbtiResults();
+        
+        if (result) {
+          setMbtiType(result);
+          setMbtiDescription(mbtiDescriptions[result]);
+        } else {
+          // Try localStorage as fallback
+          const storedType = localStorage.getItem('mbtiType');
+          const storedDescription = localStorage.getItem('mbtiDescription');
+          
+          if (storedType) {
+            setMbtiType(storedType);
+          }
+          
+          if (storedDescription) {
+            setMbtiDescription(storedDescription);
+          }
+        }
+      } catch (error) {
+        console.error("Error loading MBTI data:", error);
+      } finally {
+        setIsLoading(false);
+      }
     }
     
-    if (storedDescription) {
-      setMbtiDescription(storedDescription);
-    }
+    loadData();
   }, []);
 
   return (
@@ -55,7 +78,11 @@ const Profile = () => {
         
         {/* Profile Tab Content */}
         <TabsContent value="profile">
-          <ProfileTab mbtiType={mbtiType} mbtiDescription={mbtiDescription} />
+          <ProfileTab 
+            mbtiType={mbtiType} 
+            mbtiDescription={mbtiDescription} 
+            isLoading={isLoading} 
+          />
         </TabsContent>
         
         {/* Activity Tab Content */}

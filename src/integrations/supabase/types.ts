@@ -9,6 +9,42 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      big_five_results: {
+        Row: {
+          agreeableness: number
+          conscientiousness: number
+          created_at: string
+          extraversion: number
+          id: string
+          neuroticism: number
+          openness: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          agreeableness: number
+          conscientiousness: number
+          created_at?: string
+          extraversion: number
+          id?: string
+          neuroticism: number
+          openness: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          agreeableness?: number
+          conscientiousness?: number
+          created_at?: string
+          extraversion?: number
+          id?: string
+          neuroticism?: number
+          openness?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       daily_activities: {
         Row: {
           activity_date: string
@@ -70,6 +106,30 @@ export type Database = {
           gratitude?: string
           id?: string
           thought_process?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      personality_results: {
+        Row: {
+          created_at: string
+          id: string
+          mbti_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mbti_type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mbti_type?: string
           updated_at?: string
           user_id?: string
         }
