@@ -1,4 +1,3 @@
-
 import { Card } from '@/components/ui/card';
 import { useWellnessInsights } from './wellness-insights/useWellnessInsights';
 import { PeriodSelector } from './wellness-insights/PeriodSelector';
@@ -30,7 +29,10 @@ const WellnessInsights = () => {
         <h3 className="font-medium text-lg">Your Wellness Insights</h3>
         <div className="flex space-x-2">
           <PeriodSelector period={period} setPeriod={setPeriod} />
-          <FrameworkSelector framework={analyticalFramework} setFramework={setAnalyticalFramework} />
+          <FrameworkSelector 
+            framework={analyticalFramework} 
+            setFramework={(framework) => setAnalyticalFramework(framework)} 
+          />
         </div>
       </div>
       
