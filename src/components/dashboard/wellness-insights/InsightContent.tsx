@@ -31,38 +31,60 @@ export const InsightContent = ({ loading, error, insight, navigateToJournalPromp
   }
   
   if (insight) {
-    // Format insight text into paragraphs for better readability
+    // Format insight text into concise paragraphs for better readability
     const formatInsightText = (text: string) => {
-      // Check if the text is longer than 300 characters
-      if (text.length > 300) {
-        // Split text approximately in half at a period, question mark, or exclamation mark
-        const middleIndex = Math.floor(text.length / 2);
-        
-        // Look for sentence endings near the middle of the text
-        let splitIndex = text.indexOf('. ', middleIndex - 50);
-        if (splitIndex === -1) splitIndex = text.indexOf('! ', middleIndex - 50);
-        if (splitIndex === -1) splitIndex = text.indexOf('? ', middleIndex - 50);
-        
-        // If we found a sentence ending, split there; otherwise, just use the middle
-        if (splitIndex !== -1) {
-          splitIndex += 2; // Include the period and space
-          return (
-            <>
-              <p className="text-sm text-muted-foreground mb-4">{text.substring(0, splitIndex)}</p>
-              <p className="text-sm text-muted-foreground">{text.substring(splitIndex)}</p>
-            </>
-          );
+      // First, check if we need to split the text at all
+      if (text.length < 150) {
+        return <p className="text-sm text-muted-foreground">{text}</p>;
+      }
+
+      // Find sentence boundaries to create natural paragraph breaks
+      const sentences = text.match(/[^.!?]+[.!?]+\s*/g) || [];
+      
+      if (sentences.length <= 1) {
+        return <p className="text-sm text-muted-foreground">{text}</p>;
+      }
+      
+      // Try to create 2-3 paragraphs of roughly equal length
+      const paragraphs = [];
+      let currentParagraph = '';
+      let targetLength = Math.ceil(text.length / Math.min(3, sentences.length));
+      
+      for (const sentence of sentences) {
+        if (currentParagraph.length === 0 || currentParagraph.length + sentence.length < targetLength) {
+          currentParagraph += sentence;
+        } else {
+          paragraphs.push(currentParagraph);
+          currentParagraph = sentence;
         }
       }
       
-      // If the text isn't very long or we couldn't find a good split point
-      return <p className="text-sm text-muted-foreground">{text}</p>;
+      // Add the last paragraph if it's not empty
+      if (currentParagraph.length > 0) {
+        paragraphs.push(currentParagraph);
+      }
+      
+      // If we only have one paragraph, just return it
+      if (paragraphs.length <= 1) {
+        return <p className="text-sm text-muted-foreground">{text}</p>;
+      }
+      
+      // Return the paragraphs as separate React elements
+      return (
+        <>
+          {paragraphs.map((paragraph, index) => (
+            <p key={index} className="text-sm text-muted-foreground mb-2">
+              {paragraph.trim()}
+            </p>
+          ))}
+        </>
+      );
     };
     
     return (
       <div className="space-y-2">
         {formatInsightText(insight)}
-        <div className="text-xs text-muted-foreground italic mt-4">
+        <div className="text-xs text-muted-foreground italic mt-3">
           Analyzed using AI advanced pattern recognition
         </div>
       </div>
