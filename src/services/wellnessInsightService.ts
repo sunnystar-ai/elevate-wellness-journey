@@ -3,6 +3,8 @@ import { getCurrentUserId, supabase } from "./base/baseService";
 import { getJournalEntries } from "./journalService";
 import { getDailyActivities } from "./activityService";
 import { getWellnessScores } from "./wellnessScoreService";
+import { loadMbtiResults } from "./personalityService";
+import { loadBigFiveResults } from "./personalityService";
 
 export interface WellnessInsight {
   id?: string;
@@ -26,6 +28,19 @@ export const generateAndSaveWellnessInsight = async (
     const journalEntries = await getJournalEntries(period);
     const activities = await getDailyActivities(period);
     const wellnessScores = await getWellnessScores(period);
+    
+    // Get personality data from Supabase
+    let mbtiType = null;
+    let bigFiveTraits = null;
+    
+    try {
+      mbtiType = await loadMbtiResults();
+      bigFiveTraits = await loadBigFiveResults();
+      console.log("Loaded personality data for insight generation:", { mbtiType, bigFiveTraits });
+    } catch (error) {
+      console.warn("Could not load personality data:", error);
+      // Continue without personality data
+    }
 
     if (journalEntries.length === 0 && activities.length === 0 && wellnessScores.length === 0) {
       throw new Error("Not enough data to generate insights");
@@ -50,6 +65,18 @@ export const generateAndSaveWellnessInsight = async (
         break;
     }
 
+    // Prepare personality data for the edge function
+    const personalityData = {
+      mbtiType: mbtiType || "Unknown",
+      bigFiveTraits: bigFiveTraits || {
+        openness: 50,
+        conscientiousness: 50,
+        extraversion: 50,
+        agreeableness: 50,
+        neuroticism: 50
+      }
+    };
+
     // Call the edge function to generate insight
     const response = await supabase.functions.invoke('generate-wellness-insight', {
       body: {
@@ -57,7 +84,8 @@ export const generateAndSaveWellnessInsight = async (
         activities,
         wellnessScores,
         period,
-        analyticalFramework
+        analyticalFramework,
+        personalityData
       }
     });
 

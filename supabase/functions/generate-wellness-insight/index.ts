@@ -27,13 +27,14 @@ serve(async (req) => {
       );
     }
 
-    const { journalEntries, activities, wellnessScores, period, analyticalFramework = 'physical-emotional' } = await req.json();
+    const { journalEntries, activities, wellnessScores, period, analyticalFramework = 'physical-emotional', personalityData } = await req.json();
     
     console.log('Generating wellness insight for period:', period);
     console.log('Using analytical framework:', analyticalFramework);
     console.log('Journal entries count:', journalEntries?.length || 0);
     console.log('Activities count:', activities?.length || 0);
     console.log('Wellness scores count:', wellnessScores?.length || 0);
+    console.log('Personality data:', personalityData || 'Not provided');
 
     // Check if we have enough data to generate insights
     if ((!journalEntries || journalEntries.length === 0) && 
@@ -72,16 +73,14 @@ serve(async (req) => {
          Nutrition: ${score.nutrition_score || 'N/A'}`
       ).join('\n') : "No wellness scores available";
 
-    // Default personality data
-    const personalityData = {
-      mbtiType: "Unknown",
-      bigFiveTraits: {
-        openness: 50,
-        conscientiousness: 50,
-        extraversion: 50,
-        agreeableness: 50,
-        neuroticism: 50
-      }
+    // Process personality data or use defaults
+    const mbtiType = personalityData?.mbtiType || "Unknown";
+    const bigFiveTraits = personalityData?.bigFiveTraits || {
+      openness: 50,
+      conscientiousness: 50,
+      extraversion: 50,
+      agreeableness: 50,
+      neuroticism: 50
     };
 
     // Customize the prompt based on the selected analytical framework
@@ -94,6 +93,15 @@ serve(async (req) => {
         userPrompt = `
           As a wellness expert, analyze this user's data for the ${period} period and provide insights on how their physical activities are affecting their emotional states.
           
+          PERSONALITY DATA:
+          MBTI Type: ${mbtiType}
+          Big Five Traits: 
+          Openness: ${bigFiveTraits.openness}%, 
+          Conscientiousness: ${bigFiveTraits.conscientiousness}%, 
+          Extraversion: ${bigFiveTraits.extraversion}%, 
+          Agreeableness: ${bigFiveTraits.agreeableness}%, 
+          Neuroticism: ${bigFiveTraits.neuroticism}%
+          
           JOURNAL ENTRIES:
           ${journalSummary}
           
@@ -105,7 +113,7 @@ serve(async (req) => {
           
           Based on this data, provide:
           1. Clear correlations between specific physical activities (e.g., meditation, walks, sleep) and emotional states expressed in journals
-          2. Identify activities that seem to boost positive emotions and those that may be lacking when negative emotions appear
+          2. How their MBTI type (${mbtiType}) and Big Five personality traits influence their response to activities
           3. 2-3 specific, actionable recommendations to optimize their physical routine for emotional wellbeing
           4. A predictive insight about how maintaining certain activities will likely impact their future emotional state
           
@@ -119,14 +127,13 @@ serve(async (req) => {
           As a wellness expert, analyze how this user's personality traits might be influencing their wellness patterns during the ${period} period.
           
           PERSONALITY DATA:
-          MBTI Type: ${personalityData.mbtiType || 'Unknown'}
+          MBTI Type: ${mbtiType}
           Big Five Traits: 
-          ${personalityData.bigFiveTraits ? 
-            `Openness: ${personalityData.bigFiveTraits.openness}%, 
-             Conscientiousness: ${personalityData.bigFiveTraits.conscientiousness}%, 
-             Extraversion: ${personalityData.bigFiveTraits.extraversion}%, 
-             Agreeableness: ${personalityData.bigFiveTraits.agreeableness}%, 
-             Neuroticism: ${personalityData.bigFiveTraits.neuroticism}%` : 'Not available'}
+          Openness: ${bigFiveTraits.openness}%, 
+          Conscientiousness: ${bigFiveTraits.conscientiousness}%, 
+          Extraversion: ${bigFiveTraits.extraversion}%, 
+          Agreeableness: ${bigFiveTraits.agreeableness}%, 
+          Neuroticism: ${bigFiveTraits.neuroticism}%
           
           JOURNAL ENTRIES:
           ${journalSummary}
@@ -138,7 +145,7 @@ serve(async (req) => {
           ${scoresSummary}
           
           Based on this data, provide:
-          1. How their personality traits (especially MBTI and Big Five traits) might be influencing their wellness routines
+          1. How their personality traits (especially MBTI type ${mbtiType} and Big Five traits) might be influencing their wellness routines
           2. Identify activities that align well with their personality and those that might create friction
           3. 2-3 personalized recommendations for activities or routines that would complement their personality traits
           4. Predictive insight about how certain adjustments would likely benefit their wellbeing based on their personality profile
@@ -152,25 +159,24 @@ serve(async (req) => {
         userPrompt = `
           As a wellness expert, analyze this user's journal entries for the ${period} period to identify core beliefs and thought patterns.
           
+          PERSONALITY DATA:
+          MBTI Type: ${mbtiType}
+          Big Five Traits: 
+          Openness: ${bigFiveTraits.openness}%, 
+          Conscientiousness: ${bigFiveTraits.conscientiousness}%, 
+          Extraversion: ${bigFiveTraits.extraversion}%, 
+          Agreeableness: ${bigFiveTraits.agreeableness}%, 
+          Neuroticism: ${bigFiveTraits.neuroticism}%
+          
           JOURNAL ENTRIES:
           ${journalSummary}
-          
-          PERSONALITY DATA:
-          MBTI Type: ${personalityData.mbtiType || 'Unknown'}
-          Big Five Traits: 
-          ${personalityData.bigFiveTraits ? 
-            `Openness: ${personalityData.bigFiveTraits.openness}%, 
-             Conscientiousness: ${personalityData.bigFiveTraits.conscientiousness}%, 
-             Extraversion: ${personalityData.bigFiveTraits.extraversion}%, 
-             Agreeableness: ${personalityData.bigFiveTraits.agreeableness}%, 
-             Neuroticism: ${personalityData.bigFiveTraits.neuroticism}%` : 'Not available'}
           
           ACTIVITIES:
           ${activitiesSummary}
           
           Based on this data, provide:
           1. 2-3 core beliefs that appear repeatedly in their journal entries
-          2. How these beliefs might be influencing their emotional states and activities
+          2. How these beliefs might be influenced by their personality type (${mbtiType}) and traits
           3. Identify any limiting beliefs that might be holding them back
           4. 2-3 reframing suggestions to transform limiting beliefs into empowering ones
           
@@ -183,6 +189,15 @@ serve(async (req) => {
         userPrompt = `
           As a wellness expert, analyze this user's data for the ${period} period to predict future trends and provide preventative recommendations.
           
+          PERSONALITY DATA:
+          MBTI Type: ${mbtiType}
+          Big Five Traits: 
+          Openness: ${bigFiveTraits.openness}%, 
+          Conscientiousness: ${bigFiveTraits.conscientiousness}%, 
+          Extraversion: ${bigFiveTraits.extraversion}%, 
+          Agreeableness: ${bigFiveTraits.agreeableness}%, 
+          Neuroticism: ${bigFiveTraits.neuroticism}%
+          
           JOURNAL ENTRIES:
           ${journalSummary}
           
@@ -192,19 +207,9 @@ serve(async (req) => {
           WELLNESS SCORES:
           ${scoresSummary}
           
-          PERSONALITY DATA:
-          MBTI Type: ${personalityData.mbtiType || 'Unknown'}
-          Big Five Traits: 
-          ${personalityData.bigFiveTraits ? 
-            `Openness: ${personalityData.bigFiveTraits.openness}%, 
-             Conscientiousness: ${personalityData.bigFiveTraits.conscientiousness}%, 
-             Extraversion: ${personalityData.bigFiveTraits.extraversion}%, 
-             Agreeableness: ${personalityData.bigFiveTraits.agreeableness}%, 
-             Neuroticism: ${personalityData.bigFiveTraits.neuroticism}%` : 'Not available'}
-          
           Based on this data, provide:
           1. A prediction of how their emotional and mental wellbeing might trend in the coming ${period}
-          2. Identify potential triggers or situations that might cause emotional dips
+          2. How their personality type (${mbtiType}) and traits might influence future responses to challenges
           3. 3-4 specific, data-driven preventative recommendations to maintain or improve wellbeing
           4. Quantify the potential impact of your recommendations (e.g., "This could reduce stress by approximately 30%")
           
@@ -215,6 +220,15 @@ serve(async (req) => {
       default:
         userPrompt = `
           As a wellness expert, analyze this user's data for the ${period} period and provide insights on their overall wellbeing patterns.
+          
+          PERSONALITY DATA:
+          MBTI Type: ${mbtiType}
+          Big Five Traits: 
+          Openness: ${bigFiveTraits.openness}%, 
+          Conscientiousness: ${bigFiveTraits.conscientiousness}%, 
+          Extraversion: ${bigFiveTraits.extraversion}%, 
+          Agreeableness: ${bigFiveTraits.agreeableness}%, 
+          Neuroticism: ${bigFiveTraits.neuroticism}%
           
           JOURNAL ENTRIES:
           ${journalSummary}
@@ -227,8 +241,8 @@ serve(async (req) => {
           
           Based on this data, provide:
           1. Key patterns or trends noticed during this ${period} period
-          2. How their activities correlate with their mental wellness
-          3. 2-3 specific, actionable recommendations to improve their wellness routine
+          2. How their personality type (${mbtiType}) and traits might be influencing their wellness journey
+          3. 2-3 specific, actionable recommendations tailored to their personality profile
           4. A motivational insight that acknowledges their progress
           
           Format your response as a cohesive paragraph of 200-250 words that's supportive and empowering.
