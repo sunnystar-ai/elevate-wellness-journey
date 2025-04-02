@@ -145,7 +145,7 @@ const MentalWellnessTab = ({ articles, books }: MentalWellnessTabProps) => {
         <ArticleCard key={index} article={article} />
       ))}
 
-      {/* Weekly Philosophy Books Section */}
+      {/* Philosophy Books Section */}
       <div className="mb-6">
         <div className="flex justify-between items-center mb-3">
           <h2 className="text-lg font-medium">Philosophy & Mind Books</h2>

@@ -11,7 +11,6 @@ import { useApiKeySetup } from '@/hooks/useApiKeySetup';
 // Import discover components
 import MentalWellnessTab from '@/components/discover/tabs/MentalWellnessTab';
 import NutritionTab from '@/components/discover/tabs/NutritionTab';
-import WeeklyPhilosophicalBooks from '@/components/discover/WeeklyPhilosophicalBooks';
 
 // Import data
 import {
@@ -77,9 +76,6 @@ const Discover = () => {
             </CardContent>
           </Card>
         )}
-        
-        {/* Weekly Philosophical Books Section */}
-        <WeeklyPhilosophicalBooks />
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
           <TabsList>
