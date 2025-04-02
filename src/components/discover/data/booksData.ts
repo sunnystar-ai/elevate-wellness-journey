@@ -82,5 +82,15 @@ export const personalGrowthBooks = [
     reviewCount: 4930,
     image: "/lovable-uploads/74f38fa1-6680-49c2-b4eb-98c992d52ff8.png",
     audioSample: "https://samples.audible.com/bk/hcuk/005396/bk_hcuk_005396_sample.mp3"
+  },
+  {
+    id: 10,
+    title: "Tao Te Ching",
+    author: "Lao Tzu",
+    rating: 4.9,
+    reviewCount: 7150,
+    image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    audioSample: "https://samples.audible.com/bk/acx0/115133/bk_acx0_115133_sample.mp3",
+    summary: "The Tao Te Ching, an ancient Chinese philosophical text, offers timeless wisdom on living in harmony with the Tao, or the natural way of the universe. Through 81 brief chapters of poetic verse, Lao Tzu presents paradoxical teachings that emphasize simplicity, humility, and the wisdom of non-action (wu-wei). The book explores how aligning with the natural flow of existence leads to peace and balance, contrasting this approach with forceful control and excessive desire. Its concepts of yin and yang, the softness that overcomes hardness, and leadership through service have influenced Eastern and Western philosophy, spirituality, and mindfulness practices for over 2,500 years. The text's enduring appeal lies in its universal insights into human nature and its gentle guidance toward living with greater awareness, compassion, and authenticity."
   }
 ];
