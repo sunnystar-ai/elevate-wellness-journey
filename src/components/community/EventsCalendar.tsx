@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { getEvents, updateParticipationStatus, EventWithParticipants } from '@/services/events';
 import { useAuth } from '@/contexts/AuthContext';
 import { Skeleton } from '@/components/ui/skeleton';
+import EventForm from './EventForm';
 
 const getEventIcon = (type: string) => {
   switch (type) {
@@ -17,6 +18,8 @@ const getEventIcon = (type: string) => {
       return '🎥';
     case 'exercise':
       return '🧘';
+    case 'social':
+      return '👥';
     default:
       return '📅';
   }
@@ -30,6 +33,7 @@ const formatDate = (dateStr: string) => {
 const EventsCalendar = () => {
   const [events, setEvents] = useState<EventWithParticipants[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const { isAuthenticated } = useAuth();
 
   const loadEvents = async () => {
@@ -58,7 +62,12 @@ const EventsCalendar = () => {
           <Calendar className="h-4 w-4 text-muted-foreground" />
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" className="h-8 px-2 text-xs flex items-center">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="h-8 px-2 text-xs flex items-center"
+            onClick={() => setIsFormOpen(true)}
+          >
             <Plus className="mr-1 h-3 w-3" />
             Create Event
           </Button>
@@ -134,6 +143,12 @@ const EventsCalendar = () => {
           </div>
         )}
       </ScrollArea>
+
+      <EventForm 
+        open={isFormOpen} 
+        onOpenChange={setIsFormOpen} 
+        onSuccess={loadEvents}
+      />
     </div>
   );
 };

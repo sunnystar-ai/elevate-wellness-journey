@@ -19,3 +19,13 @@ export interface EventWithParticipants extends Event {
 }
 
 export type EventInput = Omit<Event, 'id' | 'host_id' | 'created_at'>;
+
+// Type for event participants
+export interface EventParticipant {
+  id: string;
+  event_id: string;
+  user_id: string;
+  status: 'going' | 'interested';
+  created_at: string;
+  updated_at: string;
+}

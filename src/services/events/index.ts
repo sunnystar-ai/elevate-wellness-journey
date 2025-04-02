@@ -7,5 +7,6 @@ export {
 
 export type { 
   Event, 
-  EventWithParticipants 
+  EventWithParticipants,
+  EventInput
 } from './types';

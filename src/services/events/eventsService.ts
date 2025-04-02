@@ -1,7 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from '@/hooks/use-toast';
-import { Event, EventWithParticipants } from './types';
+import { Event, EventWithParticipants, EventInput } from './types';
 import { fetchEvents } from './eventsApi';
 import { getParticipantCount, getUserParticipationStatus } from './participantsApi';
 

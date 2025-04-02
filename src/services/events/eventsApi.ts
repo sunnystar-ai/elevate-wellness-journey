@@ -1,7 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from '@/hooks/use-toast';
-import { Event, EventInput, EventWithParticipants } from './types';
+import { Event, EventInput } from './types';
 
 // Create a new event
 export const createEvent = async (eventData: EventInput): Promise<boolean> => {
@@ -17,7 +17,7 @@ export const createEvent = async (eventData: EventInput): Promise<boolean> => {
       return false;
     }
 
-    // Type assertion to avoid type errors with Supabase schema
+    // Specify the type when inserting data
     const { error } = await supabase
       .from('community_events')
       .insert({

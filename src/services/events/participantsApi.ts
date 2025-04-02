@@ -1,6 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from '@/hooks/use-toast';
+import { EventParticipant } from './types';
 
 // Get participant count for an event
 export const getParticipantCount = async (eventId: string): Promise<number> => {
@@ -42,7 +43,7 @@ export const getUserParticipationStatus = async (
       return null;
     }
 
-    return participation?.status as 'going' | 'interested' | null;
+    return (participation?.status as 'going' | 'interested') || null;
   } catch (error) {
     console.error('Error in getUserParticipationStatus:', error);
     return null;
