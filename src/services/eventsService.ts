@@ -1,5 +1,5 @@
 
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/services/base/baseService";
 import { toast } from '@/hooks/use-toast';
 
 // Types for events
@@ -72,7 +72,7 @@ export const getEvents = async (): Promise<EventWithParticipants[]> => {
           ...event,
           participants_count: count || 0,
           current_user_status: userStatus
-        };
+        } as EventWithParticipants;
       })
     );
 
