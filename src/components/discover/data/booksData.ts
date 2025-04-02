@@ -1,3 +1,4 @@
+
 // Books content data
 
 export const personalGrowthBooks = [
@@ -112,7 +113,7 @@ export const philosophicalBooks = [
     author: "Marcus Aurelius",
     rating: 4.9,
     reviewCount: 9350,
-    image: "/lovable-uploads/cbe38a8c-2170-4c78-b74b-804bb3309c98.png",
+    image: "https://i.imgur.com/TKUVuX0.jpg",
     audioSample: "https://samples.audible.com/bk/acx0/115133/bk_acx0_115133_sample.mp3",
     summary: "Marcus Aurelius' 'Meditations' is a profound collection of personal writings by the Roman Emperor practicing Stoic philosophy. Written during military campaigns, these reflections were never intended for publication but offer intimate insight into the mind of a ruler striving for wisdom and virtue. The text emphasizes core Stoic principles: distinguishing between what we can and cannot control, accepting nature's course, practicing rationality over emotion, and treating others with justice and compassion. Aurelius reminds himself that external events cannot harm the soul unless we allow them to, and that our perceptions—not external things—determine our happiness. His meditations on mortality urge readers to live meaningfully in the present moment, while his thoughts on cosmic interconnectedness promote a sense of duty to humanity. This timeless work continues to resonate with readers seeking resilience, inner peace, and ethical guidance in facing life's challenges."
   },
