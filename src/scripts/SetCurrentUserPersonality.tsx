@@ -4,7 +4,11 @@ import { saveMbtiResults, saveBigFiveResults } from '@/services/personalityServi
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
 
-const SetCurrentUserPersonality = () => {
+interface SetCurrentUserPersonalityProps {
+  onSaved?: () => void;
+}
+
+const SetCurrentUserPersonality = ({ onSaved }: SetCurrentUserPersonalityProps) => {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -23,12 +27,19 @@ const SetCurrentUserPersonality = () => {
         neuroticism: 50
       });
       
+      console.log("Personality data saved successfully to Supabase!");
+      
       toast({
         title: "Personality Data Saved",
         description: "Your personality data has been saved successfully and will be used in wellness insights."
       });
       
       setSaved(true);
+      
+      // Call the onSaved callback if provided
+      if (onSaved) {
+        onSaved();
+      }
     } catch (error) {
       console.error("Error saving personality data:", error);
       toast({

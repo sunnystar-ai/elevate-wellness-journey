@@ -1,15 +1,24 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from '@/hooks/use-toast';
 
 // Save MBTI personality test results to Supabase
 export const saveMbtiResults = async (mbtiType: string) => {
   try {
-    const user = supabase.auth.getUser();
-    const userId = (await user).data.user?.id;
+    const { data: { user } } = await supabase.auth.getUser();
+    const userId = user?.id;
     
     if (!userId) {
+      console.error("User not authenticated");
+      toast({
+        title: "Authentication Error",
+        description: "You need to be logged in to save personality data.",
+        variant: "destructive"
+      });
       throw new Error("User not authenticated");
     }
+
+    console.log(`Saving MBTI type ${mbtiType} for user ${userId}`);
 
     // Check if user already has results to update instead of create
     const { data: existingData } = await supabase
@@ -18,8 +27,11 @@ export const saveMbtiResults = async (mbtiType: string) => {
       .eq('user_id', userId)
       .limit(1);
 
+    let result;
+    
     if (existingData && existingData.length > 0) {
       // Update existing record
+      console.log("Updating existing MBTI record");
       const { data, error } = await supabase
         .from('personality_results')
         .update({
@@ -29,10 +41,14 @@ export const saveMbtiResults = async (mbtiType: string) => {
         .eq('user_id', userId)
         .select();
 
-      if (error) throw error;
-      return data;
+      if (error) {
+        console.error("Error updating MBTI results:", error);
+        throw error;
+      }
+      result = data;
     } else {
       // Insert new record
+      console.log("Creating new MBTI record");
       const { data, error } = await supabase
         .from('personality_results')
         .insert({
@@ -41,9 +57,15 @@ export const saveMbtiResults = async (mbtiType: string) => {
         })
         .select();
 
-      if (error) throw error;
-      return data;
+      if (error) {
+        console.error("Error inserting MBTI results:", error);
+        throw error;
+      }
+      result = data;
     }
+
+    console.log("MBTI results saved successfully:", result);
+    return result;
   } catch (error) {
     console.error("Error saving MBTI results:", error);
     
@@ -64,12 +86,20 @@ export const saveBigFiveResults = async (results: {
   neuroticism: number;
 }) => {
   try {
-    const user = supabase.auth.getUser();
-    const userId = (await user).data.user?.id;
+    const { data: { user } } = await supabase.auth.getUser();
+    const userId = user?.id;
     
     if (!userId) {
+      console.error("User not authenticated");
+      toast({
+        title: "Authentication Error",
+        description: "You need to be logged in to save personality data.",
+        variant: "destructive"
+      });
       throw new Error("User not authenticated");
     }
+
+    console.log(`Saving Big Five traits for user ${userId}:`, results);
 
     // Check if user already has results to update instead of create
     const { data: existingData } = await supabase
@@ -78,8 +108,11 @@ export const saveBigFiveResults = async (results: {
       .eq('user_id', userId)
       .limit(1);
 
+    let result;
+    
     if (existingData && existingData.length > 0) {
       // Update existing record
+      console.log("Updating existing Big Five record");
       const { data, error } = await supabase
         .from('big_five_results')
         .update({
@@ -89,10 +122,14 @@ export const saveBigFiveResults = async (results: {
         .eq('user_id', userId)
         .select();
 
-      if (error) throw error;
-      return data;
+      if (error) {
+        console.error("Error updating Big Five results:", error);
+        throw error;
+      }
+      result = data;
     } else {
       // Insert new record
+      console.log("Creating new Big Five record");
       const { data, error } = await supabase
         .from('big_five_results')
         .insert({
@@ -101,9 +138,15 @@ export const saveBigFiveResults = async (results: {
         })
         .select();
 
-      if (error) throw error;
-      return data;
+      if (error) {
+        console.error("Error inserting Big Five results:", error);
+        throw error;
+      }
+      result = data;
     }
+
+    console.log("Big Five results saved successfully:", result);
+    return result;
   } catch (error) {
     console.error("Error saving Big Five results:", error);
     
@@ -118,12 +161,16 @@ export const saveBigFiveResults = async (results: {
 // Load MBTI results from Supabase or localStorage as fallback
 export const loadMbtiResults = async () => {
   try {
-    const user = supabase.auth.getUser();
-    const userId = (await user).data.user?.id;
+    const { data: { user } } = await supabase.auth.getUser();
+    const userId = user?.id;
     
     if (!userId) {
-      throw new Error("User not authenticated");
+      console.log("User not authenticated, falling back to localStorage for MBTI");
+      const localData = localStorage.getItem('mbtiType');
+      return localData;
     }
+
+    console.log(`Loading MBTI type for user ${userId}`);
 
     const { data, error } = await supabase
       .from('personality_results')
@@ -132,26 +179,39 @@ export const loadMbtiResults = async () => {
       .limit(1)
       .single();
 
-    if (error) throw error;
+    if (error) {
+      if (error.code === 'PGRST116') {
+        console.log("No MBTI data found for user in database");
+        return null;
+      }
+      throw error;
+    }
     
+    console.log("MBTI data retrieved:", data?.mbti_type);
     return data.mbti_type;
   } catch (error) {
     console.error("Error loading MBTI results from Supabase:", error);
     
     // Fall back to localStorage
-    return localStorage.getItem('mbtiType');
+    const localData = localStorage.getItem('mbtiType');
+    console.log("Falling back to localStorage for MBTI:", localData);
+    return localData;
   }
 };
 
 // Load Big Five results from Supabase or localStorage as fallback
 export const loadBigFiveResults = async () => {
   try {
-    const user = supabase.auth.getUser();
-    const userId = (await user).data.user?.id;
+    const { data: { user } } = await supabase.auth.getUser();
+    const userId = user?.id;
     
     if (!userId) {
-      throw new Error("User not authenticated");
+      console.log("User not authenticated, falling back to localStorage for Big Five");
+      const savedData = localStorage.getItem('emotionTendencies');
+      return savedData ? JSON.parse(savedData) : null;
     }
+
+    console.log(`Loading Big Five traits for user ${userId}`);
 
     const { data, error } = await supabase
       .from('big_five_results')
@@ -160,14 +220,22 @@ export const loadBigFiveResults = async () => {
       .limit(1)
       .single();
 
-    if (error) throw error;
+    if (error) {
+      if (error.code === 'PGRST116') {
+        console.log("No Big Five data found for user in database");
+        return null;
+      }
+      throw error;
+    }
     
+    console.log("Big Five data retrieved:", data);
     return data;
   } catch (error) {
     console.error("Error loading Big Five results from Supabase:", error);
     
     // Fall back to localStorage
     const savedData = localStorage.getItem('emotionTendencies');
+    console.log("Falling back to localStorage for Big Five:", savedData ? JSON.parse(savedData) : null);
     return savedData ? JSON.parse(savedData) : null;
   }
 };

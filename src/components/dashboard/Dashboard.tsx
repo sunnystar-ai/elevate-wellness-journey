@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 import { useIsMobile } from '@/hooks/use-mobile';
 import BottomNavigation from '@/components/layout/BottomNavigation';
+import SetCurrentUserPersonality from '@/scripts/SetCurrentUserPersonality';
 
 // Import the extracted components
 import StatusBar from '@/components/dashboard/StatusBar';
@@ -22,6 +23,8 @@ const Dashboard = () => {
   const [activityDurations, setActivityDurations] = useState<Record<string, string>>({});
   // Add state for mental wellness score
   const [mentalScore, setMentalScore] = useState<number>(0.85); // Default value
+  // Add state to track if personality data is being saved
+  const [personalityDataSaved, setPersonalityDataSaved] = useState(false);
 
   useEffect(() => {
     setLoaded(true);
@@ -54,8 +57,20 @@ const Dashboard = () => {
     setActivityDurations(durations);
   };
 
+  // Handler for personality data saved
+  const handlePersonalityDataSaved = () => {
+    setPersonalityDataSaved(true);
+  };
+
   return (
     <div className={`page-transition ${loaded ? 'opacity-100' : 'opacity-0'} pb-20`}>
+      {/* Run personality data setup if not yet saved */}
+      {!personalityDataSaved && (
+        <div className="hidden">
+          <SetCurrentUserPersonality onSaved={handlePersonalityDataSaved} />
+        </div>
+      )}
+      
       {/* Status Bar */}
       <StatusBar formattedTime={formattedTime} />
 
