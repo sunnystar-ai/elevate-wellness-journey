@@ -45,6 +45,45 @@ export type Database = {
         }
         Relationships: []
       }
+      community_events: {
+        Row: {
+          created_at: string
+          description: string | null
+          event_date: string
+          event_time: string
+          event_type: string
+          host_id: string
+          host_name: string
+          id: string
+          timezone: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          event_date: string
+          event_time: string
+          event_type: string
+          host_id: string
+          host_name: string
+          id?: string
+          timezone: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          event_date?: string
+          event_time?: string
+          event_type?: string
+          host_id?: string
+          host_name?: string
+          id?: string
+          timezone?: string
+          title?: string
+        }
+        Relationships: []
+      }
       daily_activities: {
         Row: {
           activity_date: string
@@ -80,6 +119,41 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      event_participants: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          status: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_participants_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "community_events"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       journal_entries: {
         Row: {

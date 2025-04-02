@@ -17,13 +17,13 @@ export const createEvent = async (eventData: EventInput): Promise<boolean> => {
       return false;
     }
 
-    // Specify the type when inserting data
+    // Insert the new event
     const { error } = await supabase
       .from('community_events')
       .insert({
         ...eventData,
         host_id: user.id
-      } as any);
+      });
 
     if (error) {
       throw error;
