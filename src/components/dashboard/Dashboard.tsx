@@ -9,7 +9,6 @@ import StatusBar from '@/components/dashboard/StatusBar';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import UserSnapshot from '@/components/dashboard/UserSnapshot';
 import DailyOverview from '@/components/dashboard/DailyOverview';
-import QuickStats from '@/components/dashboard/QuickStats';
 import GoalsTracker from '@/components/dashboard/GoalsTracker';
 import DailyPlan from '@/components/dashboard/DailyPlan';
 import WellnessInsights from '@/components/dashboard/WellnessInsights';
@@ -73,11 +72,6 @@ const Dashboard = () => {
         <AnimatedSection animation="scale-in" className="mb-8">
           <h2 className="text-lg font-medium mb-4">Today's Progress</h2>
           <DailyOverview activityDurations={activityDurations} mentalScore={mentalScore} />
-        </AnimatedSection>
-
-        {/* Quick Stats Summary */}
-        <AnimatedSection className="mb-8">
-          <QuickStats />
         </AnimatedSection>
 
         {/* Goals Tracker */}
