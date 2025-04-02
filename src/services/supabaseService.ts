@@ -4,9 +4,9 @@ export { saveJournalEntry, getJournalEntries } from './journalService';
 export { saveDailyActivity, getDailyActivities } from './activityService';
 export { saveWellnessScore, getWellnessScores } from './wellnessScoreService';
 export { generateAndSaveWellnessInsight, getLatestWellnessInsight } from './wellnessInsightService';
-export { getEvents, updateParticipationStatus, createEvent } from './eventsService';
+export { getEvents, updateParticipationStatus, createEvent } from './events';
 
 // Re-export types
 export type { ActivityInput } from './activityService';
 export type { WellnessScoreInput } from './wellnessScoreService';
-export type { Event, EventWithParticipants } from './eventsService';
+export type { Event, EventWithParticipants } from './events';

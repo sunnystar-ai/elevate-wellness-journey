@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { getEvents, updateParticipationStatus, EventWithParticipants } from '@/services/eventsService';
+import { getEvents, updateParticipationStatus, EventWithParticipants } from '@/services/events';
 import { useAuth } from '@/contexts/AuthContext';
 import { Skeleton } from '@/components/ui/skeleton';
 
