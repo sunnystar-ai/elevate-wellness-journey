@@ -3,9 +3,9 @@ import { useState, useEffect } from 'react';
 import { Activity, Brain, TrendingUp } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { getLatestWellnessInsight } from '@/services/wellnessInsightService';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useNavigate } from 'react-router-dom';
+import { getLatestWellnessInsight } from '@/services/wellnessInsightService';
 
 const InsightsPanel = () => {
   const [insights, setInsights] = useState<Array<{ icon: JSX.Element, text: string }>>([]);

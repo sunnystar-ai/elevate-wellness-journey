@@ -4,10 +4,21 @@ import { getJournalEntries } from "./journalService";
 import { getDailyActivities } from "./activityService";
 import { getWellnessScores } from "./wellnessScoreService";
 
+interface WellnessInsight {
+  id?: string;
+  user_id: string;
+  insight_text: string;
+  analysis_period: string;
+  analytical_framework: string;
+  start_date: string;
+  end_date: string;
+  created_at?: string;
+}
+
 export const generateAndSaveWellnessInsight = async (
   period: 'day' | 'week' | 'month' | 'year',
   analyticalFramework: string = 'physical-emotional'
-) => {
+): Promise<WellnessInsight | null> => {
   const userId = await getCurrentUserId();
 
   // Get data needed for analysis
@@ -75,13 +86,13 @@ export const generateAndSaveWellnessInsight = async (
     throw error;
   }
 
-  return data?.[0];
+  return data?.[0] || null;
 };
 
 export const getLatestWellnessInsight = async (
   period: 'day' | 'week' | 'month' | 'year' = 'month',
   analyticalFramework: string = 'physical-emotional'
-) => {
+): Promise<WellnessInsight | null> => {
   const userId = await getCurrentUserId();
 
   const { data, error } = await supabase
