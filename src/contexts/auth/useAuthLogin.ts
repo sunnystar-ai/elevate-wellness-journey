@@ -37,6 +37,10 @@ export const useAuthLogin = (
       
       if (error) {
         console.error("Supabase login error:", error);
+        // Provide a more user-friendly error message
+        if (error.message.includes("Invalid login")) {
+          throw new Error("Invalid email or password. Please try again.");
+        }
         throw error;
       }
       

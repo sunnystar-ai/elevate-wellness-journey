@@ -3,14 +3,13 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/auth/AuthContext";
 import AuthLayout from "@/features/auth/components/AuthLayout";
 import SignInForm from "@/features/auth/components/SignInForm";
 import SocialLoginButtons from "@/features/auth/components/SocialLoginButtons";
 
 const SignIn = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const { isAuthenticated, isLoading } = useAuth();
   const [verifyError, setVerifyError] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,35 +26,12 @@ const SignIn = () => {
     }
   }, [location]);
   
-  // Check authentication status on load
+  // If already authenticated, redirect to profile
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const { data } = await supabase.auth.getSession();
-        setIsAuthenticated(!!data.session);
-      } catch (error) {
-        console.error("Error checking authentication:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    checkAuth();
-    
-    // Set up auth listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setIsAuthenticated(!!session);
-        
-        if (event === 'SIGNED_IN') {
-          // Use timeout to avoid navigation race conditions
-          setTimeout(() => navigate(from, { replace: true }), 100);
-        }
-      }
-    );
-    
-    return () => subscription.unsubscribe();
-  }, [navigate, from]);
+    if (isAuthenticated && !isLoading) {
+      navigate(from, { replace: true });
+    }
+  }, [isAuthenticated, isLoading, navigate, from]);
   
   // If loading, show minimal UI
   if (isLoading) {
@@ -64,12 +40,6 @@ const SignIn = () => {
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
       </div>
     );
-  }
-  
-  // If already authenticated, redirect to profile
-  if (isAuthenticated) {
-    navigate(from, { replace: true });
-    return null;
   }
 
   return (
