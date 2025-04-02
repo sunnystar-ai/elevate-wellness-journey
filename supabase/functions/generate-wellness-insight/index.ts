@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
@@ -235,7 +236,7 @@ serve(async (req) => {
     }
 
     try {
-      // Call OpenAI API with GPT-4o-mini
+      // Call OpenAI API with gpt-3.5-turbo (more widely available model)
       console.log('Sending request to OpenAI...');
       
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -245,7 +246,7 @@ serve(async (req) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'gpt-4o-mini',
+          model: 'gpt-3.5-turbo',
           messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: userPrompt }

@@ -43,7 +43,11 @@ const WellnessInsights = () => {
     } catch (error) {
       console.error('Error fetching insight:', error);
       setInsight(null);
-      setError('Failed to load insights. Please try again later.');
+      if (error instanceof Error && error.message.includes("API key")) {
+        setError('API key configuration issue. Please check your OpenAI API key settings.');
+      } else {
+        setError('Failed to load insights. Please try again later.');
+      }
     } finally {
       setLoading(false);
     }
@@ -72,7 +76,7 @@ const WellnessInsights = () => {
       if (error instanceof Error) {
         if (error.message === "Not enough data to generate insights") {
           errorMessage = "Not enough data available. Log more activities and journal entries.";
-        } else if (error.message.includes("AI service configuration")) {
+        } else if (error.message.includes("AI service configuration") || error.message.includes("OpenAI API key is not configured")) {
           errorMessage = "AI service is not properly configured. Please contact support.";
         } else if (error.message.includes("OpenAI API")) {
           errorMessage = "AI service is temporarily unavailable. Please try again later.";
