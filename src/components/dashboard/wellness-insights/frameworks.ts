@@ -14,31 +14,31 @@ export const frameworks: AnalyticalFramework[] = [
     id: 'physical-emotional',
     name: 'Physical & Emotional',
     description: 'Insights on how your physical activities affect your emotional state and vice versa.',
-    icon: <Heart className="h-5 w-5 text-white" />
+    icon: Heart ? { type: Heart, props: { className: "h-5 w-5 text-white" } } : null
   },
   {
     id: 'cognitive',
     name: 'Cognitive',
     description: 'Analysis of your thought patterns, concentration, and mental clarity.',
-    icon: <Brain className="h-5 w-5 text-white" />
+    icon: Brain ? { type: Brain, props: { className: "h-5 w-5 text-white" } } : null
   },
   {
     id: 'behavioral',
     name: 'Behavioral',
     description: 'Patterns in your daily behaviors and how they relate to your wellness.',
-    icon: <Activity className="h-5 w-5 text-white" />
+    icon: Activity ? { type: Activity, props: { className: "h-5 w-5 text-white" } } : null
   },
   {
     id: 'holistic',
     name: 'Holistic',
     description: 'Comprehensive view of your mental, physical, and social wellness.',
-    icon: <Zap className="h-5 w-5 text-white" />
+    icon: Zap ? { type: Zap, props: { className: "h-5 w-5 text-white" } } : null
   },
   {
     id: 'journal',
     name: 'Journal',
     description: 'Analysis of your journal entries and self-reflection trends.',
-    icon: <MenuSquare className="h-5 w-5 text-white" />
+    icon: MenuSquare ? { type: MenuSquare, props: { className: "h-5 w-5 text-white" } } : null
   }
 ];
 
