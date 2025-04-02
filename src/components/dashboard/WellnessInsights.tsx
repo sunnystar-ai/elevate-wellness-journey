@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { TrendingUp, CheckCircle2, RefreshCw, Calendar } from 'lucide-react';
+import { TrendingUp, CheckCircle2, RefreshCw, Calendar, Brain, Activity } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -16,14 +16,15 @@ import { getLatestWellnessInsight, generateAndSaveWellnessInsight } from '@/serv
 
 const WellnessInsights = () => {
   const [insight, setInsight] = useState<string | null>(null);
-  const [period, setPeriod] = useState<'day' | 'week' | 'month' | 'year'>('day');
+  const [period, setPeriod] = useState<'day' | 'week' | 'month' | 'year'>('week');
   const [loading, setLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [analyticalFramework, setAnalyticalFramework] = useState<string>('physical-emotional');
 
   // Fetch the latest wellness insight when component mounts or period changes
   useEffect(() => {
     fetchInsight();
-  }, [period]);
+  }, [period, analyticalFramework]);
 
   const fetchInsight = async () => {
     try {
@@ -46,13 +47,14 @@ const WellnessInsights = () => {
   const handleGenerateInsight = async () => {
     try {
       setGenerating(true);
-      const newInsight = await generateAndSaveWellnessInsight(period);
+      // Pass the analytical framework to the insight generation function
+      const newInsight = await generateAndSaveWellnessInsight(period, analyticalFramework);
       
       if (newInsight) {
         setInsight(newInsight.insight_text);
         toast({
           title: "Insight Generated",
-          description: "Your new wellness insight has been generated successfully.",
+          description: "Your new personalized wellness insight has been generated successfully.",
           variant: "default"
         });
       }
@@ -78,23 +80,57 @@ const WellnessInsights = () => {
     <Card className="p-4 border border-harmony-light-lavender bg-harmony-light-lavender/20">
       <div className="flex justify-between items-center mb-3">
         <h3 className="font-medium text-lg">Your Wellness Insights</h3>
-        <Select value={period} onValueChange={(value: 'day' | 'week' | 'month' | 'year') => setPeriod(value)}>
-          <SelectTrigger className="w-[120px] h-8">
-            <SelectValue placeholder="Select period" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="day">Daily</SelectItem>
-            <SelectItem value="week">Weekly</SelectItem>
-            <SelectItem value="month">Monthly</SelectItem>
-            <SelectItem value="year">Yearly</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex space-x-2">
+          <Select value={period} onValueChange={(value: 'day' | 'week' | 'month' | 'year') => setPeriod(value)}>
+            <SelectTrigger className="w-[100px] h-8">
+              <SelectValue placeholder="Period" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="day">Daily</SelectItem>
+              <SelectItem value="week">Weekly</SelectItem>
+              <SelectItem value="month">Monthly</SelectItem>
+              <SelectItem value="year">Yearly</SelectItem>
+            </SelectContent>
+          </Select>
+          
+          <Select 
+            value={analyticalFramework} 
+            onValueChange={setAnalyticalFramework}
+          >
+            <SelectTrigger className="w-[140px] h-8">
+              <SelectValue placeholder="Analysis Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="physical-emotional">Physical-Emotional</SelectItem>
+              <SelectItem value="personality">Personality-Driven</SelectItem>
+              <SelectItem value="belief-mapping">Belief Mapping</SelectItem>
+              <SelectItem value="predictive">Predictive Analytics</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
       
-      <div className="mb-4 p-3 bg-white rounded-lg shadow-sm">
-        <div className="flex items-center mb-2">
-          <TrendingUp className="h-5 w-5 text-harmony-mint mr-2" />
-          <h4 className="font-medium">Physical Activity & Mental Wellness Connection</h4>
+      <div className="mb-4 p-4 bg-white rounded-lg shadow-sm">
+        <div className="flex items-center mb-3">
+          {analyticalFramework === 'physical-emotional' && (
+            <Activity className="h-5 w-5 text-harmony-mint mr-2" />
+          )}
+          {analyticalFramework === 'personality' && (
+            <Brain className="h-5 w-5 text-harmony-lavender mr-2" />
+          )}
+          {analyticalFramework === 'belief-mapping' && (
+            <TrendingUp className="h-5 w-5 text-harmony-peach mr-2" />
+          )}
+          {analyticalFramework === 'predictive' && (
+            <RefreshCw className="h-5 w-5 text-harmony-blue mr-2" />
+          )}
+          
+          <h4 className="font-medium">
+            {analyticalFramework === 'physical-emotional' && 'Physical Activity & Emotional Well-being'}
+            {analyticalFramework === 'personality' && 'Personality-Driven Patterns'}
+            {analyticalFramework === 'belief-mapping' && 'Core Beliefs & Journal Analysis'}
+            {analyticalFramework === 'predictive' && 'Predictive Recommendations'}
+          </h4>
         </div>
         
         {loading ? (
@@ -102,28 +138,44 @@ const WellnessInsights = () => {
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-harmony-lavender"></div>
           </div>
         ) : insight ? (
-          <p className="text-sm text-muted-foreground whitespace-pre-line">{insight}</p>
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground whitespace-pre-line">{insight}</p>
+            <div className="text-xs text-muted-foreground italic mt-2">
+              Analyzed using GPT-4 advanced pattern recognition
+            </div>
+          </div>
         ) : (
           <p className="text-sm text-muted-foreground italic py-2">
-            No insights available for this period. Generate an insight based on your data or log more activities.
+            No insights available for this period and framework. Generate an insight based on your data or log more activities.
           </p>
         )}
       </div>
       
-      <ul className="text-sm space-y-2 mb-4">
-        <li className="flex items-start">
-          <span className="bg-harmony-light-mint rounded-full p-1 mr-2 mt-0.5">
-            <CheckCircle2 className="h-3 w-3 text-harmony-mint" />
-          </span>
-          <span>Regular exercise correlates with improved mood scores</span>
-        </li>
-        <li className="flex items-start">
-          <span className="bg-harmony-light-lavender rounded-full p-1 mr-2 mt-0.5">
-            <Calendar className="h-3 w-3 text-harmony-lavender" />
-          </span>
-          <span>Insights are based on your {period === 'day' ? 'daily' : period + 'ly'} activity patterns</span>
-        </li>
-      </ul>
+      <div className="text-sm space-y-3 mb-4">
+        <div className="p-3 bg-white rounded-lg">
+          <h5 className="font-medium mb-1">Current Analysis Framework:</h5>
+          {analyticalFramework === 'physical-emotional' && (
+            <p className="text-xs text-muted-foreground">
+              Correlating your physical activities with emotional states from your journal entries to identify patterns and triggers.
+            </p>
+          )}
+          {analyticalFramework === 'personality' && (
+            <p className="text-xs text-muted-foreground">
+              Analyzing how your personality traits (Big 5 and MBTI) influence your wellness patterns and response to activities.
+            </p>
+          )}
+          {analyticalFramework === 'belief-mapping' && (
+            <p className="text-xs text-muted-foreground">
+              Extracting recurring themes and core beliefs from your journal entries to identify limiting beliefs and growth opportunities.
+            </p>
+          )}
+          {analyticalFramework === 'predictive' && (
+            <p className="text-xs text-muted-foreground">
+              Using machine learning to forecast emotional trends and provide personalized, data-driven recommendations.
+            </p>
+          )}
+        </div>
+      </div>
       
       <Button 
         className="w-full" 
@@ -134,12 +186,12 @@ const WellnessInsights = () => {
         {generating ? (
           <>
             <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-            Generating Insight...
+            Generating Advanced Insight...
           </>
         ) : (
           <>
             <RefreshCw className="h-4 w-4 mr-2" />
-            Generate New Insight
+            Generate New {period === 'day' ? 'Daily' : period === 'week' ? 'Weekly' : period === 'month' ? 'Monthly' : 'Yearly'} Insight
           </>
         )}
       </Button>

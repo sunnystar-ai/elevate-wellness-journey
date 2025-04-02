@@ -219,7 +219,10 @@ export const getWellnessScores = async (period: 'day' | 'week' | 'month' | 'year
 };
 
 // Wellness Insights
-export const generateAndSaveWellnessInsight = async (period: 'day' | 'week' | 'month' | 'year') => {
+export const generateAndSaveWellnessInsight = async (
+  period: 'day' | 'week' | 'month' | 'year',
+  analyticalFramework: string = 'physical-emotional'
+) => {
   const user = supabase.auth.getUser();
   const userId = (await user).data.user?.id;
   
@@ -261,7 +264,8 @@ export const generateAndSaveWellnessInsight = async (period: 'day' | 'week' | 'm
       journalEntries,
       activities,
       wellnessScores,
-      period
+      period,
+      analyticalFramework
     }
   });
 
@@ -271,6 +275,7 @@ export const generateAndSaveWellnessInsight = async (period: 'day' | 'week' | 'm
   }
 
   const insightText = response.data.insight;
+  const framework = response.data.framework || analyticalFramework;
 
   // Save the generated insight to the database
   const { data, error } = await supabase
@@ -279,6 +284,7 @@ export const generateAndSaveWellnessInsight = async (period: 'day' | 'week' | 'm
       user_id: userId,
       insight_text: insightText,
       analysis_period: period,
+      analytical_framework: framework,
       start_date: startDate.toISOString().split('T')[0],
       end_date: endDate.toISOString().split('T')[0]
     })
@@ -292,7 +298,10 @@ export const generateAndSaveWellnessInsight = async (period: 'day' | 'week' | 'm
   return data?.[0];
 };
 
-export const getLatestWellnessInsight = async (period: 'day' | 'week' | 'month' | 'year' = 'month') => {
+export const getLatestWellnessInsight = async (
+  period: 'day' | 'week' | 'month' | 'year' = 'month',
+  analyticalFramework: string = 'physical-emotional'
+) => {
   const user = supabase.auth.getUser();
   const userId = (await user).data.user?.id;
   
@@ -305,6 +314,7 @@ export const getLatestWellnessInsight = async (period: 'day' | 'week' | 'month' 
     .select('*')
     .eq('user_id', userId)
     .eq('analysis_period', period)
+    .eq('analytical_framework', analyticalFramework)
     .order('created_at', { ascending: false })
     .limit(1);
 
