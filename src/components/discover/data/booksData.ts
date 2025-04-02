@@ -1,4 +1,3 @@
-
 // Books content data
 
 export const personalGrowthBooks = [
@@ -113,7 +112,7 @@ export const philosophicalBooks = [
     author: "Marcus Aurelius",
     rating: 4.9,
     reviewCount: 9350,
-    image: "/lovable-uploads/b049be57-18f5-4e8b-ac1c-19df50e9824d.png",
+    image: "/lovable-uploads/cbe38a8c-2170-4c78-b74b-804bb3309c98.png",
     audioSample: "https://samples.audible.com/bk/acx0/115133/bk_acx0_115133_sample.mp3",
     summary: "Marcus Aurelius' 'Meditations' is a profound collection of personal writings by the Roman Emperor practicing Stoic philosophy. Written during military campaigns, these reflections were never intended for publication but offer intimate insight into the mind of a ruler striving for wisdom and virtue. The text emphasizes core Stoic principles: distinguishing between what we can and cannot control, accepting nature's course, practicing rationality over emotion, and treating others with justice and compassion. Aurelius reminds himself that external events cannot harm the soul unless we allow them to, and that our perceptions—not external things—determine our happiness. His meditations on mortality urge readers to live meaningfully in the present moment, while his thoughts on cosmic interconnectedness promote a sense of duty to humanity. This timeless work continues to resonate with readers seeking resilience, inner peace, and ethical guidance in facing life's challenges."
   },
@@ -178,4 +177,3 @@ export const philosophicalBooks = [
     summary: "Nietzsche's 'Thus Spoke Zarathustra' is a philosophical novel chronicling the fictional travels and teachings of Zarathustra, a prophet-like figure who proclaims the possibility of human greatness. Written in a poetic, biblical style, the work introduces Nietzsche's most profound ideas: the death of God, the will to power, eternal recurrence, and the Übermensch ('overman' or 'superman'). Zarathustra descends from his mountain solitude to teach humanity that with God's death, we must create our own values and meaning rather than seeking otherworldly salvation. The Übermensch represents those who overcome nihilism to affirm life, embracing the eternal recurrence—the hypothetical idea that one would live the same life infinitely. Through parables, speeches, and symbolic encounters, Nietzsche challenges readers to reject societal constraints and religious morality in favor of self-overcoming and life-affirmation. Though initially poorly received, this revolutionary work later influenced existentialism, postmodernism, psychology, and literature, embodying Nietzsche's attempt to create a new philosophical language beyond traditional rationalism."
   }
 ];
-
