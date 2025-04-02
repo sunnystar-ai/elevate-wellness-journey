@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { JournalEntry } from "@/components/dashboard/mental-health-report/types";
 
@@ -220,7 +219,7 @@ export const getWellnessScores = async (period: 'day' | 'week' | 'month' | 'year
 };
 
 // Wellness Insights
-export const generateAndSaveWellnessInsight = async (period: 'week' | 'month' | 'year') => {
+export const generateAndSaveWellnessInsight = async (period: 'day' | 'week' | 'month' | 'year') => {
   const user = supabase.auth.getUser();
   const userId = (await user).data.user?.id;
   
@@ -242,6 +241,9 @@ export const generateAndSaveWellnessInsight = async (period: 'week' | 'month' | 
   let startDate = new Date();
   
   switch (period) {
+    case 'day':
+      startDate = new Date(startDate.setHours(0, 0, 0, 0));
+      break;
     case 'week':
       startDate = new Date(startDate.setDate(startDate.getDate() - 7));
       break;
@@ -290,7 +292,7 @@ export const generateAndSaveWellnessInsight = async (period: 'week' | 'month' | 
   return data?.[0];
 };
 
-export const getLatestWellnessInsight = async (period: 'week' | 'month' | 'year' = 'month') => {
+export const getLatestWellnessInsight = async (period: 'day' | 'week' | 'month' | 'year' = 'month') => {
   const user = supabase.auth.getUser();
   const userId = (await user).data.user?.id;
   

@@ -16,7 +16,7 @@ import { getLatestWellnessInsight, generateAndSaveWellnessInsight } from '@/serv
 
 const WellnessInsights = () => {
   const [insight, setInsight] = useState<string | null>(null);
-  const [period, setPeriod] = useState<'week' | 'month' | 'year'>('week');
+  const [period, setPeriod] = useState<'day' | 'week' | 'month' | 'year'>('day');
   const [loading, setLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
 
@@ -78,11 +78,12 @@ const WellnessInsights = () => {
     <Card className="p-4 border border-harmony-light-lavender bg-harmony-light-lavender/20">
       <div className="flex justify-between items-center mb-3">
         <h3 className="font-medium text-lg">Your Wellness Insights</h3>
-        <Select value={period} onValueChange={(value: 'week' | 'month' | 'year') => setPeriod(value)}>
+        <Select value={period} onValueChange={(value: 'day' | 'week' | 'month' | 'year') => setPeriod(value)}>
           <SelectTrigger className="w-[120px] h-8">
             <SelectValue placeholder="Select period" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="day">Daily</SelectItem>
             <SelectItem value="week">Weekly</SelectItem>
             <SelectItem value="month">Monthly</SelectItem>
             <SelectItem value="year">Yearly</SelectItem>
@@ -120,7 +121,7 @@ const WellnessInsights = () => {
           <span className="bg-harmony-light-lavender rounded-full p-1 mr-2 mt-0.5">
             <Calendar className="h-3 w-3 text-harmony-lavender" />
           </span>
-          <span>Insights are based on your {period}ly activity patterns</span>
+          <span>Insights are based on your {period === 'day' ? 'daily' : period + 'ly'} activity patterns</span>
         </li>
       </ul>
       
