@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
@@ -17,6 +16,7 @@ serve(async (req) => {
     const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
     
     if (!OPENAI_API_KEY) {
+      console.error('OpenAI API key is not configured');
       return new Response(
         JSON.stringify({ error: 'OpenAI API key is not configured' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -27,50 +27,58 @@ serve(async (req) => {
     
     console.log('Generating wellness insight for period:', period);
     console.log('Using analytical framework:', analyticalFramework);
-    console.log('Journal entries count:', journalEntries?.length);
-    console.log('Activities count:', activities?.length);
-    console.log('Wellness scores count:', wellnessScores?.length);
+    console.log('Journal entries count:', journalEntries?.length || 0);
+    console.log('Activities count:', activities?.length || 0);
+    console.log('Wellness scores count:', wellnessScores?.length || 0);
 
-    // Prepare data summary for the prompt
-    const journalSummary = journalEntries.map(entry => 
-      `Date: ${new Date(entry.created_at).toLocaleDateString()}, 
-       Feelings: ${entry.feelings.substring(0, 100)}..., 
-       Thoughts: ${entry.thought_process.substring(0, 100)}..., 
-       Gratitude: ${entry.gratitude.substring(0, 100)}...`
-    ).join('\n');
-    
-    const activitiesSummary = activities.map(activity => 
-      `Activity: ${activity.activity_name}, 
-       Duration: ${activity.duration} ${activity.duration_unit}, 
-       Date: ${new Date(activity.activity_date).toLocaleDateString()}, 
-       Completed: ${activity.completed}`
-    ).join('\n');
-    
-    const scoresSummary = wellnessScores.map(score => 
-      `Date: ${new Date(score.score_date).toLocaleDateString()}, 
-       Mental: ${score.mental_score}, 
-       Physical: ${score.physical_score || 'N/A'}, 
-       Sleep: ${score.sleep_score || 'N/A'}, 
-       Nutrition: ${score.nutrition_score || 'N/A'}`
-    ).join('\n');
-
-    // Get personality data if available (from localStorage or database)
-    let personalityData = {};
-    try {
-      // This would be expanded to actually fetch personality data from the database
-      personalityData = {
-        mbtiType: "INFJ", // Example - would be dynamically fetched
-        bigFiveTraits: {
-          openness: 85,
-          conscientiousness: 75,
-          extraversion: 45,
-          agreeableness: 80,
-          neuroticism: 60
-        }
-      };
-    } catch (error) {
-      console.log('No personality data available', error);
+    // Check if we have enough data to generate insights
+    if ((!journalEntries || journalEntries.length === 0) && 
+        (!activities || activities.length === 0) && 
+        (!wellnessScores || wellnessScores.length === 0)) {
+      console.error('Not enough data to generate insights');
+      return new Response(
+        JSON.stringify({ error: 'Not enough data to generate insights' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
+
+    // Safe data preparation
+    const journalSummary = journalEntries && journalEntries.length > 0 ? 
+      journalEntries.map(entry => 
+        `Date: ${new Date(entry.created_at).toLocaleDateString()}, 
+         Feelings: ${entry.feelings ? entry.feelings.substring(0, 100) + '...' : 'N/A'}, 
+         Thoughts: ${entry.thought_process ? entry.thought_process.substring(0, 100) + '...' : 'N/A'}, 
+         Gratitude: ${entry.gratitude ? entry.gratitude.substring(0, 100) + '...' : 'N/A'}`
+      ).join('\n') : "No journal entries available";
+    
+    const activitiesSummary = activities && activities.length > 0 ? 
+      activities.map(activity => 
+        `Activity: ${activity.activity_name || 'Unnamed'}, 
+         Duration: ${activity.duration || 0} ${activity.duration_unit || 'min'}, 
+         Date: ${activity.activity_date ? new Date(activity.activity_date).toLocaleDateString() : 'N/A'}, 
+         Completed: ${activity.completed ? 'Yes' : 'No'}`
+      ).join('\n') : "No activities available";
+    
+    const scoresSummary = wellnessScores && wellnessScores.length > 0 ? 
+      wellnessScores.map(score => 
+        `Date: ${score.score_date ? new Date(score.score_date).toLocaleDateString() : 'N/A'}, 
+         Mental: ${score.mental_score || 'N/A'}, 
+         Physical: ${score.physical_score || 'N/A'}, 
+         Sleep: ${score.sleep_score || 'N/A'}, 
+         Nutrition: ${score.nutrition_score || 'N/A'}`
+      ).join('\n') : "No wellness scores available";
+
+    // Default personality data
+    const personalityData = {
+      mbtiType: "Unknown",
+      bigFiveTraits: {
+        openness: 50,
+        conscientiousness: 50,
+        extraversion: 50,
+        agreeableness: 50,
+        neuroticism: 50
+      }
+    };
 
     // Customize the prompt based on the selected analytical framework
     let systemPrompt = 'You are a wellness coach and mental health expert providing insights based on user data.';
@@ -223,42 +231,65 @@ serve(async (req) => {
         `;
     }
 
-    // Call OpenAI API with GPT-4
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o', // Using GPT-4 for advanced analysis
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-        temperature: 0.7,
-      }),
-    });
+    try {
+      // Call OpenAI API with GPT-4o
+      console.log('Sending request to OpenAI...');
+      
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${OPENAI_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o', // Using GPT-4 for advanced analysis
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt }
+          ],
+          temperature: 0.7,
+        }),
+      });
 
-    const data = await response.json();
-    
-    if (!response.ok) {
-      console.error('OpenAI API error:', data);
-      throw new Error(`OpenAI API error: ${response.status}`);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('OpenAI API response error:', response.status, errorData);
+        return new Response(
+          JSON.stringify({ error: `OpenAI API error: ${response.status}`, details: errorData }),
+          { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      const data = await response.json();
+      console.log('Received response from OpenAI');
+      
+      if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+        console.error('Invalid response structure from OpenAI:', data);
+        return new Response(
+          JSON.stringify({ error: 'Invalid response structure from OpenAI' }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      const insightText = data.choices[0].message.content;
+      
+      return new Response(
+        JSON.stringify({ 
+          insight: insightText,
+          period: period,
+          framework: analyticalFramework
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    } catch (error) {
+      console.error('Error calling OpenAI API:', error);
+      return new Response(
+        JSON.stringify({ error: 'Error calling OpenAI API', details: error.message }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
-
-    const insightText = data.choices[0].message.content;
-    
-    return new Response(
-      JSON.stringify({ 
-        insight: insightText,
-        period: period,
-        framework: analyticalFramework
-      }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
   } catch (error) {
-    console.error('Error generating wellness insight:', error);
+    console.error('Error in generate-wellness-insight function:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
