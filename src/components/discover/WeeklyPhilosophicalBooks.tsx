@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Clock } from 'lucide-react';
 import { philosophicalBooks } from './data/booksData';
@@ -14,7 +15,7 @@ const WeeklyPhilosophicalBooks = () => {
   const philosopherImages = {
     'Plato': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/800px-Plato_Silanion_Musei_Capitolini_MC1377.jpg',
     'Buddha': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Buddha_in_Sarnath_Museum_%28Dhammajak_Mutra%29.jpg/800px-Buddha_in_Sarnath_Museum_%28Dhammajak_Mutra%29.jpg',
-    'Marcus Aurelius': 'https://i.imgur.com/TKUVuX0.jpg',
+    'Marcus Aurelius': '/lovable-uploads/df197acd-d8ef-4c8e-8bb8-7639f2ca21c8.png',
     'Lao Tzu': 'public/lovable-uploads/ba8892ba-5c54-4807-a110-5d98ac93865d.png',
     'Carl Jung': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/CGJung.jpg/800px-CGJung.jpg',
     'Socrates': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Socrate_du_Louvre.jpg/800px-Socrate_du_Louvre.jpg',
