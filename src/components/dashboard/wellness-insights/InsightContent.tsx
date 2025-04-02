@@ -31,10 +31,38 @@ export const InsightContent = ({ loading, error, insight, navigateToJournalPromp
   }
   
   if (insight) {
+    // Format insight text into paragraphs for better readability
+    const formatInsightText = (text: string) => {
+      // Check if the text is longer than 300 characters
+      if (text.length > 300) {
+        // Split text approximately in half at a period, question mark, or exclamation mark
+        const middleIndex = Math.floor(text.length / 2);
+        
+        // Look for sentence endings near the middle of the text
+        let splitIndex = text.indexOf('. ', middleIndex - 50);
+        if (splitIndex === -1) splitIndex = text.indexOf('! ', middleIndex - 50);
+        if (splitIndex === -1) splitIndex = text.indexOf('? ', middleIndex - 50);
+        
+        // If we found a sentence ending, split there; otherwise, just use the middle
+        if (splitIndex !== -1) {
+          splitIndex += 2; // Include the period and space
+          return (
+            <>
+              <p className="text-sm text-muted-foreground mb-4">{text.substring(0, splitIndex)}</p>
+              <p className="text-sm text-muted-foreground">{text.substring(splitIndex)}</p>
+            </>
+          );
+        }
+      }
+      
+      // If the text isn't very long or we couldn't find a good split point
+      return <p className="text-sm text-muted-foreground">{text}</p>;
+    };
+    
     return (
       <div className="space-y-2">
-        <p className="text-sm text-muted-foreground whitespace-pre-line">{insight}</p>
-        <div className="text-xs text-muted-foreground italic mt-2">
+        {formatInsightText(insight)}
+        <div className="text-xs text-muted-foreground italic mt-4">
           Analyzed using AI advanced pattern recognition
         </div>
       </div>
