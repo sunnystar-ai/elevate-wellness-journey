@@ -45,3 +45,12 @@ export const frameworks: AnalyticalFramework[] = [
 export const getFrameworkById = (id: string): AnalyticalFramework => {
   return frameworks.find(framework => framework.id === id) || frameworks[0];
 };
+
+export const getFrameworkInfo = (id: string) => {
+  const framework = getFrameworkById(id);
+  return {
+    icon: framework.icon,
+    title: framework.name,
+    description: framework.description
+  };
+};
