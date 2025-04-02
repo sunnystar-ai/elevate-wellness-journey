@@ -12,7 +12,6 @@ import QuickActionsBar from '@/components/home/QuickActionsBar';
 import TodayProgressChart from '@/components/home/TodayProgressChart';
 import AiChat from '@/components/home/AiChat';
 import RecommendationCards from '@/components/home/RecommendationCards';
-import DailyTip from '@/components/home/DailyTip';
 
 const Index = () => {
   const [loaded, setLoaded] = useState(false);
@@ -68,10 +67,6 @@ const Index = () => {
             <h2 className="text-lg font-medium">Belief System Reframing</h2>
           </div>
           <AiChat />
-        </AnimatedSection>
-
-        <AnimatedSection className="mb-10">
-          <DailyTip />
         </AnimatedSection>
 
         <AnimatedSection className="mb-10">
