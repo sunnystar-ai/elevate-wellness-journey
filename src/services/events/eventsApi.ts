@@ -23,7 +23,7 @@ export const createEvent = async (eventData: EventInput): Promise<boolean> => {
       .insert({
         ...eventData,
         host_id: user.id
-      });
+      } as any); // Using 'as any' temporarily until we update database types
 
     if (error) {
       throw error;
@@ -59,7 +59,7 @@ export const fetchEvents = async (): Promise<Event[]> => {
       throw error;
     }
 
-    return events as Event[];
+    return events as unknown as Event[]; // Using a type assertion until we update database types
   } catch (error) {
     console.error('Error fetching events data:', error);
     throw error;

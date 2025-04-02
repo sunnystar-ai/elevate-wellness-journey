@@ -42,7 +42,7 @@ export const getUserParticipationStatus = async (
       return null;
     }
 
-    return (participation?.status as 'going' | 'interested') || null;
+    return participation?.status as 'going' | 'interested' || null;
   } catch (error) {
     console.error('Error in getUserParticipationStatus:', error);
     return null;
@@ -99,7 +99,7 @@ export const updateParticipationStatus = async (
           event_id: eventId,
           user_id: user.id,
           status
-        });
+        } as any); // Using 'as any' temporarily until we update database types
     }
 
     if (result.error) {
