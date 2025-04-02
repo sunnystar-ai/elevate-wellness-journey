@@ -171,6 +171,7 @@ export type Database = {
       wellness_insights: {
         Row: {
           analysis_period: string
+          analytical_framework: string
           created_at: string
           end_date: string
           id: string
@@ -180,6 +181,7 @@ export type Database = {
         }
         Insert: {
           analysis_period: string
+          analytical_framework?: string
           created_at?: string
           end_date: string
           id?: string
@@ -189,6 +191,7 @@ export type Database = {
         }
         Update: {
           analysis_period?: string
+          analytical_framework?: string
           created_at?: string
           end_date?: string
           id?: string
