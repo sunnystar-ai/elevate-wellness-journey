@@ -1,3 +1,4 @@
+
 import { Card } from '@/components/ui/card';
 import { useWellnessInsights } from './wellness-insights/useWellnessInsights';
 import { PeriodSelector } from './wellness-insights/PeriodSelector';
@@ -31,7 +32,7 @@ const WellnessInsights = () => {
           <PeriodSelector period={period} setPeriod={setPeriod} />
           <FrameworkSelector 
             framework={analyticalFramework} 
-            setFramework={(framework) => setAnalyticalFramework(framework)} 
+            setFramework={setAnalyticalFramework} 
           />
         </div>
       </div>

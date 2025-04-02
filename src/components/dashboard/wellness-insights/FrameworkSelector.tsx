@@ -8,12 +8,9 @@ import {
 } from "@/components/ui/select";
 import { frameworks } from "./frameworks";
 
-// Use the correct type from the frameworks file
-type FrameworkId = string;
-
 interface FrameworkSelectorProps {
-  framework: FrameworkId;
-  setFramework: (framework: FrameworkId) => void;
+  framework: string;
+  setFramework: (framework: string) => void;
 }
 
 export const FrameworkSelector = ({ framework, setFramework }: FrameworkSelectorProps) => {
