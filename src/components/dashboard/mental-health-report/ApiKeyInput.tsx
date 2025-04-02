@@ -64,6 +64,9 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
     onApiKeySubmit(submittedApiKey);
     setIsInputVisible(false);
     
+    // Dispatch storage event to notify other components
+    window.dispatchEvent(new Event('storage'));
+    
     toast({
       title: "API Key Saved",
       description: "Your OpenAI API key has been saved in your browser's local storage",
@@ -75,6 +78,9 @@ const ApiKeyInput = ({ onApiKeySubmit }: ApiKeyInputProps) => {
     setApiKey('');
     setApiKeyType('none');
     setIsInputVisible(true);
+    
+    // Dispatch storage event to notify other components
+    window.dispatchEvent(new Event('storage'));
     
     toast({
       title: "API Key Removed",

@@ -9,7 +9,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useApiKey } from '@/components/dashboard/mental-health-report/hooks/useApiKey';
 import { useToast } from '@/hooks/use-toast';
 
 interface HorizontalBookCardProps {
@@ -27,10 +26,12 @@ const HorizontalBookCard = ({ id, title, author, rating, image }: HorizontalBook
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [imageError, setImageError] = useState(false);
-  const { apiKey } = useApiKey();
   const { toast } = useToast();
 
   const generateSummary = async () => {
+    // Get API key from localStorage or environment variable
+    const apiKey = localStorage.getItem('openai_api_key') || import.meta.env.VITE_OPENAI_API_KEY;
+    
     if (!apiKey) {
       toast({
         title: "API Key Required",
