@@ -1,15 +1,17 @@
 
-import { ReactElement } from 'react';
+import { ReactNode } from 'react';
 
 interface FrameworkDisplayProps {
-  icon: ReactElement;
+  icon: ReactNode;
   title: string;
 }
 
 export const FrameworkDisplay = ({ icon, title }: FrameworkDisplayProps) => {
   return (
     <div className="flex items-center mb-3">
-      {icon}
+      <div className="mr-2">
+        {icon}
+      </div>
       <h4 className="font-medium">{title}</h4>
     </div>
   );

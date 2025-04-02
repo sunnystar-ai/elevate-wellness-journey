@@ -1,12 +1,12 @@
 
 import { Activity, Brain, Heart, MenuSquare, Zap } from 'lucide-react';
-import { ReactElement } from 'react';
+import { ReactNode } from 'react';
 
 export interface AnalyticalFramework {
   id: string;
   name: string;
   description: string;
-  icon: ReactElement;
+  icon: ReactNode;
 }
 
 export const frameworks: AnalyticalFramework[] = [
@@ -14,31 +14,31 @@ export const frameworks: AnalyticalFramework[] = [
     id: 'physical-emotional',
     name: 'Physical & Emotional',
     description: 'Insights on how your physical activities affect your emotional state and vice versa.',
-    icon: <Heart key="heart-icon" className="h-5 w-5 text-white" />
+    icon: <Heart className="h-5 w-5 text-white" />
   },
   {
     id: 'cognitive',
     name: 'Cognitive',
     description: 'Analysis of your thought patterns, concentration, and mental clarity.',
-    icon: <Brain key="brain-icon" className="h-5 w-5 text-white" />
+    icon: <Brain className="h-5 w-5 text-white" />
   },
   {
     id: 'behavioral',
     name: 'Behavioral',
     description: 'Patterns in your daily behaviors and how they relate to your wellness.',
-    icon: <Activity key="activity-icon" className="h-5 w-5 text-white" />
+    icon: <Activity className="h-5 w-5 text-white" />
   },
   {
     id: 'holistic',
     name: 'Holistic',
     description: 'Comprehensive view of your mental, physical, and social wellness.',
-    icon: <Zap key="zap-icon" className="h-5 w-5 text-white" />
+    icon: <Zap className="h-5 w-5 text-white" />
   },
   {
     id: 'journal',
     name: 'Journal',
     description: 'Analysis of your journal entries and self-reflection trends.',
-    icon: <MenuSquare key="menu-square-icon" className="h-5 w-5 text-white" />
+    icon: <MenuSquare className="h-5 w-5 text-white" />
   }
 ];
 
