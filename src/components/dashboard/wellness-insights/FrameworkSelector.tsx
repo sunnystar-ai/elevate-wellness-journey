@@ -6,12 +6,14 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
+import { frameworks } from "./frameworks";
 
-type AnalyticalFramework = 'physical-emotional' | 'personality' | 'belief-mapping' | 'predictive';
+// Use the correct type from the frameworks file
+type FrameworkId = string;
 
 interface FrameworkSelectorProps {
-  framework: AnalyticalFramework;
-  setFramework: (framework: AnalyticalFramework) => void;
+  framework: FrameworkId;
+  setFramework: (framework: FrameworkId) => void;
 }
 
 export const FrameworkSelector = ({ framework, setFramework }: FrameworkSelectorProps) => {
@@ -24,10 +26,9 @@ export const FrameworkSelector = ({ framework, setFramework }: FrameworkSelector
         <SelectValue placeholder="Analysis Type" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="physical-emotional">Physical-Emotional</SelectItem>
-        <SelectItem value="personality">Personality-Driven</SelectItem>
-        <SelectItem value="belief-mapping">Belief Mapping</SelectItem>
-        <SelectItem value="predictive">Predictive Analytics</SelectItem>
+        {frameworks.map((fw) => (
+          <SelectItem key={fw.id} value={fw.id}>{fw.name}</SelectItem>
+        ))}
       </SelectContent>
     </Select>
   );
