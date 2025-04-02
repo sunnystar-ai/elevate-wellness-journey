@@ -18,7 +18,10 @@ serve(async (req) => {
     if (!OPENAI_API_KEY) {
       console.error('OpenAI API key is not configured');
       return new Response(
-        JSON.stringify({ error: 'OpenAI API key is not configured' }),
+        JSON.stringify({ 
+          error: 'OpenAI API key is not configured',
+          details: 'The AI service requires configuration. Please add the OPENAI_API_KEY to the edge function settings.'
+        }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -232,7 +235,7 @@ serve(async (req) => {
     }
 
     try {
-      // Call OpenAI API with GPT-4o
+      // Call OpenAI API with GPT-4o-mini
       console.log('Sending request to OpenAI...');
       
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -242,7 +245,7 @@ serve(async (req) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'gpt-4o', // Using GPT-4 for advanced analysis
+          model: 'gpt-4o-mini',
           messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: userPrompt }
@@ -255,7 +258,10 @@ serve(async (req) => {
         const errorData = await response.json().catch(() => ({}));
         console.error('OpenAI API response error:', response.status, errorData);
         return new Response(
-          JSON.stringify({ error: `OpenAI API error: ${response.status}`, details: errorData }),
+          JSON.stringify({ 
+            error: `OpenAI API error: ${response.status}`, 
+            details: errorData
+          }),
           { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
@@ -284,7 +290,10 @@ serve(async (req) => {
     } catch (error) {
       console.error('Error calling OpenAI API:', error);
       return new Response(
-        JSON.stringify({ error: 'Error calling OpenAI API', details: error.message }),
+        JSON.stringify({ 
+          error: 'Error calling OpenAI API', 
+          details: error.message 
+        }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }

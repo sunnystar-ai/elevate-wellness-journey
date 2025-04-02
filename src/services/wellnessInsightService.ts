@@ -4,7 +4,7 @@ import { getJournalEntries } from "./journalService";
 import { getDailyActivities } from "./activityService";
 import { getWellnessScores } from "./wellnessScoreService";
 
-interface WellnessInsight {
+export interface WellnessInsight {
   id?: string;
   user_id: string;
   insight_text: string;
@@ -63,6 +63,12 @@ export const generateAndSaveWellnessInsight = async (
 
     if (response.error) {
       console.error("Error from edge function:", response.error);
+      
+      // Check for specific errors and provide more helpful messages
+      if (response.error.message?.includes("OpenAI API key is not configured")) {
+        throw new Error("AI service configuration is missing. Please contact support.");
+      }
+      
       throw new Error(response.error.message || "Failed to generate insight from AI service");
     }
 

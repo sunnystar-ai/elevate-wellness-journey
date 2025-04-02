@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { TrendingUp, CheckCircle2, RefreshCw, Calendar, Brain, Activity, AlertTriangle } from 'lucide-react';
+import { TrendingUp, CheckCircle2, RefreshCw, Calendar, Brain, Activity, AlertTriangle, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { 
@@ -13,6 +13,7 @@ import {
 import { toast } from '@/hooks/use-toast';
 import { getLatestWellnessInsight, generateAndSaveWellnessInsight } from '@/services/wellnessInsightService';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useNavigate } from 'react-router-dom';
 
 const WellnessInsights = () => {
   const [insight, setInsight] = useState<string | null>(null);
@@ -21,6 +22,7 @@ const WellnessInsights = () => {
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [analyticalFramework, setAnalyticalFramework] = useState<string>('physical-emotional');
+  const navigate = useNavigate();
 
   // Fetch the latest wellness insight when component mounts or period changes
   useEffect(() => {
@@ -70,8 +72,12 @@ const WellnessInsights = () => {
       if (error instanceof Error) {
         if (error.message === "Not enough data to generate insights") {
           errorMessage = "Not enough data available. Log more activities and journal entries.";
+        } else if (error.message.includes("AI service configuration")) {
+          errorMessage = "AI service is not properly configured. Please contact support.";
         } else if (error.message.includes("OpenAI API")) {
           errorMessage = "AI service is temporarily unavailable. Please try again later.";
+        } else if (error.message.includes("Edge Function")) {
+          errorMessage = "Backend service is temporarily unavailable. Please try again later.";
         }
       }
       
@@ -85,6 +91,10 @@ const WellnessInsights = () => {
     } finally {
       setGenerating(false);
     }
+  };
+
+  const navigateToJournalPrompt = () => {
+    navigate('/journal-prompt');
   };
 
   const renderFrameworkIcon = () => {
@@ -156,16 +166,29 @@ const WellnessInsights = () => {
         <div className="space-y-2">
           <p className="text-sm text-muted-foreground whitespace-pre-line">{insight}</p>
           <div className="text-xs text-muted-foreground italic mt-2">
-            Analyzed using GPT-4 advanced pattern recognition
+            Analyzed using AI advanced pattern recognition
           </div>
         </div>
       );
     }
     
     return (
-      <p className="text-sm text-muted-foreground italic py-2">
-        No insights available for this period and framework. Generate an insight based on your data or log more activities.
-      </p>
+      <div className="space-y-4">
+        <p className="text-sm text-muted-foreground italic py-2">
+          No insights available for this period and framework. Generate an insight based on your data or log more activities.
+        </p>
+        <div className="flex flex-col space-y-2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={navigateToJournalPrompt}
+            className="flex items-center justify-center"
+          >
+            <Calendar className="h-4 w-4 mr-2" />
+            Complete Today's Journal Entry
+          </Button>
+        </div>
+      </div>
     );
   };
 
