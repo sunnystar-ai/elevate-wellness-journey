@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useNavigate } from 'react-router-dom';
-import { getLatestWellnessInsight } from '@/services/wellnessInsightService';
+import { getLatestWellnessInsight, generateAndSaveWellnessInsight } from '@/services/wellnessInsightService';
 
 const InsightsPanel = () => {
   const [insights, setInsights] = useState<Array<{ icon: JSX.Element, text: string }>>([]);
@@ -24,7 +24,21 @@ const InsightsPanel = () => {
         
         const insightArray = [];
         
-        if (physicalInsight?.insight_text) {
+        // If we don't have a physical insight, try to generate it
+        if (!physicalInsight?.insight_text) {
+          try {
+            const newInsight = await generateAndSaveWellnessInsight('week', 'physical-emotional');
+            if (newInsight?.insight_text) {
+              const snippet = extractSnippet(newInsight.insight_text);
+              insightArray.push({
+                icon: <Activity className="h-4 w-4 text-blue-600 dark:text-blue-400" />,
+                text: snippet
+              });
+            }
+          } catch (error) {
+            console.error('Error generating physical insight:', error);
+          }
+        } else if (physicalInsight?.insight_text) {
           // Extract a shorter snippet from the full insight
           const snippet = extractSnippet(physicalInsight.insight_text);
           insightArray.push({

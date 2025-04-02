@@ -8,6 +8,7 @@ import BottomNavigation from '@/components/layout/BottomNavigation';
 import { useToast } from '@/hooks/use-toast';
 import { JournalEntry } from '@/components/dashboard/mental-health-report/types';
 import { saveJournalEntry } from '@/services/supabaseService';
+import { generateAndSaveWellnessInsight } from '@/services/wellnessInsightService';
 
 const JournalPrompt = () => {
   const navigate = useNavigate();
@@ -43,12 +44,23 @@ const JournalPrompt = () => {
       // Save to Supabase
       await saveJournalEntry(journalEntry);
       
+      // After saving the journal entry, trigger wellness insight generation
+      // We'll use 'day' as the default period
+      try {
+        await generateAndSaveWellnessInsight('day', 'physical-emotional');
+        console.log('Daily wellness insight generated automatically');
+      } catch (insightError) {
+        console.error('Error auto-generating wellness insight:', insightError);
+        // We don't show this error to the user since it's a background process
+      }
+      
       toast({
         title: "Journal Entry Saved",
-        description: "Your journal entry has been saved successfully and your report has been updated.",
+        description: "Your journal entry has been saved successfully and your insights have been updated.",
         variant: "default"
       });
       
+      // Navigate to dashboard which will display the updated insights
       navigate('/dashboard');
     } catch (error) {
       console.error('Error saving journal entry:', error);
