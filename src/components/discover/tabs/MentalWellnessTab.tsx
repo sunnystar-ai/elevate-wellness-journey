@@ -22,10 +22,32 @@ const MentalWellnessTab = ({ articles, books }: MentalWellnessTabProps) => {
   const [nextUpdateDate, setNextUpdateDate] = useState<Date>(new Date());
   const [timeRemaining, setTimeRemaining] = useState<string>("");
   
+  // Updated philosopher images that match their actual portraits
+  const philosopherImages = {
+    'Plato': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/800px-Plato_Silanion_Musei_Capitolini_MC1377.jpg',
+    'Buddha': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Buddha_in_Sarnath_Museum_%28Dhammajak_Mutra%29.jpg/800px-Buddha_in_Sarnath_Museum_%28Dhammajak_Mutra%29.jpg',
+    'Marcus Aurelius': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Marcus_Aurelius_Louvre_MR561.jpg/800px-Marcus_Aurelius_Louvre_MR561.jpg',
+    'Lao Tzu': 'public/lovable-uploads/ba8892ba-5c54-4807-a110-5d98ac93865d.png',
+    'Carl Jung': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/CGJung.jpg/800px-CGJung.jpg',
+    'Socrates': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Socrate_du_Louvre.jpg/800px-Socrate_du_Louvre.jpg',
+    'Aristotle': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Aristotle_Altemps_Inv8575.jpg/800px-Aristotle_Altemps_Inv8575.jpg',
+    'Confucius': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Confucius_Tang_Dynasty.jpg/800px-Confucius_Tang_Dynasty.jpg',
+    'Epictetus': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Epicteti_Enchiridion_Latinis_versibus_adumbratum_%28Oxford_1715%29_frontispiece.jpg/800px-Epicteti_Enchiridion_Latinis_versibus_adumbratum_%28Oxford_1715%29_frontispiece.jpg',
+    'Friedrich Nietzsche': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Nietzsche187a.jpg/800px-Nietzsche187a.jpg'
+  };
+  
   // Function to select 5 random books from philosophical books
   const selectRandomBooks = () => {
     const shuffled = [...philosophicalBooks].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, 5);
+    const selected = shuffled.slice(0, 5);
+    
+    // Update book images to use philosopher portraits
+    return selected.map(book => {
+      return {
+        ...book,
+        image: philosopherImages[book.author] || book.image // Use philosopher image or fallback to original image
+      };
+    });
   };
 
   // Function to calculate next update date (next Monday)
@@ -76,7 +98,15 @@ const MentalWellnessTab = ({ articles, books }: MentalWellnessTabProps) => {
         localStorage.setItem('weeklyMentalWellnessBooks', JSON.stringify(weeklyBooks));
       } else {
         // Use the stored books if the date is still in the future
-        weeklyBooks = storedBooks ? JSON.parse(storedBooks) : selectRandomBooks();
+        let storedBooksData = storedBooks ? JSON.parse(storedBooks) : selectRandomBooks();
+        
+        // Update images to use philosopher portraits (in case we're updating an older format)
+        weeklyBooks = storedBooksData.map((book: any) => {
+          return {
+            ...book,
+            image: philosopherImages[book.author] || book.image
+          };
+        });
       }
     } else {
       // First time setup
