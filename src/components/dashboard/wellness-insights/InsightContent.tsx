@@ -31,10 +31,10 @@ export const InsightContent = ({ loading, error, insight, navigateToJournalPromp
   }
   
   if (insight) {
-    // Format insight text into concise paragraphs for better readability
+    // Format insight text into shorter, more concise paragraphs
     const formatInsightText = (text: string) => {
-      // First, check if we need to split the text at all
-      if (text.length < 150) {
+      // For very short text, just return as is
+      if (text.length < 120) {
         return <p className="text-sm text-muted-foreground">{text}</p>;
       }
 
@@ -45,28 +45,26 @@ export const InsightContent = ({ loading, error, insight, navigateToJournalPromp
         return <p className="text-sm text-muted-foreground">{text}</p>;
       }
       
-      // Try to create 2-3 paragraphs of roughly equal length
+      // Create shorter paragraphs (2-3 sentences per paragraph)
       const paragraphs = [];
       let currentParagraph = '';
-      let targetLength = Math.ceil(text.length / Math.min(3, sentences.length));
+      let sentenceCount = 0;
+      const maxSentencesPerParagraph = 2; // Limit to 2 sentences per paragraph for conciseness
       
       for (const sentence of sentences) {
-        if (currentParagraph.length === 0 || currentParagraph.length + sentence.length < targetLength) {
-          currentParagraph += sentence;
-        } else {
+        currentParagraph += sentence;
+        sentenceCount++;
+        
+        if (sentenceCount >= maxSentencesPerParagraph) {
           paragraphs.push(currentParagraph);
-          currentParagraph = sentence;
+          currentParagraph = '';
+          sentenceCount = 0;
         }
       }
       
       // Add the last paragraph if it's not empty
       if (currentParagraph.length > 0) {
         paragraphs.push(currentParagraph);
-      }
-      
-      // If we only have one paragraph, just return it
-      if (paragraphs.length <= 1) {
-        return <p className="text-sm text-muted-foreground">{text}</p>;
       }
       
       // Return the paragraphs as separate React elements
