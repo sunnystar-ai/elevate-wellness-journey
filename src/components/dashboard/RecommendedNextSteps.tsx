@@ -6,27 +6,38 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { JournalEntry } from './mental-health-report/types';
 import TrendsSection from './TrendsSection';
+import { saveJournalEntry, getJournalEntries } from '@/services/supabaseService';
+import { useNavigate } from 'react-router-dom';
 
 const RecommendedNextSteps = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [journalEntry, setJournalEntry] = useState<JournalEntry>({
     feelings: '',
     thoughtProcess: '',
     gratitude: ''
   });
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
+  const [submitting, setSubmitting] = useState(false);
 
-  // Load saved journal entries from localStorage on component mount
+  // Load saved journal entries from Supabase on component mount
   useEffect(() => {
-    const savedEntries = localStorage.getItem('journalEntries');
-    if (savedEntries) {
+    const fetchJournalEntries = async () => {
       try {
-        const parsedEntries = JSON.parse(savedEntries);
-        setJournalEntries(parsedEntries);
+        const entries = await getJournalEntries('month');
+        // Transform the data structure if needed to match JournalEntry type
+        const formattedEntries = entries.map(entry => ({
+          feelings: entry.feelings,
+          thoughtProcess: entry.thought_process,
+          gratitude: entry.gratitude
+        }));
+        setJournalEntries(formattedEntries);
       } catch (error) {
-        console.error('Error parsing saved journal entries:', error);
+        console.error('Error fetching journal entries:', error);
       }
-    }
+    };
+
+    fetchJournalEntries();
   }, []);
 
   const handleInputChange = (section: 'feelings' | 'thoughtProcess' | 'gratitude', value: string) => {
@@ -36,7 +47,7 @@ const RecommendedNextSteps = () => {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Check if all fields have content
     if (!journalEntry.feelings || !journalEntry.thoughtProcess || !journalEntry.gratitude) {
       toast({
@@ -47,35 +58,44 @@ const RecommendedNextSteps = () => {
       return;
     }
 
-    // Create new journal entry with current date
-    const newEntry = {
-      ...journalEntry,
-      date: new Date().toISOString(),
-    };
+    try {
+      setSubmitting(true);
+      
+      // Save to Supabase
+      await saveJournalEntry(journalEntry);
+      
+      // Show success message
+      toast({
+        title: "Journal Entry Saved",
+        description: "Your journal entry has been saved successfully and your report has been updated.",
+        variant: "default"
+      });
+      
+      // Update the local list with the new entry
+      setJournalEntries(prev => [...prev, journalEntry]);
+      
+      // Reset the form
+      setJournalEntry({
+        feelings: '',
+        thoughtProcess: '',
+        gratitude: ''
+      });
 
-    // Add the new entry to the existing entries
-    const updatedEntries = [...journalEntries, newEntry];
-    setJournalEntries(updatedEntries);
+    } catch (error) {
+      console.error('Error saving journal entry:', error);
+      
+      toast({
+        title: "Save Failed",
+        description: "There was an error saving your journal entry. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
-    // Save to localStorage (in a real app, would save to backend)
-    localStorage.setItem('journalEntries', JSON.stringify(updatedEntries));
-    
-    // Here you would typically save the journal entry to your backend
-    console.log('Journal entry submitted:', newEntry);
-    
-    // Show success message
-    toast({
-      title: "Journal Entry Saved",
-      description: "Your journal entry has been saved successfully and your report has been updated.",
-      variant: "default"
-    });
-    
-    // Reset the form
-    setJournalEntry({
-      feelings: '',
-      thoughtProcess: '',
-      gratitude: ''
-    });
+  const navigateToJournalPrompt = () => {
+    navigate('/journal-prompt');
   };
 
   return (
@@ -145,13 +165,19 @@ const RecommendedNextSteps = () => {
               </div>
 
               {/* Submit Button */}
-              <div className="flex justify-end pt-2">
+              <div className="flex justify-between pt-2">
+                <Button 
+                  variant="outline"
+                  onClick={navigateToJournalPrompt}
+                >
+                  Open Full Journal
+                </Button>
                 <Button 
                   onClick={handleSubmit}
-                  className="w-full md:w-auto"
+                  disabled={submitting}
                 >
                   <Send className="h-4 w-4 mr-2" />
-                  Submit Journal Entry
+                  {submitting ? 'Saving...' : 'Submit Entry'}
                 </Button>
               </div>
             </div>
