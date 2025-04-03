@@ -4,7 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { AuthProvider } from "@/contexts/auth/AuthContext";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 import Index from "./pages/Index";
@@ -42,20 +42,24 @@ const App = () => (
             
             {/* Protected routes that require authentication */}
             <Route path="/dashboard" element={
-              <ProtectedRoute>
+              <ProtectedRoute requireAuth={true}>
                 <Dashboard />
               </ProtectedRoute>
             } />
             
             <Route path="/profile" element={
-              <ProtectedRoute>
+              <ProtectedRoute requireAuth={true}>
                 <Profile />
               </ProtectedRoute>
             } />
             
-            {/* Main navigation routes - accessible without authentication for demo purposes */}
+            {/* Main navigation routes - some require auth, some don't */}
             <Route path="/discover" element={<Discover />} />
-            <Route path="/my-journey" element={<MyJourney />} />
+            <Route path="/my-journey" element={
+              <ProtectedRoute requireAuth={true}>
+                <MyJourney />
+              </ProtectedRoute>
+            } />
             <Route path="/community" element={<Community />} />
             
             {/* Content detail page */}
@@ -63,7 +67,7 @@ const App = () => (
             
             {/* Protected feature routes */}
             <Route path="/journal-prompt" element={
-              <ProtectedRoute>
+              <ProtectedRoute requireAuth={true}>
                 <JournalPrompt />
               </ProtectedRoute>
             } />

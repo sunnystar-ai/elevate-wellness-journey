@@ -1,7 +1,7 @@
 
 import { ReactNode, useEffect } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/auth/AuthContext";
 
 type ProtectedRouteProps = {
   children: ReactNode;
@@ -11,6 +11,9 @@ type ProtectedRouteProps = {
 const ProtectedRoute = ({ children, requireAuth = true }: ProtectedRouteProps) => {
   const { isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
+
+  // For debugging
+  console.log("Protected Route:", { isAuthenticated, isLoading, path: location.pathname });
 
   // While checking auth status, show a loading spinner
   if (isLoading) {

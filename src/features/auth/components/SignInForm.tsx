@@ -7,6 +7,7 @@ import { useState } from "react";
 import EmailInput from "./form-inputs/EmailInput";
 import PasswordSignInInput from "./form-inputs/PasswordSignInInput";
 import { validateSignInForm } from "../utils/form-validation";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface SignInFormProps {
   onSuccess?: () => void;
@@ -18,6 +19,11 @@ const SignInForm = ({ onSuccess }: SignInFormProps) => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Get the redirect path from location state or default to profile
+  const from = (location.state as any)?.from?.pathname || "/profile";
 
   // Clear errors when inputs change
   const handleEmailChange = (value: string) => {
@@ -45,8 +51,13 @@ const SignInForm = ({ onSuccess }: SignInFormProps) => {
     
     try {
       await login(email, password);
+      console.log("Login successful, redirecting to:", from);
+      
       if (onSuccess) {
         onSuccess();
+      } else {
+        // Navigate to the redirect path
+        navigate(from, { replace: true });
       }
     } catch (err) {
       console.error("Sign in error:", err);
