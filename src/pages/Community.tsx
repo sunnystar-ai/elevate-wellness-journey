@@ -6,7 +6,6 @@ import { Users, Calendar } from 'lucide-react';
 // Import components
 import StatusBar from '@/components/community/StatusBar';
 import StoriesBar from '@/components/community/StoriesBar';
-import ProfileSnapshot from '@/components/community/ProfileSnapshot';
 import CommunityHeader from '@/components/community/CommunityHeader';
 import ForumsSection from '@/components/community/ForumsSection';
 import EventsCalendar from '@/components/community/EventsCalendar';
@@ -32,9 +31,6 @@ const Community = () => {
       
       {/* User Stories Bar */}
       <StoriesBar />
-      
-      {/* Profile Snapshot */}
-      <ProfileSnapshot />
       
       {/* Community Header */}
       <CommunityHeader />
