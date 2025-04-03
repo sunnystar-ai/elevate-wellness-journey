@@ -1,12 +1,11 @@
 
 import { useState, useEffect } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { User, Settings, Activity } from 'lucide-react';
+import { User, Settings } from 'lucide-react';
 import StatusBar from '@/components/community/StatusBar';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import ProfileHeader from '@/features/profile/ProfileHeader';
 import ProfileTab from '@/features/profile/tabs/ProfileTab';
-import ActivityTab from '@/features/profile/tabs/ActivityTab';
 import SettingsTab from '@/features/profile/tabs/SettingsTab';
 import { loadMbtiResults } from '@/services/personalityService';
 import { mbtiDescriptions } from '@/features/personality-test/mbti-data';
@@ -61,14 +60,10 @@ const Profile = () => {
       
       {/* Tabs Navigation */}
       <Tabs defaultValue="profile" value={activeTab} onValueChange={setActiveTab} className="mx-4">
-        <TabsList className="grid grid-cols-3 w-full mb-4">
+        <TabsList className="grid grid-cols-2 w-full mb-4">
           <TabsTrigger value="profile" className="flex items-center gap-1">
             <User className="h-4 w-4" />
             <span>Profile</span>
-          </TabsTrigger>
-          <TabsTrigger value="activity" className="flex items-center gap-1">
-            <Activity className="h-4 w-4" />
-            <span>Activity</span>
           </TabsTrigger>
           <TabsTrigger value="settings" className="flex items-center gap-1">
             <Settings className="h-4 w-4" />
@@ -83,11 +78,6 @@ const Profile = () => {
             mbtiDescription={mbtiDescription} 
             isLoading={isLoading} 
           />
-        </TabsContent>
-        
-        {/* Activity Tab Content */}
-        <TabsContent value="activity">
-          <ActivityTab />
         </TabsContent>
         
         {/* Settings Tab Content */}
