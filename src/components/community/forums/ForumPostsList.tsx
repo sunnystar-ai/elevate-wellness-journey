@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -103,7 +102,7 @@ const ForumPostsList = ({ forumId, forumTitle }: ForumPostsListProps) => {
           onClick={() => setShowPostForm(!showPostForm)}
         >
           <PenSquare className="mr-2 h-4 w-4" />
-          {showPostForm ? 'Cancel' : 'New Question'}
+          {showPostForm ? 'Cancel' : 'Create Post'}
         </Button>
       </div>
       
