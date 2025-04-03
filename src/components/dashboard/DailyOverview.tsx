@@ -16,7 +16,8 @@ const DailyOverview = ({ activityDurations, mentalScore }: DailyOverviewProps) =
     { name: 'Walk', score: 0 },
     { name: 'Sleep', score: 0 },
     { name: 'Meditation', score: 0 },
-    { name: 'Mental', score: 0 }
+    { name: 'Mental', score: 0 },
+    { name: 'Nutrition', score: 0 }
   ]);
   const [savedToday, setSavedToday] = useState(false);
   const [hasData, setHasData] = useState(false);
@@ -48,7 +49,8 @@ const DailyOverview = ({ activityDurations, mentalScore }: DailyOverviewProps) =
           { name: 'Walk', score: 0 },
           { name: 'Sleep', score: 0 },
           { name: 'Meditation', score: 0 },
-          { name: 'Mental', score: 0 }
+          { name: 'Mental', score: 0 },
+          { name: 'Nutrition', score: 0 }
         ]);
         return;
       }
@@ -57,6 +59,7 @@ const DailyOverview = ({ activityDurations, mentalScore }: DailyOverviewProps) =
       let walkScore = 0;
       let sleepScore = 0;
       let meditationScore = 0;
+      let nutritionScore = 0;
       
       // Walk score calculation (60 minutes = full credit)
       walkScore = Math.min(1, walkDuration / 60);
@@ -70,9 +73,13 @@ const DailyOverview = ({ activityDurations, mentalScore }: DailyOverviewProps) =
       // Mental score (from mental wellness analysis)
       const mentalScoreValue = mentalScore !== undefined ? mentalScore : 0;
       
-      // Calculate daily overall score
-      const totalScore = walkScore + sleepScore + meditationScore + mentalScoreValue;
-      const percentageScore = Math.round((totalScore / 4) * 100);
+      // Nutrition score - Using meditation as a proxy for now, 
+      // in a real app this would be calculated differently
+      nutritionScore = Math.min(1, meditationDuration / 30);
+      
+      // Calculate daily overall score (now includes nutrition)
+      const totalScore = walkScore + sleepScore + meditationScore + mentalScoreValue + nutritionScore;
+      const percentageScore = Math.round((totalScore / 5) * 100); // Divide by 5 since we have 5 metrics now
       
       setDailyScore(percentageScore);
       
@@ -81,12 +88,13 @@ const DailyOverview = ({ activityDurations, mentalScore }: DailyOverviewProps) =
         { name: 'Walk', score: walkScore },
         { name: 'Sleep', score: sleepScore },
         { name: 'Meditation', score: meditationScore },
-        { name: 'Mental', score: mentalScoreValue }
+        { name: 'Mental', score: mentalScoreValue },
+        { name: 'Nutrition', score: nutritionScore }
       ]);
 
       // If we have activity data and haven't saved today's score yet, save it
       if (!savedToday && hasAnyData) {
-        saveScoresToSupabase(percentageScore, walkScore, sleepScore, meditationScore, mentalScoreValue);
+        saveScoresToSupabase(percentageScore, walkScore, sleepScore, meditationScore, mentalScoreValue, nutritionScore);
       }
     }
   }, [activityDurations, mentalScore, savedToday]);
@@ -96,14 +104,15 @@ const DailyOverview = ({ activityDurations, mentalScore }: DailyOverviewProps) =
     physicalScore: number, 
     sleepScore: number, 
     meditationScore: number, 
-    mentalScore: number
+    mentalScore: number,
+    nutritionScore: number
   ) => {
     try {
       await saveWellnessScore({
         mental_score: Math.round(mentalScore * 100),
         physical_score: Math.round(physicalScore * 100),
         sleep_score: Math.round(sleepScore * 100),
-        nutrition_score: Math.round(meditationScore * 100) // Using meditation as a proxy for nutrition
+        nutrition_score: Math.round(nutritionScore * 100) // Now properly saving nutrition score
       });
       
       // Mark as saved today

@@ -1,5 +1,5 @@
 
-import { Smile, RefreshCw, Edit3, Loader2 } from 'lucide-react';
+import { Smile, RefreshCw, Edit3, Loader2, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
@@ -42,22 +42,32 @@ export const InsightContent = ({
     );
   }
 
+  // Check if we're displaying for today (current date)
+  const isToday = currentDate === new Date().toISOString().split('T')[0];
+
   if (!insight) {
     return (
       <div className="h-44 flex flex-col items-center justify-center text-center px-4 py-8">
         <Smile className="h-10 w-10 text-muted-foreground mb-2" />
-        <h3 className="font-medium text-lg mb-2">No insights available for today</h3>
+        <h3 className="font-medium text-lg mb-2">
+          {isToday ? "No insights available for today" : "No insights available for this period"}
+        </h3>
         <p className="text-muted-foreground mb-4">
-          Complete your daily activities and journal entry to generate personalized insights.
+          {isToday 
+            ? "Complete your daily activities and journal entry to generate personalized insights."
+            : "Ensure you have wellness data recorded for this period to generate insights."
+          }
         </p>
-        <Button 
-          variant="outline" 
-          className="flex items-center" 
-          onClick={navigateToJournalPrompt}
-        >
-          <Edit3 className="h-4 w-4 mr-2" />
-          Add Journal Entry
-        </Button>
+        {isToday && (
+          <Button 
+            variant="outline" 
+            className="flex items-center" 
+            onClick={navigateToJournalPrompt}
+          >
+            <Edit3 className="h-4 w-4 mr-2" />
+            Add Journal Entry
+          </Button>
+        )}
       </div>
     );
   }

@@ -14,7 +14,8 @@ const TodayProgressChart = ({ activityDurations, mentalScore }: TodayProgressCha
     { name: 'Walk', score: 0.8 },
     { name: 'Sleep', score: 0.7 },
     { name: 'Meditation', score: 0.6 },
-    { name: 'Mental', score: 0.7 }
+    { name: 'Mental', score: 0.7 },
+    { name: 'Nutrition', score: 0.8 }
   ]);
 
   useEffect(() => {
@@ -23,6 +24,7 @@ const TodayProgressChart = ({ activityDurations, mentalScore }: TodayProgressCha
       let walkScore = 0;
       let sleepScore = 0;
       let meditationScore = 0;
+      let nutritionScore = 0;
       
       // Walk score calculation (60 minutes = full credit)
       const walkDuration = parseFloat(activityDurations["Evening workout"] || "0");
@@ -36,12 +38,15 @@ const TodayProgressChart = ({ activityDurations, mentalScore }: TodayProgressCha
       const meditationDuration = parseFloat(activityDurations["Morning meditation"] || "0");
       meditationScore = Math.min(1, meditationDuration / 30);
       
+      // Nutrition score - Using meditation as a proxy for now
+      nutritionScore = Math.min(1, meditationDuration / 30);
+      
       // Mental score (from mental wellness analysis)
       const mentalScoreValue = mentalScore !== undefined ? mentalScore : 0.7;
       
       // Calculate daily overall score
-      const totalScore = walkScore + sleepScore + meditationScore + mentalScoreValue;
-      const percentageScore = Math.round((totalScore / 4) * 100);
+      const totalScore = walkScore + sleepScore + meditationScore + mentalScoreValue + nutritionScore;
+      const percentageScore = Math.round((totalScore / 5) * 100); // Divide by 5 since we have 5 metrics now
       
       setDailyScore(percentageScore);
       
@@ -50,7 +55,8 @@ const TodayProgressChart = ({ activityDurations, mentalScore }: TodayProgressCha
         { name: 'Walk', score: walkScore },
         { name: 'Sleep', score: sleepScore },
         { name: 'Meditation', score: meditationScore },
-        { name: 'Mental', score: mentalScoreValue }
+        { name: 'Mental', score: mentalScoreValue },
+        { name: 'Nutrition', score: nutritionScore }
       ]);
     }
   }, [activityDurations, mentalScore]);
@@ -83,7 +89,7 @@ const TodayProgressChart = ({ activityDurations, mentalScore }: TodayProgressCha
       <div className="flex flex-col md:flex-row gap-6">
         {/* Circular Progress Chart */}
         <div className="flex items-center justify-center">
-          <CircularProgressChart percentage={92} title="Wellness Score" size={150} />
+          <CircularProgressChart percentage={dailyScore} title="Wellness Score" size={150} />
         </div>
         
         {/* Bar Chart */}
