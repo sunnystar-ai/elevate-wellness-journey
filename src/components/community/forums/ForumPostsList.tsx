@@ -2,8 +2,9 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
+import { Search, PenSquare } from 'lucide-react';
 import ForumPostCard from './ForumPostCard';
+import ForumPostForm from './ForumPostForm';
 import { ForumPost } from './types';
 
 // Sample data for forum posts
@@ -67,20 +68,53 @@ interface ForumPostsListProps {
 
 const ForumPostsList = ({ forumId, forumTitle }: ForumPostsListProps) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [showPostForm, setShowPostForm] = useState(false);
+  const [posts, setPosts] = useState<ForumPost[]>(samplePosts);
   
   // Filter posts based on search query
-  const filteredPosts = samplePosts.filter(post => 
+  const filteredPosts = posts.filter(post => 
     post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
     post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
+  const handleNewPostSuccess = () => {
+    setShowPostForm(false);
+    // In a real app, you would fetch the updated posts
+    // For now, we'll just simulate adding a new post
+    const newPost: ForumPost = {
+      id: posts.length + 1,
+      title: "New Question",
+      content: "This is a placeholder for your new question that would normally come from the server.",
+      author: "You",
+      timestamp: "Just now",
+      tags: ["general"],
+      replies: []
+    };
+    setPosts([newPost, ...posts]);
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="text-lg font-semibold">{forumTitle || "Forum Posts"}</h2>
-        <Button size="sm">New Post</Button>
+        <Button 
+          size="sm" 
+          onClick={() => setShowPostForm(!showPostForm)}
+        >
+          <PenSquare className="mr-2 h-4 w-4" />
+          {showPostForm ? 'Cancel' : 'New Question'}
+        </Button>
       </div>
+      
+      {showPostForm && (
+        <ForumPostForm 
+          forumId={forumId || 0}
+          forumTitle={forumTitle || "Forum"}
+          onCancel={() => setShowPostForm(false)}
+          onSuccess={handleNewPostSuccess}
+        />
+      )}
       
       <div className="relative mb-4">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />

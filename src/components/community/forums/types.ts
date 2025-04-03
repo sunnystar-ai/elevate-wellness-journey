@@ -27,3 +27,9 @@ export interface Forum {
   tags: string[];
   joined: boolean;
 }
+
+export interface NewForumPost {
+  title: string;
+  content: string;
+  tags: string[];
+}
