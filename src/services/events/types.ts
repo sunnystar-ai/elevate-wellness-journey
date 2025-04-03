@@ -11,6 +11,7 @@ export interface Event {
   event_type: string;
   timezone: string;
   created_at: string;
+  image_url?: string | null;
 }
 
 export interface EventWithParticipants extends Event {

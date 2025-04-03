@@ -21,6 +21,7 @@ export const useEventForm = (onSuccess?: () => void, onClose?: () => void) => {
       event_type: 'workshop',
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       host_name: user?.email?.split('@')[0] || '',
+      image_url: '',
     }
   });
 
@@ -50,6 +51,7 @@ export const useEventForm = (onSuccess?: () => void, onClose?: () => void) => {
         event_type: data.event_type,
         timezone: data.timezone,
         host_name: data.host_name,
+        image_url: data.image_url || null,
       };
 
       const success = await createEvent(eventData);

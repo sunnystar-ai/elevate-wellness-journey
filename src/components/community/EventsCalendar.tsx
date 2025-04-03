@@ -9,6 +9,7 @@ import { getEvents, updateParticipationStatus, EventWithParticipants } from '@/s
 import { useAuth } from '@/contexts/AuthContext';
 import { Skeleton } from '@/components/ui/skeleton';
 import EventForm from './EventForm';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const getEventIcon = (type: string) => {
   switch (type) {
@@ -98,6 +99,15 @@ const EventsCalendar = () => {
           <div className="flex gap-3 pb-4">
             {events.map((event) => (
               <Card key={event.id} className="min-w-[240px] p-3 space-y-2">
+                {event.image_url ? (
+                  <div className="w-full h-32 rounded-md overflow-hidden mb-2">
+                    <img 
+                      src={event.image_url} 
+                      alt={event.title} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : null}
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-2">
                     <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-lg">

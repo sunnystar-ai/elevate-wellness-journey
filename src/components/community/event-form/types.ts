@@ -10,7 +10,8 @@ export const eventFormSchema = z.object({
   }),
   event_type: z.enum(['workshop', 'live', 'exercise', 'social', 'other']),
   timezone: z.string().default('UTC'),
-  host_name: z.string().min(2, { message: 'Host name is required' })
+  host_name: z.string().min(2, { message: 'Host name is required' }),
+  image_url: z.string().optional()
 });
 
 export type EventFormValues = z.infer<typeof eventFormSchema>;

@@ -8,7 +8,8 @@ import {
   TimeField, 
   EventTypeField, 
   TimezoneField,
-  HostNameField
+  HostNameField,
+  ImageUrlField
 } from './FormFields';
 import { EventFormValues } from './types';
 import { DialogFooter, DialogClose } from '@/components/ui/dialog';
@@ -25,6 +26,8 @@ const EventFormContent: React.FC<EventFormContentProps> = ({ form, isSubmitting 
       <TitleField form={form} />
       
       <DescriptionField form={form} />
+      
+      <ImageUrlField form={form} />
       
       <div className="flex flex-col sm:flex-row gap-4">
         <DateField form={form} />

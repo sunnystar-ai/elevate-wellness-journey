@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { CalendarIcon, Clock, MapPin } from 'lucide-react';
+import React, { useState } from 'react';
+import { CalendarIcon, Clock, MapPin, Image } from 'lucide-react';
 import { format } from 'date-fns';
 import { UseFormReturn } from 'react-hook-form';
 import { cn } from '@/lib/utils';
@@ -29,6 +29,7 @@ import {
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
 import { EventFormValues } from './types';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export const TitleField = ({ form }: { form: UseFormReturn<EventFormValues> }) => (
   <FormField
@@ -196,3 +197,86 @@ export const HostNameField = ({ form }: { form: UseFormReturn<EventFormValues> }
     )}
   />
 );
+
+export const ImageUrlField = ({ form }: { form: UseFormReturn<EventFormValues> }) => {
+  const [isUploading, setIsUploading] = useState(false);
+  
+  // Get the current value from the form
+  const imageUrl = form.watch("image_url");
+  
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    try {
+      setIsUploading(true);
+      
+      // Create a FormData object
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      // Simple mock upload that returns a data URL
+      // In a real application, you would upload this to your server or cloud storage
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        // Update the form with the "uploaded" image URL
+        form.setValue("image_url", reader.result as string);
+        setIsUploading(false);
+      };
+      
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      setIsUploading(false);
+    }
+  };
+  
+  return (
+    <FormField
+      control={form.control}
+      name="image_url"
+      render={({ field: { value, onChange, ...rest } }) => (
+        <FormItem>
+          <FormLabel>Event Image (Optional)</FormLabel>
+          <div className="space-y-2">
+            {imageUrl && (
+              <div className="relative w-full h-40 rounded-md overflow-hidden mb-2">
+                <Avatar className="w-full h-full rounded-md">
+                  <AvatarImage src={imageUrl} alt="Event" className="object-cover w-full h-full" />
+                  <AvatarFallback className="w-full h-full">
+                    <Image className="h-6 w-6 text-muted-foreground" />
+                  </AvatarFallback>
+                </Avatar>
+                <Button 
+                  type="button" 
+                  variant="destructive" 
+                  size="sm" 
+                  className="absolute top-2 right-2"
+                  onClick={() => form.setValue("image_url", "")}
+                >
+                  Remove
+                </Button>
+              </div>
+            )}
+            
+            {!imageUrl && (
+              <FormControl>
+                <div className="grid w-full max-w-sm items-center gap-1.5">
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    disabled={isUploading}
+                    onChange={handleFileChange}
+                    className="cursor-pointer"
+                    {...rest}
+                  />
+                </div>
+              </FormControl>
+            )}
+            <FormMessage />
+          </div>
+        </FormItem>
+      )}
+    />
+  );
+};
