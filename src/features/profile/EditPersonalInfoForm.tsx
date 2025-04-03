@@ -182,6 +182,23 @@ const EditPersonalInfoForm = ({ isOpen, onClose }: EditPersonalInfoFormProps) =>
       const fileName = `${user.id}-${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = `${fileName}`;
 
+      // Check if the avatars bucket exists
+      const { data: buckets, error: bucketsError } = await supabase
+        .storage
+        .listBuckets();
+      
+      if (bucketsError) {
+        console.error("Error checking buckets:", bucketsError);
+        throw new Error("Could not check storage buckets");
+      }
+
+      // Verify avatars bucket exists
+      const avatarBucketExists = buckets.some(bucket => bucket.name === 'avatars');
+      if (!avatarBucketExists) {
+        throw new Error("Avatars storage bucket does not exist. Please create it in the Supabase dashboard.");
+      }
+
+      // Upload file to avatars bucket
       const { error: uploadError } = await supabase.storage
         .from('avatars')
         .upload(filePath, file);
