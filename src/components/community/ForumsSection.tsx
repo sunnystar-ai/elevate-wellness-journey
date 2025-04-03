@@ -1,11 +1,14 @@
 
-import { ArrowRight, Users, MessageSquare } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowRight, Users, MessageSquare, PanelRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import ForumPostsList from './forums/ForumPostsList';
+import { Forum } from './forums/types';
 
-const forums = [
+const forums: Forum[] = [
   {
     id: 1,
     title: 'Meditation Beginners',
@@ -29,6 +32,27 @@ const forums = [
 ];
 
 const ForumsSection = () => {
+  const [selectedForum, setSelectedForum] = useState<Forum | null>(null);
+  
+  if (selectedForum) {
+    return (
+      <div className="px-4">
+        <div className="flex items-center mb-4">
+          <Button 
+            variant="ghost" 
+            className="mr-2 p-2 h-8" 
+            onClick={() => setSelectedForum(null)}
+          >
+            <ArrowRight className="h-4 w-4 rotate-180" />
+          </Button>
+          <h2 className="text-md font-semibold">{selectedForum.title}</h2>
+        </div>
+        
+        <ForumPostsList forumId={selectedForum.id} forumTitle={selectedForum.title} />
+      </div>
+    );
+  }
+
   return (
     <div className="px-4">
       <div className="flex justify-between items-center mb-3">
@@ -66,12 +90,23 @@ const ForumsSection = () => {
               <span className="text-muted-foreground">{forum.timestamp}</span>
             </div>
             
-            <div className="flex gap-1">
-              {forum.tags.map((tag) => (
-                <Badge key={tag} variant="secondary" className="text-[10px] px-1.5 py-0">
-                  #{tag}
-                </Badge>
-              ))}
+            <div className="flex justify-between items-center">
+              <div className="flex gap-1">
+                {forum.tags.map((tag) => (
+                  <Badge key={tag} variant="secondary" className="text-[10px] px-1.5 py-0">
+                    #{tag}
+                  </Badge>
+                ))}
+              </div>
+              
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-7 px-2 text-xs"
+                onClick={() => setSelectedForum(forum)}
+              >
+                <PanelRight className="h-3 w-3 mr-1" /> View Posts
+              </Button>
             </div>
           </Card>
         ))}
