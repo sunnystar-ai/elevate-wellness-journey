@@ -8,6 +8,7 @@ import { CalendarIcon, Loader2, Upload } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { Profile } from "./types";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -96,17 +97,20 @@ const EditPersonalInfoForm = ({ isOpen, onClose }: EditPersonalInfoFormProps) =>
           form.setValue("first_name", user.user_metadata?.first_name || "");
           form.setValue("last_name", user.user_metadata?.last_name || "");
         } else if (profile) {
+          // Use the Profile type to ensure proper typing
+          const typedProfile = profile as unknown as Profile;
+          
           // Use profile data
-          form.setValue("first_name", profile.first_name || "");
-          form.setValue("last_name", profile.last_name || "");
-          profile.birth_date && form.setValue("birth_date", new Date(profile.birth_date));
-          form.setValue("weight", profile.weight || "");
-          form.setValue("height", profile.height || "");
-          form.setValue("career", profile.career || "");
-          form.setValue("hobbies", profile.hobbies || "");
-          form.setValue("interests", profile.interests || "");
-          form.setValue("bio", profile.bio || "");
-          setAvatarUrl(profile.avatar_url);
+          form.setValue("first_name", typedProfile.first_name || "");
+          form.setValue("last_name", typedProfile.last_name || "");
+          typedProfile.birth_date && form.setValue("birth_date", new Date(typedProfile.birth_date));
+          form.setValue("weight", typedProfile.weight || "");
+          form.setValue("height", typedProfile.height || "");
+          form.setValue("career", typedProfile.career || "");
+          form.setValue("hobbies", typedProfile.hobbies || "");
+          form.setValue("interests", typedProfile.interests || "");
+          form.setValue("bio", typedProfile.bio || "");
+          setAvatarUrl(typedProfile.avatar_url);
         }
       } catch (error) {
         console.error("Error:", error);

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -6,11 +5,12 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import EditPersonalInfoForm from './EditPersonalInfoForm';
 import { supabase } from '@/integrations/supabase/client';
+import { Profile } from './types';
 
 const PersonalInfoSection = () => {
   const { user } = useAuth();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [profileData, setProfileData] = useState<any>(null);
+  const [profileData, setProfileData] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   
   // Extract user information properly
@@ -36,7 +36,7 @@ const PersonalInfoSection = () => {
           return;
         }
         
-        setProfileData(data);
+        setProfileData(data as Profile);
       } catch (error) {
         console.error("Error:", error);
       } finally {
