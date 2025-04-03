@@ -83,7 +83,7 @@ const TodayProgressChart = ({ activityDurations, mentalScore }: TodayProgressCha
       <div className="flex flex-col md:flex-row gap-6">
         {/* Circular Progress Chart */}
         <div className="flex items-center justify-center">
-          <CircularProgressChart percentage={dailyScore} title="Daily Wellness Score" />
+          <CircularProgressChart percentage={92} title="Wellness Score" size={150} />
         </div>
         
         {/* Bar Chart */}

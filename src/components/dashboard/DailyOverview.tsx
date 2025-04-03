@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from 'recharts';
 import { saveWellnessScore } from '@/services/supabaseService';
 import { toast } from '@/hooks/use-toast';
+import CircularProgressChart from '@/components/home/CircularProgressChart';
 
 interface DailyOverviewProps {
   activityDurations?: Record<string, string>;
@@ -123,21 +124,29 @@ const DailyOverview = ({ activityDurations, mentalScore }: DailyOverviewProps) =
         <div className="text-xl font-bold text-harmony-lavender">{dailyScore}%</div>
       </div>
       
-      <div className="h-64">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis domain={[0, 100]} />
-            <Tooltip content={<CustomTooltip />} />
-            <Bar 
-              dataKey="score" 
-              fill="#8884d8" 
-              radius={[4, 4, 0, 0]}
-              barSize={40}
-            />
-          </BarChart>
-        </ResponsiveContainer>
+      <div className="flex flex-col md:flex-row gap-6">
+        {/* Circular Progress Chart */}
+        <div className="flex items-center justify-center">
+          <CircularProgressChart percentage={92} title="Wellness Score" size={180} />
+        </div>
+        
+        {/* Bar Chart */}
+        <div className="flex-grow h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis domain={[0, 100]} />
+              <Tooltip content={<CustomTooltip />} />
+              <Bar 
+                dataKey="score" 
+                fill="#8884d8" 
+                radius={[4, 4, 0, 0]}
+                barSize={40}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );
