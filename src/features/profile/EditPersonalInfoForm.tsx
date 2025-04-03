@@ -139,7 +139,8 @@ const EditPersonalInfoForm = ({ isOpen, onClose }: EditPersonalInfoFormProps) =>
           first_name: data.first_name,
           last_name: data.last_name,
           phone_number: data.phone_number,
-          birth_date: data.birth_date,
+          // Convert date object to ISO string for database storage
+          birth_date: data.birth_date ? data.birth_date.toISOString() : null,
           weight: data.weight,
           height: data.height,
           career: data.career,
