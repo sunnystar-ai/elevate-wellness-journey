@@ -8,16 +8,36 @@ import { Separator } from '@/components/ui/separator';
 import { ForumPost } from './types';
 import ForumReplyForm from './ForumReplyForm';
 import ForumReplyList from './ForumReplyList';
+import { useToast } from '@/components/ui/use-toast';
 
 interface ForumPostCardProps {
   post: ForumPost;
+  onLike?: (postId: number, liked: boolean) => void;
 }
 
-const ForumPostCard = ({ post }: ForumPostCardProps) => {
+const ForumPostCard = ({ post, onLike }: ForumPostCardProps) => {
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [showReplies, setShowReplies] = useState(false);
+  const [liked, setLiked] = useState(post.liked || false);
+  const [likeCount, setLikeCount] = useState(post.likes || 0);
+  const { toast } = useToast();
   
   const replyCount = post.replies?.length || 0;
+
+  const handleLike = () => {
+    const newLikedState = !liked;
+    setLiked(newLikedState);
+    setLikeCount(prevCount => newLikedState ? prevCount + 1 : prevCount - 1);
+    
+    if (onLike) {
+      onLike(post.id, newLikedState);
+    }
+    
+    toast({
+      description: newLikedState ? "Post liked!" : "Post unliked",
+      duration: 1500,
+    });
+  };
 
   return (
     <Card className="p-4 mb-4">
@@ -49,8 +69,14 @@ const ForumPostCard = ({ post }: ForumPostCardProps) => {
 
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" className="h-8 px-2 text-muted-foreground">
-            <ThumbsUp className="h-4 w-4 mr-1" /> Like
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="h-8 px-2 text-muted-foreground"
+            onClick={handleLike}
+          >
+            <ThumbsUp className={`h-4 w-4 mr-1 ${liked ? 'fill-primary text-primary' : ''}`} />
+            <span>{likeCount > 0 ? `${likeCount} Like${likeCount !== 1 ? 's' : ''}` : 'Like'}</span>
           </Button>
           <Button 
             variant="ghost" 

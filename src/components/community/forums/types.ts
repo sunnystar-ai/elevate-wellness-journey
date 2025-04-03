@@ -7,6 +7,8 @@ export interface ForumPost {
   timestamp: string;
   tags: string[];
   replies?: ForumReply[];
+  likes?: number;
+  liked?: boolean;
 }
 
 export interface ForumReply {

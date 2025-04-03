@@ -1,4 +1,5 @@
 
+import { useState } from 'react';
 import { User, Clock, ThumbsUp } from 'lucide-react';
 import { ForumReply } from './types';
 
@@ -7,6 +8,15 @@ interface ForumReplyListProps {
 }
 
 const ForumReplyList = ({ replies }: ForumReplyListProps) => {
+  const [likedReplies, setLikedReplies] = useState<Record<number, boolean>>({});
+
+  const handleLikeReply = (replyId: number) => {
+    setLikedReplies(prev => ({
+      ...prev,
+      [replyId]: !prev[replyId]
+    }));
+  };
+
   return (
     <div className="space-y-3 mt-2">
       {replies.map((reply) => (
@@ -23,8 +33,12 @@ const ForumReplyList = ({ replies }: ForumReplyListProps) => {
           </div>
           <p className="text-sm ml-8 mb-2">{reply.content}</p>
           <div className="flex items-center ml-8">
-            <button className="text-xs text-muted-foreground flex items-center hover:text-foreground">
-              <ThumbsUp className="h-3 w-3 mr-1" /> Like
+            <button 
+              className={`text-xs ${likedReplies[reply.id] ? 'text-primary' : 'text-muted-foreground'} flex items-center hover:text-foreground`}
+              onClick={() => handleLikeReply(reply.id)}
+            >
+              <ThumbsUp className={`h-3 w-3 mr-1 ${likedReplies[reply.id] ? 'fill-primary' : ''}`} /> 
+              Like
             </button>
           </div>
         </div>

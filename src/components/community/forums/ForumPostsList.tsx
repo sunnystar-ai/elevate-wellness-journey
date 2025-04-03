@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -5,6 +6,7 @@ import { Search, PenSquare } from 'lucide-react';
 import ForumPostCard from './ForumPostCard';
 import ForumPostForm from './ForumPostForm';
 import { ForumPost } from './types';
+import { useToast } from '@/components/ui/use-toast';
 
 // Sample data for forum posts
 const samplePosts: ForumPost[] = [
@@ -15,6 +17,8 @@ const samplePosts: ForumPost[] = [
     author: "MeditationNewbie",
     timestamp: "2h ago",
     tags: ["meditation", "mentalhealth", "focus"],
+    likes: 5,
+    liked: false,
     replies: [
       {
         id: 101,
@@ -39,6 +43,8 @@ const samplePosts: ForumPost[] = [
     author: "BusyParent",
     timestamp: "4h ago",
     tags: ["nutrition", "cooking", "breakfast"],
+    likes: 8,
+    liked: false,
     replies: [
       {
         id: 201,
@@ -56,6 +62,8 @@ const samplePosts: ForumPost[] = [
     author: "InconsistentMeditator",
     timestamp: "1d ago",
     tags: ["meditation", "habits", "consistency"],
+    likes: 3,
+    liked: false,
     replies: []
   }
 ];
@@ -69,6 +77,7 @@ const ForumPostsList = ({ forumId, forumTitle }: ForumPostsListProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showPostForm, setShowPostForm] = useState(false);
   const [posts, setPosts] = useState<ForumPost[]>(samplePosts);
+  const { toast } = useToast();
   
   // Filter posts based on search query
   const filteredPosts = posts.filter(post => 
@@ -88,9 +97,21 @@ const ForumPostsList = ({ forumId, forumTitle }: ForumPostsListProps) => {
       author: "You",
       timestamp: "Just now",
       tags: ["general"],
+      likes: 0,
+      liked: false,
       replies: []
     };
     setPosts([newPost, ...posts]);
+  };
+
+  const handleLike = (postId: number, liked: boolean) => {
+    setPosts(prevPosts => 
+      prevPosts.map(post => 
+        post.id === postId 
+          ? { ...post, liked: liked, likes: liked ? (post.likes || 0) + 1 : (post.likes || 0) - 1 }
+          : post
+      )
+    );
   };
 
   return (
@@ -127,7 +148,11 @@ const ForumPostsList = ({ forumId, forumTitle }: ForumPostsListProps) => {
       
       {filteredPosts.length > 0 ? (
         filteredPosts.map(post => (
-          <ForumPostCard key={post.id} post={post} />
+          <ForumPostCard 
+            key={post.id} 
+            post={post} 
+            onLike={handleLike}
+          />
         ))
       ) : (
         <div className="text-center py-10 text-muted-foreground">
