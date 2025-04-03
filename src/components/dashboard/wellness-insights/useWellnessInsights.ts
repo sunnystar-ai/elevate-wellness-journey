@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
@@ -14,6 +15,32 @@ export const useWellnessInsights = () => {
   const [error, setError] = useState<string | null>(null);
   const [analyticalFramework, setAnalyticalFramework] = useState<AnalyticalFramework>('physical-emotional');
   const navigate = useNavigate();
+  
+  // Check if the date has changed since our last fetch
+  const [currentDate, setCurrentDate] = useState<string>(new Date().toISOString().split('T')[0]);
+
+  // Effect to handle date changes
+  useEffect(() => {
+    const checkForDateChange = () => {
+      const today = new Date().toISOString().split('T')[0];
+      if (today !== currentDate) {
+        console.log('Date changed from', currentDate, 'to', today);
+        setCurrentDate(today);
+        // Reset insight when date changes
+        setInsight(null);
+        // Fetch new insight for the new day
+        fetchInsight();
+      }
+    };
+    
+    // Check immediately
+    checkForDateChange();
+    
+    // Set up interval to check for date changes
+    const interval = setInterval(checkForDateChange, 60000); // Check every minute
+    
+    return () => clearInterval(interval);
+  }, [currentDate]);
 
   useEffect(() => {
     fetchInsight();
@@ -26,8 +53,22 @@ export const useWellnessInsights = () => {
         setError(null);
         const latestInsight = await getLatestWellnessInsight(period, analyticalFramework);
         
+        // Check if we have an insight for today
         if (latestInsight) {
-          setInsight(latestInsight.insight_text);
+          const insightDate = new Date(latestInsight.created_at || '').toISOString().split('T')[0];
+          const today = new Date().toISOString().split('T')[0];
+          
+          if (insightDate === today) {
+            setInsight(latestInsight.insight_text);
+          } else {
+            // We have an insight but it's not from today
+            if (period !== 'day' || analyticalFramework !== 'physical-emotional') {
+              setInsight(latestInsight.insight_text);
+            } else {
+              // For daily insights, we show empty state if not from today
+              setInsight(null);
+            }
+          }
         } else {
           if (period !== 'day' || analyticalFramework !== 'physical-emotional') {
             try {
@@ -66,7 +107,7 @@ export const useWellnessInsights = () => {
     };
     
     handlePeriodOrFrameworkChange();
-  }, [period, analyticalFramework]);
+  }, [period, analyticalFramework, currentDate]);
 
   const fetchInsight = async () => {
     try {
@@ -74,24 +115,27 @@ export const useWellnessInsights = () => {
       setError(null);
       const latestInsight = await getLatestWellnessInsight(period, analyticalFramework);
       
+      // Check if the insight is from today
       if (latestInsight) {
-        setInsight(latestInsight.insight_text);
+        const insightDate = new Date(latestInsight.created_at || '').toISOString().split('T')[0];
+        const today = new Date().toISOString().split('T')[0];
+        
+        if (insightDate === today) {
+          setInsight(latestInsight.insight_text);
+        } else {
+          // If it's not from today, we don't show it for daily view
+          if (period === 'day') {
+            setInsight(null);
+          } else {
+            setInsight(latestInsight.insight_text);
+          }
+        }
       } else {
         setInsight(null);
         
         if (period === 'day' && analyticalFramework === 'physical-emotional') {
-          try {
-            setGenerating(true);
-            const newInsight = await generateAndSaveWellnessInsight(period, analyticalFramework);
-            if (newInsight) {
-              setInsight(newInsight.insight_text);
-            }
-          } catch (genError) {
-            console.error('Error auto-generating default insight:', genError);
-            setInsight(null);
-          } finally {
-            setGenerating(false);
-          }
+          // Don't auto-generate for daily view if no data exists yet
+          setInsight(null);
         }
       }
     } catch (error) {
@@ -164,6 +208,7 @@ export const useWellnessInsights = () => {
     analyticalFramework,
     setAnalyticalFramework,
     handleGenerateInsight,
-    navigateToJournalPrompt
+    navigateToJournalPrompt,
+    currentDate
   };
 };

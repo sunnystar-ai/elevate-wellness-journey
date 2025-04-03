@@ -19,6 +19,7 @@ const JournalPrompt = () => {
     gratitude: ''
   });
   const [submitting, setSubmitting] = useState(false);
+  const [todayDate] = useState<string>(new Date().toISOString().split('T')[0]);
 
   const handleInputChange = (section: 'feelings' | 'thoughtProcess' | 'gratitude', value: string) => {
     setJournalEntry(prev => ({
@@ -48,17 +49,22 @@ const JournalPrompt = () => {
       // We'll use 'day' as the default period
       try {
         await generateAndSaveWellnessInsight('day', 'physical-emotional');
-        console.log('Daily wellness insight generated automatically');
+        console.log('Daily wellness insight generated for today:', todayDate);
+        
+        toast({
+          title: "Journal Entry Saved",
+          description: "Your journal entry has been saved successfully and your insights have been updated.",
+          variant: "default"
+        });
       } catch (insightError) {
         console.error('Error auto-generating wellness insight:', insightError);
-        // We don't show this error to the user since it's a background process
+        // We still show a success message for the journal entry
+        toast({
+          title: "Journal Entry Saved",
+          description: "Your journal entry has been saved successfully. There was an issue updating insights.",
+          variant: "default"
+        });
       }
-      
-      toast({
-        title: "Journal Entry Saved",
-        description: "Your journal entry has been saved successfully and your insights have been updated.",
-        variant: "default"
-      });
       
       // Navigate to dashboard which will display the updated insights
       navigate('/dashboard');

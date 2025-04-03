@@ -42,7 +42,29 @@ export const generateAndSaveWellnessInsight = async (
       // Continue without personality data
     }
 
-    if (journalEntries.length === 0 && activities.length === 0 && wellnessScores.length === 0) {
+    // For daily insights, check if we have data from today specifically
+    if (period === 'day') {
+      const today = new Date().toISOString().split('T')[0];
+      
+      const todayJournalEntries = journalEntries.filter(entry => {
+        const entryDate = new Date(entry.created_at).toISOString().split('T')[0];
+        return entryDate === today;
+      });
+      
+      const todayActivities = activities.filter(activity => {
+        const activityDate = new Date(activity.activity_date).toISOString().split('T')[0];
+        return activityDate === today;
+      });
+      
+      const todayScores = wellnessScores.filter(score => {
+        const scoreDate = new Date(score.score_date).toISOString().split('T')[0];
+        return scoreDate === today;
+      });
+      
+      if (todayJournalEntries.length === 0 && todayActivities.length === 0 && todayScores.length === 0) {
+        throw new Error("Not enough data to generate insights for today");
+      }
+    } else if (journalEntries.length === 0 && activities.length === 0 && wellnessScores.length === 0) {
       throw new Error("Not enough data to generate insights");
     }
 
@@ -152,6 +174,34 @@ export const getLatestWellnessInsight = async (
   try {
     const userId = await getCurrentUserId();
 
+    // For daily insights, check for today's date specifically
+    if (period === 'day') {
+      const today = new Date().toISOString().split('T')[0];
+      
+      const { data: todayData, error: todayError } = await supabase
+        .from('wellness_insights')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('analysis_period', period)
+        .eq('analytical_framework', analyticalFramework)
+        .gte('created_at', today)
+        .order('created_at', { ascending: false })
+        .limit(1);
+      
+      if (todayError) {
+        console.error("Error fetching today's wellness insight:", todayError);
+        throw new Error(`Failed to fetch wellness insight: ${todayError.message}`);
+      }
+      
+      if (todayData && todayData.length > 0) {
+        return todayData[0];
+      }
+      
+      // If we don't have an insight from today, return null for daily insights
+      return null;
+    }
+    
+    // For other periods, get the latest insight regardless of date
     const { data, error } = await supabase
       .from('wellness_insights')
       .select('*')

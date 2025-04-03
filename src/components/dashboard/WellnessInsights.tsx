@@ -19,7 +19,8 @@ const WellnessInsights = () => {
     analyticalFramework,
     setAnalyticalFramework,
     handleGenerateInsight,
-    navigateToJournalPrompt
+    navigateToJournalPrompt,
+    currentDate
   } = useWellnessInsights();
 
   const frameworkInfo = getFrameworkInfo(analyticalFramework);
@@ -45,6 +46,7 @@ const WellnessInsights = () => {
           error={error}
           insight={insight}
           navigateToJournalPrompt={navigateToJournalPrompt}
+          currentDate={currentDate}
         />
       </div>
       
