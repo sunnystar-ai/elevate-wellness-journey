@@ -1,21 +1,56 @@
 
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
 import { Edit } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { Profile } from './types';
 
 const ProfileHeader = () => {
   const { user } = useAuth();
+  const [profile, setProfile] = useState<Profile | null>(null);
   
   // Extract user information from email if metadata is not available
   const email = user?.email || '';
   const username = email ? email.split('@')[0] : '';
   
-  // Get name from metadata if available, otherwise use username from email
-  const firstName = user?.user_metadata?.first_name || '';
-  const lastName = user?.user_metadata?.last_name || '';
+  // Calculate membership date
+  const memberSince = user?.created_at 
+    ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+    : '';
+
+  useEffect(() => {
+    // Fetch profile data to get the latest avatar_url
+    const fetchProfile = async () => {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+          
+        if (error) {
+          console.error('Error fetching profile:', error);
+          return;
+        }
+        
+        setProfile(data as Profile);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+    
+    fetchProfile();
+  }, [user]);
+  
+  // Get name from profile if available, otherwise use username from email
+  const firstName = profile?.first_name || user?.user_metadata?.first_name || '';
+  const lastName = profile?.last_name || user?.user_metadata?.last_name || '';
   
   // Use full name if both parts exist, otherwise fallback to username from email
   const displayName = (firstName || lastName) 
@@ -24,11 +59,6 @@ const ProfileHeader = () => {
   
   // Generate avatar initial based on actual name or email
   const initial = displayName ? displayName[0].toUpperCase() : (email ? email[0].toUpperCase() : '');
-  
-  // Calculate membership date
-  const memberSince = user?.created_at 
-    ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
-    : '';
 
   return (
     <>
@@ -44,7 +74,7 @@ const ProfileHeader = () => {
       <Card className="mx-4 mb-5">
         <CardContent className="p-6 flex flex-col items-center">
           <Avatar className="h-24 w-24 mb-3">
-            <AvatarImage src={user?.user_metadata?.avatar_url || "/placeholder.svg"} alt="Profile picture" />
+            <AvatarImage src={profile?.avatar_url || user?.user_metadata?.avatar_url || ""} alt="Profile picture" />
             <AvatarFallback>{initial}</AvatarFallback>
           </Avatar>
           

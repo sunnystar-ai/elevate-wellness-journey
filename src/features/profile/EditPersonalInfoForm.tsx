@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -182,28 +181,15 @@ const EditPersonalInfoForm = ({ isOpen, onClose }: EditPersonalInfoFormProps) =>
       const fileName = `${user.id}-${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = `${fileName}`;
 
-      // Check if the avatars bucket exists
-      const { data: buckets, error: bucketsError } = await supabase
-        .storage
-        .listBuckets();
-      
-      if (bucketsError) {
-        console.error("Error checking buckets:", bucketsError);
-        throw new Error("Could not check storage buckets");
-      }
-
-      // Verify avatars bucket exists
-      const avatarBucketExists = buckets.some(bucket => bucket.name === 'avatars');
-      if (!avatarBucketExists) {
-        throw new Error("Avatars storage bucket does not exist. Please create it in the Supabase dashboard.");
-      }
-
       // Upload file to avatars bucket
-      const { error: uploadError } = await supabase.storage
+      const { error: uploadError, data: uploadData } = await supabase.storage
         .from('avatars')
         .upload(filePath, file);
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error("Error uploading file:", uploadError);
+        throw uploadError;
+      }
 
       // Get public URL for the uploaded image
       const { data } = supabase.storage
