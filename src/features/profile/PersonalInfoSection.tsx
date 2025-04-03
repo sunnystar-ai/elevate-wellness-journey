@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -66,6 +67,13 @@ const PersonalInfoSection = () => {
                   <p className="font-medium">
                     {[profileData.first_name, profileData.last_name].filter(Boolean).join(' ')}
                   </p>
+                </div>
+              )}
+              
+              {profileData.phone_number && (
+                <div>
+                  <p className="text-sm text-muted-foreground">Phone Number</p>
+                  <p className="font-medium">{profileData.phone_number}</p>
                 </div>
               )}
               

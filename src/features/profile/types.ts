@@ -18,4 +18,5 @@ export type Profile = {
   hobbies: string | null;
   interests: string | null;
   bio: string | null;
+  phone_number: string | null;
 };

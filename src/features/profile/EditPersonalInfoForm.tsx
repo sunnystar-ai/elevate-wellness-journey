@@ -41,6 +41,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 const formSchema = z.object({
   first_name: z.string().min(1, "First name is required"),
   last_name: z.string().min(1, "Last name is required"),
+  phone_number: z.string().optional(),
   birth_date: z.date().optional(),
   weight: z.string().optional(),
   height: z.string().optional(),
@@ -69,6 +70,7 @@ const EditPersonalInfoForm = ({ isOpen, onClose }: EditPersonalInfoFormProps) =>
     defaultValues: {
       first_name: "",
       last_name: "",
+      phone_number: "",
       birth_date: undefined,
       weight: "",
       height: "",
@@ -103,6 +105,7 @@ const EditPersonalInfoForm = ({ isOpen, onClose }: EditPersonalInfoFormProps) =>
           // Use profile data
           form.setValue("first_name", typedProfile.first_name || "");
           form.setValue("last_name", typedProfile.last_name || "");
+          form.setValue("phone_number", typedProfile.phone_number || "");
           typedProfile.birth_date && form.setValue("birth_date", new Date(typedProfile.birth_date));
           form.setValue("weight", typedProfile.weight || "");
           form.setValue("height", typedProfile.height || "");
@@ -135,6 +138,7 @@ const EditPersonalInfoForm = ({ isOpen, onClose }: EditPersonalInfoFormProps) =>
         .update({
           first_name: data.first_name,
           last_name: data.last_name,
+          phone_number: data.phone_number,
           birth_date: data.birth_date,
           weight: data.weight,
           height: data.height,
@@ -296,6 +300,20 @@ const EditPersonalInfoForm = ({ isOpen, onClose }: EditPersonalInfoFormProps) =>
                   )}
                 />
               </div>
+
+              <FormField
+                control={form.control}
+                name="phone_number"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone Number</FormLabel>
+                    <FormControl>
+                      <Input {...field} type="tel" placeholder="Your phone number" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <FormField
                 control={form.control}

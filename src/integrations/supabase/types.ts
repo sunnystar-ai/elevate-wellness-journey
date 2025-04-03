@@ -226,6 +226,7 @@ export type Database = {
           interests: string | null
           last_name: string | null
           password: string | null
+          phone_number: string | null
           updated_at: string
           weight: string | null
           wellness_score: number | null
@@ -243,6 +244,7 @@ export type Database = {
           interests?: string | null
           last_name?: string | null
           password?: string | null
+          phone_number?: string | null
           updated_at?: string
           weight?: string | null
           wellness_score?: number | null
@@ -260,6 +262,7 @@ export type Database = {
           interests?: string | null
           last_name?: string | null
           password?: string | null
+          phone_number?: string | null
           updated_at?: string
           weight?: string | null
           wellness_score?: number | null
