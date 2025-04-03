@@ -29,11 +29,11 @@ const Community = () => {
       {/* Status Bar */}
       <StatusBar />
       
-      {/* User Stories Bar */}
-      <StoriesBar />
-      
-      {/* Community Header */}
-      <CommunityHeader />
+      {/* Community Header with Notifications */}
+      <div className="flex items-center justify-between">
+        <CommunityHeader />
+        <StoriesBar />
+      </div>
       
       {/* Content Tabs */}
       <Tabs 

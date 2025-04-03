@@ -2,7 +2,8 @@
 export { 
   getEvents, 
   updateParticipationStatus, 
-  createEvent 
+  createEvent,
+  updateEvent
 } from './eventsService';
 
 export type { 

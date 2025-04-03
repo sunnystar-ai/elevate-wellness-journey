@@ -2,7 +2,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from '@/hooks/use-toast';
 import { Event, EventWithParticipants, EventInput } from './types';
-import { fetchEvents } from './eventsApi';
+import { fetchEvents, updateEvent } from './eventsApi';
 import { getParticipantCount, getUserParticipationStatus } from './participantsApi';
 
 // Get all events with participant info
@@ -46,4 +46,4 @@ export const getEvents = async (): Promise<EventWithParticipants[]> => {
 
 // Re-export all functions
 export { updateParticipationStatus } from './participantsApi';
-export { createEvent } from './eventsApi';
+export { createEvent, updateEvent } from './eventsApi';

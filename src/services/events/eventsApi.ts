@@ -46,6 +46,48 @@ export const createEvent = async (eventData: EventInput): Promise<boolean> => {
   }
 };
 
+// Update an existing event
+export const updateEvent = async (eventId: string, eventData: Partial<EventInput>): Promise<boolean> => {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please sign in to update events.",
+        variant: "destructive"
+      });
+      return false;
+    }
+
+    // Update the event
+    const { error } = await supabase
+      .from('community_events')
+      .update(eventData)
+      .eq('id', eventId)
+      .eq('host_id', user.id); // Ensure user can only update their own events
+
+    if (error) {
+      throw error;
+    }
+
+    toast({
+      title: "Event updated",
+      description: "Your event has been updated successfully.",
+    });
+
+    return true;
+  } catch (error) {
+    console.error('Error updating event:', error);
+    toast({
+      title: "Error updating event",
+      description: "There was a problem updating your event. Please try again.",
+      variant: "destructive"
+    });
+    return false;
+  }
+};
+
 // Fetch basic event data without participant info
 export const fetchEvents = async (): Promise<Event[]> => {
   try {
