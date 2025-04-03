@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Calendar, Newspaper, User, Trophy, HelpCircle } from 'lucide-react';
+import { Users, Calendar } from 'lucide-react';
 
 // Import components
 import StatusBar from '@/components/community/StatusBar';
@@ -11,10 +11,6 @@ import CommunityHeader from '@/components/community/CommunityHeader';
 import CommunitySearch from '@/components/community/CommunitySearch';
 import ForumsSection from '@/components/community/ForumsSection';
 import EventsCalendar from '@/components/community/EventsCalendar';
-import SuccessStories from '@/components/community/SuccessStories';
-import CommunityLeaderboard from '@/components/community/CommunityLeaderboard';
-import ActiveChallenges from '@/components/community/ActiveChallenges';
-import CommunityGuidelines from '@/components/community/CommunityGuidelines';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 
 const Community = () => {
@@ -60,7 +56,7 @@ const Community = () => {
         onValueChange={setActiveTab} 
         className="px-4"
       >
-        <TabsList className="grid grid-cols-3 mb-6">
+        <TabsList className="grid grid-cols-2 mb-6">
           <TabsTrigger value="forums" className="flex flex-col items-center py-2">
             <Users className="h-4 w-4 mb-1" />
             <span className="text-xs">Forums</span>
@@ -68,10 +64,6 @@ const Community = () => {
           <TabsTrigger value="events" className="flex flex-col items-center py-2">
             <Calendar className="h-4 w-4 mb-1" />
             <span className="text-xs">Events</span>
-          </TabsTrigger>
-          <TabsTrigger value="more" className="flex flex-col items-center py-2">
-            <Newspaper className="h-4 w-4 mb-1" />
-            <span className="text-xs">More</span>
           </TabsTrigger>
         </TabsList>
         
@@ -81,15 +73,6 @@ const Community = () => {
         
         <TabsContent value="events">
           <EventsCalendar />
-        </TabsContent>
-        
-        <TabsContent value="more">
-          <div className="space-y-6">
-            <SuccessStories />
-            <CommunityLeaderboard />
-            <ActiveChallenges />
-            <CommunityGuidelines />
-          </div>
         </TabsContent>
       </Tabs>
 
