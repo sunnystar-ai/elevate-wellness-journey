@@ -11,14 +11,15 @@ interface DailyOverviewProps {
 }
 
 const DailyOverview = ({ activityDurations, mentalScore }: DailyOverviewProps) => {
-  const [dailyScore, setDailyScore] = useState<number>(70);
+  const [dailyScore, setDailyScore] = useState<number>(0); // Start with 0 instead of 70
   const [scoreBreakdown, setScoreBreakdown] = useState([
-    { name: 'Walk', score: 0.8 },
-    { name: 'Sleep', score: 0.7 },
-    { name: 'Meditation', score: 0.6 },
-    { name: 'Mental', score: 0.7 }
+    { name: 'Walk', score: 0 },
+    { name: 'Sleep', score: 0 },
+    { name: 'Meditation', score: 0 },
+    { name: 'Mental', score: 0 }
   ]);
   const [savedToday, setSavedToday] = useState(false);
+  const [hasData, setHasData] = useState(false);
 
   useEffect(() => {
     // Check if we already saved today's score
@@ -32,25 +33,42 @@ const DailyOverview = ({ activityDurations, mentalScore }: DailyOverviewProps) =
 
   useEffect(() => {
     if (activityDurations) {
+      // Check if there's any activity data for today
+      const walkDuration = parseFloat(activityDurations["Evening workout"] || "0");
+      const sleepDuration = parseFloat(activityDurations["Sleep preparation"] || "0");
+      const meditationDuration = parseFloat(activityDurations["Morning meditation"] || "0");
+      
+      const hasAnyData = walkDuration > 0 || sleepDuration > 0 || meditationDuration > 0;
+      setHasData(hasAnyData);
+      
+      if (!hasAnyData) {
+        // No data for today, set everything to zero
+        setDailyScore(0);
+        setScoreBreakdown([
+          { name: 'Walk', score: 0 },
+          { name: 'Sleep', score: 0 },
+          { name: 'Meditation', score: 0 },
+          { name: 'Mental', score: 0 }
+        ]);
+        return;
+      }
+      
       // Calculate scores for each activity
       let walkScore = 0;
       let sleepScore = 0;
       let meditationScore = 0;
       
       // Walk score calculation (60 minutes = full credit)
-      const walkDuration = parseFloat(activityDurations["Evening workout"] || "0");
       walkScore = Math.min(1, walkDuration / 60);
       
       // Sleep score calculation (7 hours = full credit)
-      const sleepDuration = parseFloat(activityDurations["Sleep preparation"] || "0");
       sleepScore = Math.min(1, sleepDuration / 7);
       
       // Meditation score calculation (30 minutes = full credit)
-      const meditationDuration = parseFloat(activityDurations["Morning meditation"] || "0");
       meditationScore = Math.min(1, meditationDuration / 30);
       
       // Mental score (from mental wellness analysis)
-      const mentalScoreValue = mentalScore !== undefined ? mentalScore : 0.7;
+      const mentalScoreValue = mentalScore !== undefined ? mentalScore : 0;
       
       // Calculate daily overall score
       const totalScore = walkScore + sleepScore + meditationScore + mentalScoreValue;
@@ -67,7 +85,7 @@ const DailyOverview = ({ activityDurations, mentalScore }: DailyOverviewProps) =
       ]);
 
       // If we have activity data and haven't saved today's score yet, save it
-      if (!savedToday && (walkDuration > 0 || sleepDuration > 0 || meditationDuration > 0)) {
+      if (!savedToday && hasAnyData) {
         saveScoresToSupabase(percentageScore, walkScore, sleepScore, meditationScore, mentalScoreValue);
       }
     }
@@ -124,30 +142,37 @@ const DailyOverview = ({ activityDurations, mentalScore }: DailyOverviewProps) =
         <div className="text-xl font-bold text-harmony-lavender">{dailyScore}%</div>
       </div>
       
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* Circular Progress Chart */}
-        <div className="flex items-center justify-center">
-          <CircularProgressChart percentage={92} title="Wellness Score" size={180} />
+      {!hasData ? (
+        <div className="flex flex-col items-center justify-center h-64 text-muted-foreground">
+          <p>No activity data recorded for today.</p>
+          <p className="text-sm mt-1">Complete your daily activities to see your progress.</p>
         </div>
-        
-        {/* Bar Chart */}
-        <div className="flex-grow h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis domain={[0, 100]} />
-              <Tooltip content={<CustomTooltip />} />
-              <Bar 
-                dataKey="score" 
-                fill="#8884d8" 
-                radius={[4, 4, 0, 0]}
-                barSize={40}
-              />
-            </BarChart>
-          </ResponsiveContainer>
+      ) : (
+        <div className="flex flex-col md:flex-row gap-6">
+          {/* Circular Progress Chart */}
+          <div className="flex items-center justify-center">
+            <CircularProgressChart percentage={dailyScore} title="Wellness Score" size={180} />
+          </div>
+          
+          {/* Bar Chart */}
+          <div className="flex-grow h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis domain={[0, 100]} />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar 
+                  dataKey="score" 
+                  fill="#8884d8" 
+                  radius={[4, 4, 0, 0]}
+                  barSize={40}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

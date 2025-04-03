@@ -20,6 +20,11 @@ interface Goal {
 }
 
 const GoalsTracker = ({ activityDurations }: GoalTrackerProps) => {
+  // Get current date
+  const today = new Date().toISOString().split('T')[0];
+  // Get the last date the activities were updated
+  const lastUpdatedDate = localStorage.getItem('lastActivityDate');
+  
   // Goals data with target values
   const initialGoals: Goal[] = [
     { 
@@ -56,7 +61,8 @@ const GoalsTracker = ({ activityDurations }: GoalTrackerProps) => {
 
   // Effect to update goals based on activity durations from DailyPlan
   useEffect(() => {
-    if (activityDurations) {
+    // If we have activity data and it's from today, process it
+    if (activityDurations && lastUpdatedDate === today) {
       const updatedGoals = initialGoals.map(goal => {
         const duration = activityDurations[goal.activity];
         
@@ -71,7 +77,7 @@ const GoalsTracker = ({ activityDurations }: GoalTrackerProps) => {
               ...goal,
               completed: progressValue >= 100,
               progress: progressValue,
-              actualValue: durationValue // Now properly typed
+              actualValue: durationValue
             };
           }
         }
@@ -80,8 +86,11 @@ const GoalsTracker = ({ activityDurations }: GoalTrackerProps) => {
       });
       
       setCalculatedGoals(updatedGoals);
+    } else {
+      // If no activity data for today, reset to initial state with zero progress
+      setCalculatedGoals(initialGoals);
     }
-  }, [activityDurations]);
+  }, [activityDurations, lastUpdatedDate, today]);
 
   return (
     <div>
@@ -114,11 +123,9 @@ const GoalsTracker = ({ activityDurations }: GoalTrackerProps) => {
                   <span>{goal.streak}-day streak</span>
                 </div>
                 <div className="flex items-center text-xs font-medium">
-                  {goal.actualValue !== undefined && (
-                    <span className="mr-2">
-                      {goal.actualValue}/{goal.target} {goal.unit}
-                    </span>
-                  )}
+                  <span className="mr-2">
+                    {goal.actualValue !== undefined ? `${goal.actualValue}` : '0'}/{goal.target} {goal.unit}
+                  </span>
                   <CirclePercent className="h-3 w-3 mr-1" />
                   <span>{goal.progress}%</span>
                 </div>

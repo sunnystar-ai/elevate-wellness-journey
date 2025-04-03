@@ -11,6 +11,9 @@ interface DailyPlanProps {
 }
 
 const DailyPlan = ({ onActivityUpdate }: DailyPlanProps) => {
+  // Get the current date
+  const today = new Date().toISOString().split('T')[0];
+
   // Daily plan data - track completed activities and durations
   const [completedActivities, setCompletedActivities] = useState<Record<string, boolean>>({
     "Morning meditation": false,
@@ -41,23 +44,57 @@ const DailyPlan = ({ onActivityUpdate }: DailyPlanProps) => {
   useEffect(() => {
     const savedActivities = localStorage.getItem('completedActivities');
     const savedDurations = localStorage.getItem('activityDurations');
+    const lastActivityDate = localStorage.getItem('lastActivityDate');
     
-    if (savedActivities) {
-      try {
-        setCompletedActivities(JSON.parse(savedActivities));
-      } catch (e) {
-        console.error('Error parsing saved activities:', e);
+    // Check if we have data from a previous day
+    if (lastActivityDate !== today) {
+      // It's a new day, reset everything
+      setCompletedActivities({
+        "Morning meditation": false,
+        "Evening workout": false,
+        "Sleep preparation": false
+      });
+      
+      setActivityDurations({
+        "Morning meditation": "",
+        "Evening workout": "",
+        "Sleep preparation": ""
+      });
+      
+      // Update localStorage with empty values for the new day
+      localStorage.setItem('completedActivities', JSON.stringify({
+        "Morning meditation": false,
+        "Evening workout": false,
+        "Sleep preparation": false
+      }));
+      
+      localStorage.setItem('activityDurations', JSON.stringify({
+        "Morning meditation": "",
+        "Evening workout": "",
+        "Sleep preparation": ""
+      }));
+      
+      // Update last activity date to today
+      localStorage.setItem('lastActivityDate', today);
+    } else {
+      // Same day, load saved data
+      if (savedActivities) {
+        try {
+          setCompletedActivities(JSON.parse(savedActivities));
+        } catch (e) {
+          console.error('Error parsing saved activities:', e);
+        }
+      }
+      
+      if (savedDurations) {
+        try {
+          setActivityDurations(JSON.parse(savedDurations));
+        } catch (e) {
+          console.error('Error parsing saved durations:', e);
+        }
       }
     }
-    
-    if (savedDurations) {
-      try {
-        setActivityDurations(JSON.parse(savedDurations));
-      } catch (e) {
-        console.error('Error parsing saved durations:', e);
-      }
-    }
-  }, []);
+  }, [today]);
 
   // Notify parent component when activity durations change
   useEffect(() => {
@@ -118,6 +155,9 @@ const DailyPlan = ({ onActivityUpdate }: DailyPlanProps) => {
         ...prev,
         [activity]: true
       }));
+
+      // Update the last activity date to today
+      localStorage.setItem('lastActivityDate', today);
 
       toast({
         title: "Activity logged",
