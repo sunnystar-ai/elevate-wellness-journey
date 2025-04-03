@@ -1,5 +1,5 @@
 
-import { Smile, RefreshCw, Edit3, Loader2, Info } from 'lucide-react';
+import { Smile, RefreshCw, Edit3, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 

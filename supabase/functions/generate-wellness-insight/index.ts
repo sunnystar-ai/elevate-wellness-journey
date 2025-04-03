@@ -69,8 +69,7 @@ serve(async (req) => {
         `Date: ${score.score_date ? new Date(score.score_date).toLocaleDateString() : 'N/A'}, 
          Mental: ${score.mental_score || 'N/A'}, 
          Physical: ${score.physical_score || 'N/A'}, 
-         Sleep: ${score.sleep_score || 'N/A'}, 
-         Nutrition: ${score.nutrition_score || 'N/A'}`
+         Sleep: ${score.sleep_score || 'N/A'}`
       ).join('\n') : "No wellness scores available";
 
     // Process personality data or use defaults
