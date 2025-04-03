@@ -8,7 +8,6 @@ import StatusBar from '@/components/community/StatusBar';
 import StoriesBar from '@/components/community/StoriesBar';
 import ProfileSnapshot from '@/components/community/ProfileSnapshot';
 import CommunityHeader from '@/components/community/CommunityHeader';
-import CommunitySearch from '@/components/community/CommunitySearch';
 import ForumsSection from '@/components/community/ForumsSection';
 import EventsCalendar from '@/components/community/EventsCalendar';
 import BottomNavigation from '@/components/layout/BottomNavigation';
@@ -16,8 +15,7 @@ import BottomNavigation from '@/components/layout/BottomNavigation';
 const Community = () => {
   const [activeTab, setActiveTab] = useState('forums');
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-
+  
   useEffect(() => {
     // Simulating data loading
     const timer = setTimeout(() => {
@@ -41,20 +39,12 @@ const Community = () => {
       {/* Community Header */}
       <CommunityHeader />
       
-      {/* Search Bar */}
-      <div className="px-4 mb-4">
-        <CommunitySearch 
-          value={searchQuery}
-          onChange={setSearchQuery}
-        />
-      </div>
-      
       {/* Content Tabs */}
       <Tabs 
         defaultValue={activeTab} 
         value={activeTab} 
         onValueChange={setActiveTab} 
-        className="px-4"
+        className="px-4 mt-4"
       >
         <TabsList className="grid grid-cols-2 mb-6">
           <TabsTrigger value="forums" className="flex flex-col items-center py-2">
