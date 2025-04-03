@@ -46,14 +46,6 @@ const ProgressCircle = () => {
         
         <div className="p-3 rounded-lg bg-white shadow-sm">
           <div className="text-sm font-medium mb-1 flex justify-between">
-            <span>Nutrition</span>
-            <span>2/3</span>
-          </div>
-          <Progress value={66} className="h-2" />
-        </div>
-        
-        <div className="p-3 rounded-lg bg-white shadow-sm">
-          <div className="text-sm font-medium mb-1 flex justify-between">
             <span>Sleep</span>
             <span>1/1</span>
           </div>

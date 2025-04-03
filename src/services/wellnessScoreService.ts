@@ -5,7 +5,6 @@ export interface WellnessScoreInput {
   mental_score: number;
   physical_score?: number;
   sleep_score?: number;
-  nutrition_score?: number;
   score_date?: string;
 }
 
@@ -19,7 +18,6 @@ export const saveWellnessScore = async (score: WellnessScoreInput) => {
       mental_score: score.mental_score,
       physical_score: score.physical_score,
       sleep_score: score.sleep_score,
-      nutrition_score: score.nutrition_score,
       score_date: score.score_date || new Date().toISOString().split('T')[0]
     })
     .select();

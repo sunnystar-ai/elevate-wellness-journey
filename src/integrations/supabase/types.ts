@@ -307,7 +307,6 @@ export type Database = {
           created_at: string
           id: string
           mental_score: number
-          nutrition_score: number | null
           physical_score: number | null
           score_date: string
           sleep_score: number | null
@@ -317,7 +316,6 @@ export type Database = {
           created_at?: string
           id?: string
           mental_score: number
-          nutrition_score?: number | null
           physical_score?: number | null
           score_date?: string
           sleep_score?: number | null
@@ -327,7 +325,6 @@ export type Database = {
           created_at?: string
           id?: string
           mental_score?: number
-          nutrition_score?: number | null
           physical_score?: number | null
           score_date?: string
           sleep_score?: number | null
