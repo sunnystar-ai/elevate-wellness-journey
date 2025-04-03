@@ -17,6 +17,8 @@ export interface ForumReply {
   author: string;
   content: string;
   timestamp: string;
+  likes?: number;
+  liked?: boolean;
 }
 
 export interface Forum {
@@ -34,4 +36,11 @@ export interface NewForumPost {
   title: string;
   content: string;
   tags: string[];
+}
+
+export interface PaginationParams {
+  page: number;
+  limit: number;
+  totalPages: number;
+  totalPosts: number;
 }

@@ -19,7 +19,7 @@ import CommunityGuidelines from '@/components/community/CommunityGuidelines';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 
 const Community = () => {
-  const [activeTab, setActiveTab] = useState('feed');
+  const [activeTab, setActiveTab] = useState('forums'); // Changed default to forums
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 

@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, PenSquare } from 'lucide-react';
@@ -8,8 +8,8 @@ import ForumPostForm from './ForumPostForm';
 import { ForumPost } from './types';
 import { useToast } from '@/components/ui/use-toast';
 
-// Sample data for forum posts
-const samplePosts: ForumPost[] = [
+// Sample data for forum posts - in a real app, this would come from an API
+const allSamplePosts: ForumPost[] = [
   {
     id: 1,
     title: "Has anyone tried guided meditation with binaural beats?",
@@ -65,18 +65,62 @@ const samplePosts: ForumPost[] = [
     likes: 3,
     liked: false,
     replies: []
+  },
+  {
+    id: 4,
+    title: "Favorite healthy lunch prep ideas?",
+    content: "Looking for some healthy lunch ideas that I can meal prep on Sundays for the week. Any favorites?",
+    author: "MealPrepNewbie",
+    timestamp: "2d ago",
+    tags: ["nutrition", "mealprep", "lunch"],
+    likes: 7,
+    liked: false,
+    replies: []
+  },
+  {
+    id: 5,
+    title: "Dealing with anxiety before meditation",
+    content: "I often feel anxious before meditating which makes it hard to start. Any tips for overcoming this initial resistance?",
+    author: "AnxiousMeditator",
+    timestamp: "3d ago",
+    tags: ["meditation", "anxiety", "mentalhealth"],
+    likes: 12,
+    liked: false,
+    replies: []
+  },
+  {
+    id: 6,
+    title: "Recommendations for sleep meditation practices?",
+    content: "I've been having trouble falling asleep. Has anyone had success with sleep meditation? Any specific techniques or resources to recommend?",
+    author: "InsomniacMeditator",
+    timestamp: "4d ago",
+    tags: ["meditation", "sleep", "wellness"],
+    likes: 9,
+    liked: false,
+    replies: []
+  },
+  {
+    id: 7,
+    title: "Plant-based protein sources",
+    content: "I'm trying to reduce my meat consumption and looking for good plant-based protein sources. What are your favorites?",
+    author: "PlantBasedBeginnerNZ",
+    timestamp: "5d ago",
+    tags: ["nutrition", "plantbased", "protein"],
+    likes: 15,
+    liked: false,
+    replies: []
   }
 ];
 
 interface ForumPostsListProps {
-  forumId?: number;
-  forumTitle?: string;
+  page?: number;
+  postsPerPage?: number;
 }
 
-const ForumPostsList = ({ forumId, forumTitle }: ForumPostsListProps) => {
+const ForumPostsList = ({ page = 1, postsPerPage = 5 }: ForumPostsListProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showPostForm, setShowPostForm] = useState(false);
-  const [posts, setPosts] = useState<ForumPost[]>(samplePosts);
+  const [posts, setPosts] = useState<ForumPost[]>(allSamplePosts);
   const { toast } = useToast();
   
   // Filter posts based on search query
@@ -85,6 +129,10 @@ const ForumPostsList = ({ forumId, forumTitle }: ForumPostsListProps) => {
     post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
     post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
   );
+
+  // Calculate pagination
+  const startIndex = (page - 1) * postsPerPage;
+  const paginatedPosts = filteredPosts.slice(startIndex, startIndex + postsPerPage);
 
   const handleNewPostSuccess = () => {
     setShowPostForm(false);
@@ -102,6 +150,11 @@ const ForumPostsList = ({ forumId, forumTitle }: ForumPostsListProps) => {
       replies: []
     };
     setPosts([newPost, ...posts]);
+    
+    toast({
+      title: "Post created!",
+      description: "Your post has been successfully published.",
+    });
   };
 
   const handleLike = (postId: number, liked: boolean) => {
@@ -117,7 +170,7 @@ const ForumPostsList = ({ forumId, forumTitle }: ForumPostsListProps) => {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-lg font-semibold">{forumTitle || "Forum Posts"}</h2>
+        <h2 className="text-lg font-semibold">Community Forum</h2>
         <Button 
           size="sm" 
           onClick={() => setShowPostForm(!showPostForm)}
@@ -129,8 +182,8 @@ const ForumPostsList = ({ forumId, forumTitle }: ForumPostsListProps) => {
       
       {showPostForm && (
         <ForumPostForm 
-          forumId={forumId || 0}
-          forumTitle={forumTitle || "Forum"}
+          forumId={0}
+          forumTitle="Community Forum"
           onCancel={() => setShowPostForm(false)}
           onSuccess={handleNewPostSuccess}
         />
@@ -146,8 +199,8 @@ const ForumPostsList = ({ forumId, forumTitle }: ForumPostsListProps) => {
         />
       </div>
       
-      {filteredPosts.length > 0 ? (
-        filteredPosts.map(post => (
+      {paginatedPosts.length > 0 ? (
+        paginatedPosts.map(post => (
           <ForumPostCard 
             key={post.id} 
             post={post} 
