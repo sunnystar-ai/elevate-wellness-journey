@@ -1,20 +1,51 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import EditPersonalInfoForm from './EditPersonalInfoForm';
+import { supabase } from '@/integrations/supabase/client';
 
 const PersonalInfoSection = () => {
   const { user } = useAuth();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [profileData, setProfileData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
   
   // Extract user information properly
   const email = user?.email || '';
   
   const openDialog = () => setIsDialogOpen(true);
   const closeDialog = () => setIsDialogOpen(false);
+
+  useEffect(() => {
+    const loadProfileData = async () => {
+      if (!user) return;
+      
+      try {
+        setIsLoading(true);
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", user.id)
+          .single();
+        
+        if (error) {
+          console.error("Error loading profile:", error);
+          return;
+        }
+        
+        setProfileData(data);
+      } catch (error) {
+        console.error("Error:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadProfileData();
+  }, [user, isDialogOpen]); // Reload when dialog closes
 
   return (
     <section>
@@ -25,6 +56,69 @@ const PersonalInfoSection = () => {
             <p className="text-sm text-muted-foreground">Email Address</p>
             <p className="font-medium">{email}</p>
           </div>
+          
+          {!isLoading && profileData && (
+            <>
+              <Separator />
+              {(profileData.first_name || profileData.last_name) && (
+                <div>
+                  <p className="text-sm text-muted-foreground">Name</p>
+                  <p className="font-medium">
+                    {[profileData.first_name, profileData.last_name].filter(Boolean).join(' ')}
+                  </p>
+                </div>
+              )}
+              
+              {profileData.birth_date && (
+                <div>
+                  <p className="text-sm text-muted-foreground">Date of Birth</p>
+                  <p className="font-medium">
+                    {new Date(profileData.birth_date).toLocaleDateString()}
+                  </p>
+                </div>
+              )}
+              
+              {(profileData.weight || profileData.height) && (
+                <div>
+                  <p className="text-sm text-muted-foreground">Physical</p>
+                  <p className="font-medium">
+                    {profileData.height && `Height: ${profileData.height} cm`}
+                    {profileData.weight && profileData.height && ' | '}
+                    {profileData.weight && `Weight: ${profileData.weight} kg`}
+                  </p>
+                </div>
+              )}
+              
+              {profileData.career && (
+                <div>
+                  <p className="text-sm text-muted-foreground">Career</p>
+                  <p className="font-medium">{profileData.career}</p>
+                </div>
+              )}
+              
+              {profileData.hobbies && (
+                <div>
+                  <p className="text-sm text-muted-foreground">Hobbies</p>
+                  <p className="font-medium">{profileData.hobbies}</p>
+                </div>
+              )}
+              
+              {profileData.interests && (
+                <div>
+                  <p className="text-sm text-muted-foreground">Interests</p>
+                  <p className="font-medium">{profileData.interests}</p>
+                </div>
+              )}
+              
+              {profileData.bio && (
+                <div>
+                  <p className="text-sm text-muted-foreground">About</p>
+                  <p className="font-medium">{profileData.bio}</p>
+                </div>
+              )}
+            </>
+          )}
+          
           <Separator />
           <div>
             <p className="text-sm text-muted-foreground">Profile Completeness</p>
