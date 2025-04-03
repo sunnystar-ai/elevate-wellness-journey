@@ -55,6 +55,7 @@ export type Database = {
           host_id: string
           host_name: string
           id: string
+          image_url: string | null
           timezone: string
           title: string
         }
@@ -67,6 +68,7 @@ export type Database = {
           host_id: string
           host_name: string
           id?: string
+          image_url?: string | null
           timezone: string
           title: string
         }
@@ -79,6 +81,7 @@ export type Database = {
           host_id?: string
           host_name?: string
           id?: string
+          image_url?: string | null
           timezone?: string
           title?: string
         }
