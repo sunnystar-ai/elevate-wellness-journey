@@ -9,7 +9,6 @@ import StatusBar from '@/components/home/StatusBar';
 import AppHeader from '@/components/home/AppHeader';
 import GreetingHeader from '@/components/home/GreetingHeader';
 import QuickActionsBar from '@/components/home/QuickActionsBar';
-import TodayProgressChart from '@/components/home/TodayProgressChart';
 import AiChat from '@/components/home/AiChat';
 import RecommendationCards from '@/components/home/RecommendationCards';
 
@@ -56,10 +55,6 @@ const Index = () => {
 
         <AnimatedSection className="mb-10">
           <QuickActionsBar />
-        </AnimatedSection>
-
-        <AnimatedSection animation="scale-in" className="mb-10">
-          <TodayProgressChart activityDurations={activityDurations} mentalScore={mentalScore} />
         </AnimatedSection>
 
         <AnimatedSection className="mb-10">
